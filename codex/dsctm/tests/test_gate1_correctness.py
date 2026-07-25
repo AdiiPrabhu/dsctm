@@ -148,12 +148,25 @@ def test_lengths_propagate_into_loader_mask_and_zero_the_tail():
     idx = np.arange(ds.N)
     mean, std = fit_normalizer(ds.X[idx], ds.lengths[idx])
     loader = _make_loader(ds, idx, {}, mean, std, batch_size=ds.N, shuffle=False)
-    X, y, subj, mask = next(iter(loader))
+    # Gate 2 added a fifth tensor: the DATASET-GLOBAL sample id that distributed
+    # evaluation uses to prove each sample was scored exactly once.
+    X, y, subj, mask, sample_id = next(iter(loader))
 
     expected = np.arange(ds.T)[None, :] < ds.lengths[idx][:, None]
     assert mask.numpy().tolist() == expected.tolist(), "loader mask does not match lengths"
     assert torch.count_nonzero(X[~mask]) == 0, "padded region was not zeroed after normalization"
     assert mask.sum(1).numpy().tolist() == ds.lengths[idx].tolist()
+    assert sample_id.tolist() == list(idx), "sample ids must be the dataset-global indices"
+
+
+def test_sample_ids_are_dataset_global_not_split_local():
+    """Fold-local positions would collide across folds and break coverage auditing."""
+    ds = _padded_dataset(n=12)
+    idx = np.array([3, 7, 9])
+    mean, std = fit_normalizer(ds.X[idx], ds.lengths[idx])
+    loader = _make_loader(ds, idx, {}, mean, std, batch_size=3, shuffle=False)
+    _, _, _, _, sample_id = next(iter(loader))
+    assert sample_id.tolist() == [3, 7, 9]
 
 
 def test_normalizer_ignores_padding():
