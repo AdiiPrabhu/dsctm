@@ -6,7 +6,8 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=20
 #SBATCH --time=08:00:00
-#SBATCH --array=0-47%4
+#SBATCH --array=0-47%4          # tuning-daicwoz: 6 models x 8 trials. VERIFY with:
+#                                #   python scripts/param/plan.py --sbatch-array tuning-daicwoz
 #SBATCH --output=logs/%x.%A_%a.out
 #SBATCH --error=logs/%x.%A_%a.err
 #
@@ -15,4 +16,4 @@
 # queue is empty; this is a shared facility.
 source scripts/param/_header.inc
 mkdir -p logs
-srun python scripts/run_exp22_fair_tuning.py --trial-index "$SLURM_ARRAY_TASK_ID"
+srun python scripts/param/run_task.py --family tuning-daicwoz --index "$SLURM_ARRAY_TASK_ID"
