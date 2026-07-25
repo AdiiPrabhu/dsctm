@@ -1,0 +1,269 @@
+ID,Phase,Priority,Reviewer(s),Category,Task,Why / Problem,Detailed Action Steps,Definition of Done,Deliverable / Evidence,Dependency,Suggested Owner,Target Week,Status,% Complete,Blocking,Decision Required,Manuscript Section,Response Ref,Notes
+G0-01,0. Integrity & Ground Truth,P0 Critical,R7; Editor,Reference integrity,Audit all 38 references against authoritative records,A reference-integrity objection can sink the resubmission even when the technical contribution is sound.,"• Verify exact title, full author list, venue, year, pages and DOI/official record for every reference.
+• Record an authoritative URL and the exact manuscript claim supported by each citation.
+• Mark unresolved entries as 'Unverified' rather than assuming they exist.","All 38 rows in Reference Audit have source URL, verification status and claim mapping.",Completed Reference Audit sheet + corrected .bib,,Aditya,Week 1,In Progress,0%,Yes,No,References,R7,
+G0-02,0. Integrity & Ground Truth,P0 Critical,R7,Reference integrity,Resolve references [25] and [37] without prematurely calling them fabricated,"The current tracker labels them confirmed non-existent, but that conclusion must be based on an authoritative provenance search.","• Search official proceedings, Crossref, DBLP, publisher libraries and author profiles.
+• If no authoritative record is found, remove and replace them with real papers that support the exact claims.
+• In the response, state the audit process and correction without speculating about how the error occurred.",Each reference is either verified with an official record or removed and replaced with a claim-matched source.,Audit notes + corrected citations,G0-01,Aditya,Week 1,In Progress,0%,Yes,No,"References [25], [37]",R7,
+G0-03,0. Integrity & Ground Truth,P0 Critical,R2; R7,Citation-to-claim mapping,Re-evaluate reference [32] and the multi-timescale neuroscience claim,"Even if the paper exists, a real citation used for the wrong claim is still a scholarly accuracy problem.","• Verify the paper's actual scope.
+• Remove it from statements about multi-scale cognitive neurodynamics unless it directly supports them.
+• Replace with a direct, authoritative multi-timescale cognition or neurodynamics source where needed.","Every use of [32] accurately matches the source, or the reference is replaced.",Revised related-work and design-rationale citations,G0-01,Aditya + Guide,Week 1,In Progress,0%,Yes,No,"Sections II, III-A, VII-A",R2/R7,
+G0-04,0. Integrity & Ground Truth,P0 Critical,R7,Reference integrity,Verify the StudentLife citation [1] against the official ACM record,"The reviewer alleges an authorship problem; the response must rely on the official record, not memory.","• Verify authors, exact title, page range and DOI/ACM record.
+• Correct any title or author-order variation.
+• Respond politely with the official record if the submitted citation was already correct.",Reference [1] exactly matches the official bibliographic record.,Verified reference record + response text,G0-01,Aditya,Week 1,In Progress,0%,Yes,No,Reference [1],R7,
+G0-05,0. Integrity & Ground Truth,P0 Critical,R7; R3,Claim audit,Build a claim-to-citation matrix for every strong literature claim,Correct references are not enough; each citation must actually support the sentence attached to it.,"• List every novelty, neuroscience, dataset, baseline and convergence claim.
+• Map each claim to one or more verified references.
+• Delete or soften claims without direct support.",All strong external claims are mapped to verified sources; unsupported claims are removed or softened.,Claim-to-citation matrix,G0-01,Aditya + Guide,Week 1,Not Started,0%,Yes,No,Entire manuscript,R3/R7,
+G0-06,0. Integrity & Ground Truth,P0 Critical,R1; R6,Results provenance,Create a table-and-figure provenance map from raw logs,"Every reported value must be traceable to a specific run, seed, config and output file.","• Map every number in Tables 2–5 and Figures 4–11 to a run ID and log path.
+• Record dataset split, seed, commit hash and configuration.
+• Re-run or remove values that cannot be reproduced.",Every result cell and figure has a traceable run ID and reproducible source file.,Results provenance workbook/log index,,Aditya,Week 1,Not Started,0%,Yes,No,Tables 2–5; Figures 4–11,R1/R6,
+G0-07,0. Integrity & Ground Truth,P0 Critical,R1,Results verification,Resolve Reviewer 1's alleged 58.7 versus 68.7 mismatch correctly,"The submitted Table 2 shows 68.7, so this appears to be a reviewer reading/rendering issue, not a data discrepancy.","• Confirm the source logs still produce 68.7 ± 2.3.
+• Improve Table 2 resolution and typography.
+• In the response, quote the exact row and explain that the manuscript text and table are consistent.",The value is reproduced from logs and the response politely documents the table's actual value.,Reproduced run + high-resolution table + rebuttal text,G0-06,Aditya,Week 1,Not Started,0%,Yes,No,Section V-A; Table 2,R1,
+G0-08,0. Integrity & Ground Truth,P0 Critical,Editor,Disclosure,Reconfirm the generative-AI disclosure is literally accurate,"The final manuscript must accurately describe how AI tools were used, especially after the reference audit.","• Document the actual use of AI tools in drafting, coding, analysis and editing.
+• Align the disclosure with IEEE policy and the real workflow.
+• Obtain coauthor approval of the final wording.","The disclosure is factually accurate, policy-aligned and approved by all authors.",Approved disclosure paragraph,G0-01; G0-06,Aditya + Guide,Week 1,Not Started,0%,Yes,No,Acknowledgment / disclosure,Editor,
+G0-09,0. Integrity & Ground Truth,P0 Critical,Editor; R3,Reproducibility,"Freeze and archive the exact code, configs and data manifests used for revision",A stable evidence package prevents silent changes while the response and manuscript are being updated.,"• Create a tagged Git commit for the revision.
+• Save environment file, package versions, random seeds and data checksums.
+• Archive raw logs and plotting scripts in a read-only folder.","A tagged, checksum-backed revision archive can reproduce all reported outputs.",Git tag + environment lockfile + data/log manifest,G0-06,Aditya,Week 1,Not Started,0%,Yes,No,Supplement / reproducibility,R3,
+G0-10,0. Integrity & Ground Truth,P0 Critical,Editor,Governance,Conduct a coauthor integrity sign-off before technical revision proceeds,"Both authors should agree that references, results and disclosures are accurate before investing in new experiments.","• Review the completed reference and result audits together.
+• Document unresolved items and owners.
+• Record written approval to proceed.",Guide/coauthor signs off on the integrity gate with no unresolved P0 issue.,Signed internal checklist,G0-01:G0-09,Guide,Week 1,Not Started,0%,Yes,No,Internal,Editor,
+D1-01,1. Scope & Core-Claim Decisions,P0 Critical,R2; R3; R6,Scope decision,Decide: obtain true multi-node results or reframe as single-server multi-GPU,Bandwidth throttling on one NVLink server does not validate physical multi-node behavior.,"• Option A: run on at least 2–4 physical hosts and report NIC, topology, RTT, bandwidth and variance.
+• Option B: explicitly reframe the contribution as branch-parallel multi-GPU execution and remove physical-cluster claims.
+• Record the decision before rewriting the title or abstract.",A written scope decision is approved by the guide and reflected consistently across the manuscript.,Decision Log entry + approved scope statement,,Aditya + Guide,Week 1,Not Started,0%,Yes,Yes,"Title; Abstract; Sections I, IV-E, V, VIII, IX",R2/R3/R6,
+D1-02,1. Scope & Core-Claim Decisions,P0 Critical,R2; R3; R6,Motivation decision,Decide how to address the small-dataset versus population-scale mismatch,StudentLife and DAIC-WOZ do not themselves demonstrate a need for population-scale distributed training.,"• Add honest synthetic or replicated longitudinal workloads for scaling analysis, or
+• Remove 'thousands of participants' and population-scale validation language.
+• Separate modeling validation from systems scalability validation.",The motivation and evidence are aligned without overstating what the datasets prove.,Approved revised motivation + experiment plan,D1-01,Aditya + Guide,Week 1,Not Started,0%,Yes,Yes,Introduction; Limitations; Conclusion,R2/R3/R6,
+D1-03,1. Scope & Core-Claim Decisions,P0 Critical,R1; R2; R6,Core premise,Formally validate whether standard DDP inherently violates temporal causality in this setup,Causal ordering inside a complete sequence is not automatically violated merely because gradients from different samples are aggregated.,"• Define the exact sample unit, windowing, state carry-over and asynchronous update process.
+• Identify the mechanism by which DDP would create causal inconsistency.
+• Design controlled experiments that isolate this mechanism from batch size, sampler, learning-rate and seed effects.","The paper either proves and experimentally isolates a specific causality failure mode, or removes the general claim.",Formal problem definition + controlled experiment specification,,Aditya + Guide + Distributed-systems reviewer,Week 1,Not Started,0%,Yes,Yes,"Sections I-B, II-C, III-D, VII-C",R1/R2/R6,
+D1-04,1. Scope & Core-Claim Decisions,P0 Critical,R1; R2,Theory decision,"Decide whether Theorem 1 is retained, replaced or removed","The current proof sketch does not establish convergence of a causally masked, biased gradient estimator.","• Retain only if a mathematically valid bounded-bias/asynchronous proof is completed and independently reviewed.
+• Otherwise replace the theorem with a proposition that states an operational staleness bound, without a convergence claim.
+• Ensure the empirical evidence matches the reduced claim.","The theorem status is approved by a qualified reviewer and reflected consistently in text, algorithm and response.",Decision Log entry + proof/replacement outline,D1-03,Aditya + Guide + Math reviewer,Week 1,Not Started,0%,Yes,Yes,Section III-D; Appendix,R1/R2,
+D1-08,1. Scope & Core-Claim Decisions,P0 Critical,Editor,Approval gate,Obtain guide approval on the revised paper identity before new writing,Editing before the core decisions are settled creates contradictory versions and wasted work.,"• Review D1-01 through D1-07 with the guide.
+• Record selected options and rejected alternatives.
+• Lock the scope for the remainder of the revision.",Guide marks all structural decisions approved in the Decision Log.,Signed Decision Log,D1-01:D1-07,Guide,Week 1,Not Started,0%,Yes,Yes,Internal,Editor,
+T2-02,2. Theory & Algorithm,P0 Critical,R2,Architecture mathematics,Derive and verify the exact receptive field for each branch,"Equation (2) appears to contain two dilated convolutions per block, so neither the manuscript values nor the reviewer's one-convolution calculation should be adopted without verification.","• Derive the formula from the implemented block, including both convolutions, padding and residual path.
+• Write a unit test that perturbs input positions and measures the effective receptive field.
+• Correct Figure 2, text and temporal-unit labels from the verified result.",Analytical derivation and code-based measurement agree for all branches.,Derivation + unit test + corrected Figure 2,G0-09,Aditya,Week 1,Not Started,0%,Yes,No,Section III-B; Figure 2,R2,
+T2-04,2. Theory & Algorithm,P0 Critical,R2,Algorithm semantics,Rewrite the staleness counter semantics,The current increment/reset behavior is not clearly consistent with the prose description of continuously bounded staleness.,"• Define precisely what Δ_b counts: optimizer steps, parameter versions or missed synchronizations.
+• Specify when it increments and resets.
+• Make Algorithm 1 and Section III-D identical in meaning.","A reader can simulate the counter without ambiguity, and the code follows the same rule.",Revised Algorithm 1 + implementation test,D1-04,Aditya,Week 1,Not Started,0%,Yes,No,Section III-D; Algorithm 1,R2,
+T2-05,2. Theory & Algorithm,P0 Critical,R2,Synchronization,Explain HOLD-triggered synchronization versus periodic AllReduce,"Two synchronization paths are present but their interaction, ordering and parameter scope are unclear.","• Specify whether HOLD synchronizes one branch or the full model.
+• Define precedence when HOLD and periodic synchronization occur in the same step.
+• Measure the communication and optimization consequences.","The algorithm, pseudocode and implementation use one unambiguous synchronization protocol.",Protocol state diagram + revised pseudocode,T2-04,Aditya,Week 1,Not Started,0%,Yes,No,Section III-D/E; Algorithm 1,R2,
+T2-06,2. Theory & Algorithm,P0 Critical,R2,Replication,Define TCP behavior when branches are replicated for N > 3,The paper introduces data-parallel branch replicas without explaining how their gradients are synchronized under TCP.,"• Specify intra-replica and inter-branch aggregation order.
+• State whether causal masking applies before or after replica reduction.
+• Remove N > 3 claims if the implemented behavior is not defined and tested.","A complete execution graph exists for N=4, 8 and any reported higher count.",Execution diagram + implementation description,T2-04; T2-05,Aditya,Week 1–2,Not Started,0%,Yes,No,Section III-C/D,R2,
+T2-07,2. Theory & Algorithm,P0 Critical,R2; R6,Experimental semantics,Explain how N = 16 was produced on an eight-GPU server,The hardware description and scalability table are currently inconsistent.,"• Document whether N means process, virtual worker, branch replica or physical GPU.
+• Describe oversubscription if used.
+• Remove or relabel N=16 results if they do not represent 16 independent compute resources.",Node/worker/GPU terminology is consistent and every N value is physically interpretable.,Revised hardware table + terminology note,D1-01; T2-06,Aditya,Week 1,Not Started,0%,Yes,No,Section IV-E; Table 3,R2/R6,
+T2-09,2. Theory & Algorithm,P0 Critical,R1; R2,Convergence analysis,State all assumptions required by the revised theoretical result,"The current proof sketch omits assumptions about estimator bias, delay, bounded gradients and synchronization.","• Define objective, stochastic estimator, masking operator and parameter-delay model.
+• State smoothness, variance/bias and bounded-delay assumptions.
+• Explain which assumptions are empirically checkable.",The theorem/proposition is self-contained and every symbol and assumption is defined.,Formal assumptions subsection,D1-04,Aditya + Math reviewer,Week 1–2,Not Started,0%,Yes,No,Section III-D; Appendix,R1/R2,
+T2-10,2. Theory & Algorithm,P0 Critical,R1; R2,Proof,Complete a valid proof or explicitly remove the convergence guarantee,Causal masking creates a potentially biased estimator that cannot simply inherit an unbiased asynchronous-SGD theorem.,"• Derive a bounded-bias result using an appropriate theorem, or provide a fresh proof.
+• Analyze the HOLD and periodic-sync interaction.
+• Have a qualified colleague independently review every step.","Independent reviewer signs off on the proof, or all convergence-guarantee language is removed.",Reviewed appendix proof or approved replacement text,T2-09,Math reviewer + Aditya,Week 2,Not Started,0%,Yes,No,Section III-D; Appendix,R1/R2,
+V3-01,3. Data & Evaluation Integrity,P0 Critical,R3; R4,Data split,Audit StudentLife split for participant leakage,'Participant-stratified' can mean either subject-independent splitting or the same subjects appearing in train and test.,"• List subject IDs in each split.
+• Use a subject-independent evaluation for generalization claims.
+• If within-subject evaluation is retained, label it clearly and avoid unseen-subject claims.",Split membership is documented and no hidden subject overlap remains.,Split manifest + revised evaluation description,,Aditya,Week 1,Not Started,0%,Yes,No,Section IV-A,R3/R4,
+V3-02,3. Data & Evaluation Integrity,P0 Critical,R6,Data split,Clarify and correct the DAIC-WOZ 107/82 split,"The common partition is 107 train, 35 development and 47 test; merging or relabeling requires explicit justification and label availability.","• Document exactly which official partitions and labels were used.
+• Explain whether development and test were combined.
+• Prefer a standard, reproducible evaluation split and re-run results if necessary.","The split is standard or fully justified, reproducible and comparable with prior work.",Split manifest + rerun results if changed,,Aditya,Week 1,Not Started,0%,Yes,No,Section IV-A,R6,
+V3-03,3. Data & Evaluation Integrity,P0 Critical,R4; R3,Personalization leakage,Define how subject embeddings are handled for held-out and unseen subjects,A learned identity embedding can leak test-subject information if trained using all subject IDs.,"• State whether test subjects appear during training.
+• Add an unknown-subject baseline and a support-set adaptation protocol.
+• Separate within-subject personalization from unseen-subject generalization.",No test-subject identity information is used improperly; cold-start performance is measured.,Evaluation protocol + cold-start experiment plan,V3-01; V3-02,Aditya,Week 1–2,Not Started,0%,Yes,No,Section III-B.4; IV; VIII,R3/R4,
+V3-05,3. Data & Evaluation Integrity,P0 Critical,R3,Leakage,Audit forward-fill and imputation for temporal leakage,Imputation across split boundaries or from future observations can inflate performance.,"• Fit and apply imputation separately within each split and sequence.
+• Prohibit backward information flow.
+• Report missingness and imputation sensitivity.",No preprocessing step uses future or test-set information.,Leakage audit + sensitivity result,V3-04,Aditya,Week 2,Not Started,0%,Yes,No,Section IV-A,R3,
+E4-01,4. Experiments & Benchmarking,P0 Critical,R2; R6,Baseline fairness,Audit fairness of all baseline configurations,"A 1.1-point DDP degradation cannot support a causal claim unless batch size, optimizer and sampler confounders are controlled.","• Match effective global batch size or report it explicitly.
+• Tune learning rate for each effective batch size.
+• Use identical data splits, preprocessing, early stopping and seed schedule.",Baseline differences cannot be explained by avoidable training-protocol mismatches.,Baseline fairness table + configs,V3-01:V3-09,Aditya,Week 2,Not Started,0%,Yes,No,Section IV-B/D,R2/R6,
+E4-02,4. Experiments & Benchmarking,P0 Critical,R1; R2; R6,Causal claim test,Run controlled DDP experiments that isolate the proposed temporal-inconsistency mechanism,"The current comparison does not establish that temporal causality, rather than optimization configuration, causes degradation.","• Compare DDP with matched global batch size and tuned learning rate.
+• Compare random versus chronological window assignment.
+• Compare stateful versus stateless sequence handling and overlap/no-overlap conditions.","The specific failure mode is isolated with controls, or the general DDP-causality claim is withdrawn.",Controlled experiment table + analysis,D1-03; E4-01,Aditya,Week 2,Not Started,0%,Yes,No,Results; Discussion VII-C,R1/R2/R6,
+E4-03,4. Experiments & Benchmarking,P0 Critical,R2; R3; R6,Systems validation,Run true multi-node experiments if the distributed scope is retained,"Physical hosts introduce network stack, NIC, congestion, NUMA and straggler effects absent from NVLink emulation.","• Use at least 2 and preferably 4 physical hosts.
+• Report GPU, CPU, NIC, topology, RTT, bandwidth, software stack and repeated runs.
+• Include DDP and D-MSTCN under identical conditions.",At least one genuine multi-node result supports every retained physical-cluster claim.,Hardware manifest + multi-node result tables,D1-01,Aditya + Infra support,Week 2–3,Not Started,0%,Yes,No,Section IV-E; V-B,R2/R3/R6,
+E4-12,4. Experiments & Benchmarking,P0 Critical,R3; R4,Cold start,Evaluate personalization for unseen subjects,The main deployment target includes new subjects who have no learned embedding.,"• Evaluate a global/unknown embedding.
+• Evaluate few-shot adaptation with a clearly separated support set.
+• Report seen-subject and unseen-subject results separately.",Cold-start behavior is quantified and no hidden test-subject training occurs.,Cold-start result table,V3-03; E4-11,Aditya,Week 2–3,Not Started,0%,Yes,No,Section IV/VI/VIII,R3/R4,
+E4-13,4. Experiments & Benchmarking,P0 Critical,R2; R3,Statistics,Redesign the significance-testing plan,"With only five paired observations, an exact two-sided Wilcoxon test cannot produce p < 0.05 even when all differences have the same sign.","• Increase independent runs for headline comparisons, preferably to at least 10.
+• Report exact test type, alternative hypothesis, statistic and p-value.
+• Use confidence intervals and effect sizes; correct for multiple comparisons where applicable.",Every significance symbol can be independently reproduced and is statistically valid.,Statistical analysis plan + scripts,V3-08,Aditya + Statistician/Guide,Week 2,Not Started,0%,Yes,No,Section IV-C/D; Tables 2–5,R2/R3,
+W5-01,5. Writing & Positioning,P0 Critical,R2; R3; R6,Rewrite,Rewrite title and abstract after the structural decisions and reruns,"The abstract currently combines modeling, theory and cluster-scale claims more strongly than the evidence supports.","• State the exact experimental environment.
+• Report only validated headline numbers.
+• Remove or bound unsupported novelty and convergence claims.",Every abstract sentence is directly supported by the revised manuscript.,Final title and abstract,D1-08; G0-06; E4 results,Aditya + Guide,Week 3,Not Started,0%,Yes,No,Title; Abstract,R2/R3/R6,
+W5-03,5. Writing & Positioning,P0 Critical,R1; R2; R6,Problem statement,Rewrite the temporal-causality problem statement narrowly and formally,The current prose treats temporally distinct gradients as inherently non-exchangeable without defining the conditions.,"• Use the formal definition from D1-03.
+• State the conditions under which the problem arises.
+• Avoid generalizing to all temporal models or all DDP training.",The problem statement is technically precise and matches the controlled experiments.,Revised Sections I-B and II-C,D1-03; E4-02,Aditya + Guide,Week 3,Not Started,0%,Yes,No,"Sections I-B, II-C",R1/R2/R6,
+S7-01,7. Response & Submission,P0 Critical,Editor,Response matrix,Create a reviewer-comment master matrix,Eight reviewers create a high risk of silently missing a comment.,"• Copy each comment verbatim or faithfully summarize it.
+• Map it to task IDs, manuscript locations and evidence.
+• Mark accept, partially accept or respectfully rebut.",Every reviewer comment appears exactly once with an assigned response and action.,Reviewer Matrix completed,All technical tasks planned,Aditya,Week 1–3,Not Started,0%,Yes,No,Response package,Editor,
+S7-02,7. Response & Submission,P0 Critical,Editor,Response document,Write the formal response-to-reviewers document,"IEEE Access requires concern, response and action for every comment.","• Use a professional, non-defensive tone.
+• Lead with changes and evidence.
+• For rebuttals, provide exact table/equation/page evidence.",All reviewer comments have complete concern-response-action entries.,Final Author Response PDF/DOCX,S7-01; W5-13,Aditya + Guide,Week 3–4,Not Started,0%,Yes,No,Response package,Editor,
+S7-03,7. Response & Submission,P0 Critical,Editor,Highlighted manuscript,Produce the highlighted-changes PDF,"The editor requests every individual change, including grammar, to be highlighted.","• Generate from the final source.
+• Check that highlights do not hide equations or figures.
+• Verify it matches the clean manuscript.","Highlighted PDF is complete, readable and content-identical to the clean manuscript.",Highlighted PDF,Final manuscript locked,Aditya,Week 4,Not Started,0%,Yes,No,Submission file,Editor,
+S7-04,7. Response & Submission,P0 Critical,Editor,Clean manuscript,Produce the clean LaTeX/Word source and PDF,IEEE requires clean source and PDF as the main manuscript.,"• Compile from the locked revision tag.
+• Remove comments, highlights and tracked-change artifacts.
+• Verify bibliography and supplementary references.","Clean source compiles without warnings that affect content, and PDF passes QA.",Clean source + PDF,F6-07; G0-09,Aditya,Week 4,Not Started,0%,Yes,No,Submission file,Editor,
+S7-05,7. Response & Submission,P0 Critical,Editor,Checklist,Complete the IEEE Access resubmission checklist,The resubmission is one-shot; administrative omissions can waste the technical revision.,"• Work through each checklist item.
+• Confirm file names and submission categories.
+• Confirm whether any author-list change form is needed.",Every checklist item is completed and signed off.,Completed checklist,S7-02:S7-04,Aditya,Week 4,Not Started,0%,Yes,No,Submission package,Editor,
+S7-06,7. Response & Submission,P0 Critical,All,Red-team review,Run an independent internal re-review against the original reviewer comments,The revised paper should be tested as though the same reviewers will return.,"• Give the clean manuscript, response and supplement to a colleague not involved in drafting.
+• Ask them to find any unresolved comment, unsupported claim or inconsistency.
+• Close every red-team finding.",Independent reviewer signs off that all comments are addressed.,Red-team report,S7-02:S7-05,Independent colleague,Week 4,Not Started,0%,Yes,No,All files,All,
+S7-07,7. Response & Submission,P0 Critical,Editor,Author approval,Obtain final guide and coauthor approval,"The guide should approve the paper's scope, proof status, reference corrections and response tone.","• Review final files together.
+• Confirm author contributions and disclosure.
+• Record approval before upload.",All authors approve the exact files to be submitted.,Written approval,S7-06,Guide + Aditya,Week 4,Not Started,0%,Yes,No,All files,Editor,
+S7-10,7. Response & Submission,P0 Critical,Editor,Submission backup,Create a final immutable submission archive before upload,A one-shot resubmission needs an exact backup of what was submitted.,"• Zip all source files, PDFs, supplement, response and checklist.
+• Include checksums and a contents manifest.
+• Save the portal confirmation after submission.",The exact submission can be reconstructed from the archive.,Timestamped archive + manifest,S7-02:S7-09,Aditya,Week 4,Not Started,0%,Yes,No,Archive,Editor,
+D1-05,1. Scope & Core-Claim Decisions,P1 Major,R3,Novelty decision,Define the single strongest methodological novelty,The paper currently reads as a combination of known components unless the new mechanism is isolated precisely.,"• Name the closest methods and state the exact technical difference.
+• Separate architectural novelty, systems novelty and application novelty.
+• Avoid claiming novelty merely because components are combined.",A 3–5 sentence novelty statement survives comparison with the closest prior work.,Approved novelty statement + comparison table outline,D1-01; D1-03; D1-04,Aditya + Guide,Week 1,Not Started,0%,Yes,Yes,Introduction; Related Work; Contributions,R3,
+D1-06,1. Scope & Core-Claim Decisions,P1 Major,R3,Title decision,Select a title that matches the final evidence,The current title implies distributed scalability beyond what a single-server experiment establishes.,"• Prepare title options for both scope outcomes.
+• Avoid 'scalable' or 'distributed' if the evidence is limited to one host.
+• Obtain guide approval after D1-01 through D1-05 are closed.",Final title makes no claim that the revised experiments do not support.,Approved title,D1-01:D1-05,Aditya + Guide,Week 1,Not Started,0%,No,Yes,Title,R3,
+D1-07,1. Scope & Core-Claim Decisions,P1 Major,R2; R3,Claims policy,Create a manuscript-wide claim-strength policy,"Statements such as 'first', 'guarantees', 'near-linear' and 'population-scale' carry a high evidence burden.","• List all strong claim words.
+• Define evidence required to retain each one.
+• Replace unsupported claims with measured, bounded statements.","No strong claim remains without a corresponding proof, experiment or authoritative literature basis.",Claim audit checklist,D1-01:D1-05,Aditya,Week 1,Not Started,0%,No,No,Entire manuscript,R2/R3,
+T2-01,2. Theory & Algorithm,P1 Major,R1,Notation,Remove η notation overloading,η is used for both learning rate and scalability efficiency.,"• Reserve η for scalability efficiency.
+• Use a distinct symbol such as α_lr for learning rate.
+• Search equations, tables, captions and prose for every occurrence.",Each symbol has one meaning throughout the manuscript.,Notation audit + revised equations/tables,D1-04,Aditya,Week 1,Not Started,0%,No,No,"Sections III-D, IV-C, IV-F; Tables 1 and 3",R1,
+T2-03,2. Theory & Algorithm,P1 Major,R2,Parameter accounting,Correct the personalization-adapter parameter count,"The shared matrices contribute O(D²) parameters; the per-subject cost is the embedding dimension d_s, not 2D.","• Compute exact shared and per-subject parameter counts from code.
+• Update the equations and complexity discussion.
+• Replace 'negligible' with measured overhead.","Parameter counts in prose, table and code summary match exactly.",Parameter-count table + corrected description,G0-09,Aditya,Week 1,Not Started,0%,No,No,Section III-B.4; Complexity,R2,
+T2-08,2. Theory & Algorithm,P1 Major,R2,Scientific rationale,Replace universal EEG-timescale grounding with dataset-specific temporal rationale,Minute-resolution smartphone data cannot resolve theta- or alpha-band oscillations.,"• State actual sampling intervals and receptive-field durations for each dataset.
+• Present the schedules as heuristic multi-resolution choices unless directly grounded for that dataset.
+• Reserve EEG-frequency discussion for SEED or other truly high-frequency data.",Every temporal-scale statement is physically meaningful for the dataset being discussed.,Revised design rationale + duration table,T2-02,Aditya + Guide,Week 1,Not Started,0%,No,No,"Sections III-A/B, VII-A",R2,
+T2-11,2. Theory & Algorithm,P1 Major,R3,Complexity,Expand the analytical computational and communication complexity derivation,The paper currently gives only a coarse operation expression and communication estimate.,"• Derive time and memory complexity per branch and for CSAG/adapter/head.
+• Separate forward, backward and synchronization costs.
+• Relate formulas to measured values.",Analytical estimates and measured profiling results are reported together.,Complexity subsection + table,T2-02; T2-03,Aditya,Week 2,Not Started,0%,No,No,Section III-F,R3,
+T2-12,2. Theory & Algorithm,P1 Major,R2; R3,Verification,"Add unit and integration tests for TCP, SAP, receptive field and parameter counts",Several reviewer concerns are symptoms of undocumented implementation behavior.,"• Test counter transitions and synchronization ordering.
+• Test SAP placement and N>3 replication.
+• Test receptive fields and exact parameter counts.",Automated tests pass on the tagged revision commit and are included in the repository.,Test suite report,G0-09; T2-02:T2-06,Aditya,Week 2,Not Started,0%,No,No,Code / supplement,R2/R3,
+V3-04,3. Data & Evaluation Integrity,P1 Major,R3,Preprocessing,Document the complete preprocessing pipeline,"Reproducibility requires exact resampling, normalization, feature extraction and window construction details.","• Specify software versions and parameters.
+• Fit normalization only on training data.
+• Publish scripts or pseudocode for every transformation.",A new researcher can reproduce the model inputs from the raw/public data.,Preprocessing appendix + scripts,G0-09,Aditya,Week 2,Not Started,0%,No,No,Section IV-A; Supplement,R3,
+V3-06,3. Data & Evaluation Integrity,P1 Major,R3,Window leakage,Audit overlapping windows and duplicate temporal content across splits,Highly overlapping windows can place nearly identical observations in training and test sets.,"• Measure overlap between windows across splits.
+• Split by subject/session before window generation where possible.
+• Document exclusion gaps if needed.",Train and test examples do not share overlapping raw intervals.,Window-overlap audit,V3-01; V3-02; V3-04,Aditya,Week 2,Not Started,0%,Yes,No,Section IV-A,R3,
+V3-07,3. Data & Evaluation Integrity,P1 Major,R3,Class balance,Report class distributions and imbalance handling,Macro F1 alone does not show whether rare classes or thresholds drive the gains.,"• Report train/validation/test counts by class and subject.
+• Document weighting or sampling.
+• Add per-class precision, recall and F1.",Class balance and per-class results are fully reported.,Dataset statistics table + per-class metrics,V3-01; V3-02,Aditya,Week 2,Not Started,0%,No,No,Section IV; Results,R3,
+V3-08,3. Data & Evaluation Integrity,P1 Major,R3; R6,Determinism,"Specify seeds, determinism settings and repeated-run protocol",Reported variance is meaningful only when the source of randomness and run protocol are controlled.,"• List all seeds.
+• Document deterministic/non-deterministic CUDA settings.
+• Use the same seed schedule across baselines.","Every experiment has a documented, repeatable seed and environment policy.",Run protocol table,G0-09,Aditya,Week 2,Not Started,0%,No,No,Section IV-D,R3/R6,
+V3-09,3. Data & Evaluation Integrity,P1 Major,R2; R3,Sample accounting,"Reconcile subjects, sessions, windows and labelled-sample counts",Scalability motivation can be distorted if sample counts and sequence lengths are not clearly separated.,"• Report subjects, sessions, windows, sequence-length distribution and total timesteps.
+• Clarify whether samples are independent.
+• Use these values in the compute-motivation discussion.",Dataset-scale claims use precise and consistent units.,Dataset accounting table,V3-01; V3-02,Aditya,Week 2,Not Started,0%,No,No,Section IV-A; Introduction,R2/R3,
+E4-04,4. Experiments & Benchmarking,P1 Major,R2; R3,Scale validation,Add synthetic or replicated longitudinal workloads at larger scale,Public cognitive datasets are too small to test the systems motivation directly.,"• Create transparent synthetic workloads varying participants, sequence length and feature count.
+• Preserve the model's compute and communication characteristics.
+• Clearly separate synthetic scalability from predictive-validity claims.",Scaling behavior is evaluated across a workload range that stresses the system.,Synthetic workload generator + scaling curves,D1-02,Aditya,Week 2,Not Started,0%,No,No,Section IV/V; Supplement,R2/R3,
+E4-05,4. Experiments & Benchmarking,P1 Major,R2; R6,Network robustness,"Benchmark bandwidth, RTT, jitter, packet loss and straggler sensitivity",Bandwidth alone does not model real distributed execution.,"• Test a matrix of RTT and bandwidth values.
+• Inject controlled stragglers and jitter.
+• Report mean, variance and tail latency.",The paper quantifies where the approach helps and where it fails.,Robustness curves + bottleneck analysis,E4-03 or D1-01 Option B,Aditya,Week 2–3,Not Started,0%,No,No,Section V-B; Limitations,R2/R6,
+E4-06,4. Experiments & Benchmarking,P1 Major,R6,Timing statistics,Repeat throughput and efficiency measurements,Single-run wall-clock values are insufficient for systems claims.,"• Run warm-up iterations.
+• Repeat each configuration at least 5–10 times.
+• Report mean, standard deviation and 95% confidence intervals.","All scaling metrics include run count, variance and confidence intervals.",Repeated timing logs + CI table,E4-03/E4-05,Aditya,Week 2–3,Not Started,0%,No,No,Section IV-E; V-B,R6,
+E4-07,4. Experiments & Benchmarking,P1 Major,R3,Profiling,"Report parameters, FLOPs, peak GPU memory and inference latency",Reviewers need a complete cost-versus-quality comparison.,"• Profile D-MSTCN and all major baselines with the same input shapes.
+• Report batch and single-sample latency.
+• Separate training and inference costs.",A complete computational-profile table is included and reproducible.,Profiling table + scripts,T2-11; E4-01,Aditya,Week 2,Not Started,0%,No,No,Complexity; Results,R3,
+E4-08,4. Experiments & Benchmarking,P1 Major,R3,Ablation,Ablate alternative dilation schedules,Fixed schedules are central to the multi-scale claim but are insufficiently tested.,"• Test at least two alternative schedules.
+• Include a learned or data-adaptive schedule if feasible.
+• Report accuracy, compute and receptive-field duration.",The chosen schedules are empirically justified rather than assumed.,Expanded ablation table,T2-02; T2-08,Aditya,Week 2,Not Started,0%,No,No,Section VI,R3,
+E4-09,4. Experiments & Benchmarking,P1 Major,R3,Ablation,Ablate number of branches and kernel sizes,The contribution of three branches and K=3 should be demonstrated.,"• Evaluate 1-, 2-, 3- and 4-branch variants where practical.
+• Compare K=3 and K=5.
+• Report parameter-matched variants when possible.",Architecture choices are supported by controlled ablations.,Expanded ablation table,E4-08,Aditya,Week 2,Not Started,0%,No,No,Section VI,R3,
+E4-10,4. Experiments & Benchmarking,P1 Major,R3,Fusion ablation,Compare CSAG with alternative fusion mechanisms,Fixed averaging alone is not a broad comparison of attention-based fusion choices.,"• Compare concatenation+MLP, scalar gating and one alternative attention mechanism.
+• Match parameter counts where feasible.
+• Analyze stability and interpretability.",CSAG's benefit is established against credible alternatives.,Fusion comparison table,E4-01,Aditya,Week 2,Not Started,0%,No,No,Section VI,R3,
+E4-11,4. Experiments & Benchmarking,P1 Major,R3,Personalization,Compare FiLM with lightweight personalization alternatives,"The choice of FiLM needs an accuracy, parameter and adaptation-cost justification.","• Add a plain adapter baseline.
+• Add LoRA where architecturally meaningful.
+• Add a simple fine-tuning or meta-learning baseline if resources permit.","FiLM is justified by a measured tradeoff, not convenience alone.",Personalization comparison table,V3-03; E4-01,Aditya,Week 2–3,Not Started,0%,No,No,Section VI; Discussion,R3,
+E4-14,4. Experiments & Benchmarking,P1 Major,R2; R3,Statistics,Re-run headline comparisons with sufficient seeds,The current five-seed design has low power and cannot support some stated significance claims.,"• Use the same seed list for D-MSTCN and key baselines.
+• Prioritize D-MSTCN N=1, D-MSTCN scaled, iTransformer, Temporal-CNN and DDP-LSTM.
+• Report all runs, including failures.",Headline results have adequate repeated runs and transparent exclusions.,Run logs + revised Table 2,E4-13; E4-01,Aditya,Week 2–3,Not Started,0%,No,No,Table 2,R2/R3,
+E4-15,4. Experiments & Benchmarking,P1 Major,R3; R6,Statistics,Add 95% confidence intervals and effect sizes,Mean ± standard deviation does not directly communicate uncertainty or practical magnitude.,"• Compute bootstrap or appropriate parametric confidence intervals.
+• Report effect size for key pairwise comparisons.
+• Avoid over-interpreting small F1 differences.",Main quality and systems results include uncertainty and practical effect magnitude.,Updated tables and statistical appendix,E4-13; E4-14,Aditya,Week 3,Not Started,0%,No,No,Results; Supplement,R3/R6,
+E4-16,4. Experiments & Benchmarking,P1 Major,R1; R2,Sensitivity,Expand δ_max and T_sync sensitivity analysis,The protocol's behavior depends on two interacting synchronization controls.,"• Run a grid over δ_max and T_sync.
+• Report F1, throughput, communication and synchronization frequency.
+• Relate the empirical tradeoff to any retained theory.",Default settings are justified and interaction effects are visible.,Sensitivity heatmap/table,T2-04; T2-05,Aditya,Week 2,Not Started,0%,No,No,Section VI-B,R1/R2,
+E4-17,4. Experiments & Benchmarking,P1 Major,R2; R6,Communication measurement,Validate communication-volume calculations with instrumentation,Analytical byte counts can miss protocol overhead and repeated synchronization.,"• Instrument NCCL/process communication.
+• Compare measured and analytical bytes.
+• Report per-step and per-epoch totals.",Communication claims are backed by measured values and an explained calculation.,Instrumentation logs + revised Figure 5,T2-05; E4-03,Aditya,Week 2–3,Not Started,0%,No,No,Section III-F; Figure 5,R2/R6,
+E4-18,4. Experiments & Benchmarking,P1 Major,R3,Open science,Prepare an anonymized code and reproducibility package before resubmission,A concrete artifact strengthens the response to reproducibility concerns.,"• Include configs, environment, preprocessing and plotting scripts.
+• Provide a minimal reproduction command.
+• Respect dataset redistribution restrictions.",A reviewer-accessible repository or archive reproduces at least the main results.,Repository/archive link,G0-09; E4-01:E4-17,Aditya,Week 3,Not Started,0%,No,No,Data/code availability,R3,
+W5-02,5. Writing & Positioning,P1 Major,R3,Contributions,"Rewrite the contribution list as falsifiable, evidence-backed statements","A contribution should describe what is new and what was demonstrated, not promise a broad capability.","• Separate architecture, protocol, partitioning, personalization and evaluation.
+• Remove items that are not independently novel.
+• Attach each contribution to a section and result.",Each contribution has a precise implementation and evaluation trail.,Revised contributions subsection,D1-05; E4 results,Aditya + Guide,Week 3,Not Started,0%,No,No,Section I-C,R3,
+W5-04,5. Writing & Positioning,P1 Major,R3,Related work,Add a closest-method comparison table,The novelty is easier to assess when neighboring approaches are compared feature by feature.,"• Include multi-scale temporal models, distributed/pipeline methods, asynchronous training and personalization.
+• Use only verified references.
+• Compare objective, temporal scales, distribution mode, consistency mechanism and personalization.",The reader can see the precise gap addressed by the revised method.,Related-work comparison table,G0-01; D1-05,Aditya,Week 3,Not Started,0%,No,No,Section II,R3,
+W5-05,5. Writing & Positioning,P1 Major,R3,Claims,Remove or substantiate all 'first' and 'guarantee' language,Unsupported superlatives invite a second rejection under binary review.,"• Search for first, novel, guarantee, scalable, near-linear, causal and population-scale.
+• Retain only with direct evidence.
+• Use measured scope and limitations.",Claim audit shows zero unsupported superlatives.,Completed claim audit,D1-07; W5-01:W5-04,Aditya,Week 3,Not Started,0%,No,No,Entire manuscript,R3,
+W5-06,5. Writing & Positioning,P1 Major,R2; R3; R6,Limitations,Expand the limitations section with concrete boundaries,The paper acknowledges limitations but still makes broader claims elsewhere.,"• State hardware limits, dataset scale, cold start, fixed schedules and aggregator bottleneck.
+• Add the limitations of simulated networking if retained.
+• Explain what the results do not establish.","Limitations are specific, consistent with the claims and referenced in the conclusion.",Revised Section VIII,D1-01; D1-02; E4 results,Aditya + Guide,Week 3,Not Started,0%,No,No,Section VIII,R2/R3/R6,
+W5-07,5. Writing & Positioning,P1 Major,R3,Deployment,Add a practical deployment discussion,"Reviewers asked for latency, communication, unseen subjects and operational constraints.","• Describe training and inference topology separately.
+• Discuss new-subject onboarding, failure handling and privacy boundaries.
+• Tie deployment statements to measured latency and communication.",Deployment guidance is concrete and does not exceed the evaluated setting.,Deployment subsection,E4-07; E4-12; E4-17,Aditya,Week 3,Not Started,0%,No,No,Discussion,R3,
+W5-09,5. Writing & Positioning,P1 Major,R2; R3; R6,Conclusion,Rewrite the conclusion to match the final scope,The conclusion repeats the strongest distributed and theoretical claims.,"• Report only revised numbers.
+• Separate demonstrated findings from future work.
+• Remove claims withdrawn during structural decisions.",Conclusion contains no claim absent from the revised evidence.,Revised Section IX,W5-01:W5-08,Aditya + Guide,Week 3,Not Started,0%,No,No,Section IX,R2/R3/R6,
+W5-10,5. Writing & Positioning,P1 Major,R1,Response strategy,Prepare a respectful rebuttal to the 58.7 reading error,The reviewer concern should be corrected without sounding adversarial.,"• Thank the reviewer for prompting verification.
+• State that both text and Table 2 show 68.7 ± 2.3.
+• Mention the new provenance audit and improved table resolution.","Response includes evidence, action and page/line references.",Response paragraph,G0-07,Aditya,Week 3,Not Started,0%,No,No,Response letter,R1,
+W5-13,5. Writing & Positioning,P1 Major,Editor,Traceability,"Add page, section and line references to every reviewer response",A response is persuasive only when the editor can locate the exact change quickly.,"• Use one concern-response-action block per comment.
+• Quote the revised wording where useful.
+• Record page and line numbers after final typesetting.",Every response item points to an exact location and deliverable.,Completed response matrix,W5-01:W5-12; F6 complete,Aditya,Week 3,Not Started,0%,No,No,Response letter,Editor,
+F6-03,6. Presentation & Formatting,P1 Major,R1,Figures,Re-export architectural diagrams and algorithms as vector graphics,Blurred equations and labels impair technical review.,"• Use PDF/SVG/vector output where supported.
+• Ensure fonts are embedded and notation matches the text.
+• Check at single-column and double-column print size.",Figures 1–3 and Algorithm 1 are crisp and legible at final size.,Vector assets + final PDF,T2 complete,Aditya,Week 3,Not Started,0%,No,No,Figures 1–3; Algorithm 1,R1,
+S7-08,7. Response & Submission,P1 Major,Editor,Similarity,Run a similarity check on the final manuscript,A large rewrite can still contain accidental overlap from source wording or prior versions.,"• Review flagged passages manually.
+• Fix inappropriate verbatim overlap.
+• Do not distort standard technical phrases merely to lower a score.",No unresolved inappropriate textual overlap remains.,Similarity report + resolution notes,S7-04,Aditya,Week 4,Not Started,0%,No,No,Clean manuscript,Editor,
+S7-09,7. Response & Submission,P1 Major,Editor,Metadata,Verify portal metadata against the manuscript,"Title, abstract, authors, ORCID, keywords and affiliations must be identical across files and portal.","• Compare every field.
+• Verify corresponding-author email and ORCID.
+• Confirm no accidental author-order change.",Portal and manuscript metadata match exactly.,Metadata checklist,S7-04; S7-07,Aditya,Week 4,Not Started,0%,No,No,Portal,Editor,
+S7-11,7. Response & Submission,P1 Major,Editor,Final portal review,Perform a two-person portal review before clicking submit,Wrong file categories or stale uploads can invalidate otherwise correct work.,"• Open every uploaded file from the portal preview.
+• Check file type/category and version.
+• Have the guide or coauthor verify before final submission.",Two people confirm the portal package is correct before submission.,Final portal sign-off,S7-10,Aditya + Guide,Week 4,Not Started,0%,Yes,No,Portal,Editor,
+V3-10,3. Data & Evaluation Integrity,P2 Supporting,Editor,Ethics / data use,"Confirm dataset permissions, ethics statements and clinical-claim boundaries",Cognitive and depression modeling require careful wording about screening versus diagnosis.,"• Verify data-use terms.
+• State that outputs are research classifications, not clinical diagnoses.
+• Update ethics and limitations language.",Data-use and clinical-boundary statements are accurate and complete.,Approved ethics/limitations text,,Aditya + Guide,Week 2,Not Started,0%,No,No,Section IV-A; Limitations,Editor,
+W5-08,5. Writing & Positioning,P2 Supporting,R3,Interpretability,Qualify the CSAG attention interpretation,Attention weights can be descriptive without proving causal importance.,"• Describe them as post-hoc model behavior.
+• Avoid equating attention with explanation or mechanism.
+• Cross-reference ablation evidence.",Interpretability wording is cautious and evidence-aligned.,Revised attention-analysis text,E4-10,Aditya,Week 3,Not Started,0%,No,No,Section VII-B,R3,
+W5-11,5. Writing & Positioning,P2 Supporting,R1,Response strategy,Handle the alleged Algorithm 1 'date' typo as a rendering clarification,The submitted PDF shows Δ_b += 1; the response should still acknowledge readability issues.,"• Verify the source and compiled PDF.
+• Improve vector rendering.
+• State politely that the operator was present and has been made clearer.",Response resolves the concern and the revised algorithm is unmistakably legible.,Response paragraph + revised algorithm,T2-04; F6-03,Aditya,Week 3,Not Started,0%,No,No,Algorithm 1; Response letter,R1,
+W5-12,5. Writing & Positioning,P2 Supporting,R5,Citation decision,Evaluate Reviewer 5's suggested citations individually,Suggested references should be added only if they genuinely support the revised paper.,"• Read each paper.
+• Map it to a specific manuscript claim or decline it politely.
+• Never add citations solely to appease the reviewer.",Each suggested reference has a documented include/decline decision.,Citation decision notes + response paragraphs,G0-05,Aditya + Guide,Week 3,Not Started,0%,No,Yes,Related Work; Response letter,R5,
+F6-01,6. Presentation & Formatting,P2 Supporting,R2,Template,"Remove the 'VOLUME 4, 2016' placeholder throughout",The placeholder signals insufficient final quality control.,"• Correct the IEEE Access template/footer.
+• Inspect every page in the final PDF.",No placeholder remains in source or PDF.,Clean PDF check,W5 complete,Aditya,Week 3,Not Started,0%,No,No,All pages,R2,
+F6-02,6. Presentation & Formatting,P2 Supporting,R4,Tables,Fix Table 2 and Table 5 headers and labels,Garbled labels reduce trust and caused at least one reviewer misreading.,"• Use 'Comm. (MB/epoch)' or an equally clear header.
+• Use explicit ablation labels such as 'w/o MSB'.
+• Increase table text size and spacing.",All tables are readable at 100% zoom and in print.,Revised tables,G0-07,Aditya,Week 3,Not Started,0%,No,No,Tables 2 and 5,R4,
+F6-04,6. Presentation & Formatting,P2 Supporting,R4,Visual QA,Standardize table and figure notation,Inconsistent abbreviations and symbols make the paper harder to audit.,"• Define every abbreviation in captions.
+• Use the same node/worker/GPU terminology.
+• Standardize decimal places and uncertainty notation.","Captions and tables use consistent terms, symbols and precision.",Visual style checklist,T2-07; W5 complete,Aditya,Week 3,Not Started,0%,No,No,All figures/tables,R4,
+F6-06,6. Presentation & Formatting,P2 Supporting,R1; R3,Language,"Run a full notation, grammar and cross-reference audit","The revision will introduce many new equations, tables and sections.","• Check equation, figure, table and section references.
+• Check symbol definitions and tense.
+• Use a final human review after any language tool.","No broken cross-reference, undefined symbol or visible grammar issue remains.",Final editorial checklist,W5 complete,Aditya + Guide,Week 3,Not Started,0%,No,No,Entire manuscript,R1/R3,
+F6-07,6. Presentation & Formatting,P2 Supporting,Editor,PDF QA,"Inspect the final PDF at 100%, 150% and print view",Many reviewer concerns were amplified by rendering quality.,"• Inspect every page.
+• Check clipping, font embedding, equations, legends and tables.
+• Verify the highlighted version has the same pagination as the clean version where possible.",A page-by-page PDF QA checklist is complete with zero unresolved issue.,Signed PDF QA checklist,F6-01:F6-06,Aditya,Week 3,Not Started,0%,No,No,Final PDF,Editor,
+F6-08,6. Presentation & Formatting,P2 Supporting,R1; R3,Supplement,Prepare a structured supplementary appendix,"A full proof, extended experiments and reproducibility details may not fit cleanly in the main article.","• Include proof or proposition details.
+• Include additional tables, hyperparameters and run protocols.
+• Cross-reference the supplement from the main text and response.","Supplement is complete, numbered and consistent with the main manuscript.",Supplementary PDF/source,T2-10; E4 complete,Aditya,Week 3,Not Started,0%,No,No,Supplement,R1/R3,
+F6-05,6. Presentation & Formatting,P3 Polish,R4,Biography,Complete the guide's author biography,The biography currently omits the Ph.D. field.,"• Confirm the exact degree field and institution.
+• Update the biography with the guide's approval.",Biography is complete and approved.,Approved biography text,,Guide,Week 3,Not Started,0%,No,No,Author biography,R4,
