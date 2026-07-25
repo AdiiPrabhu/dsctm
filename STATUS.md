@@ -10,25 +10,25 @@ Foundation: `codex/dsctm/` — see `DECISIONS.md` D-001
 
 | Gate | Title | Status | Evidence |
 |---|---|---|---|
-| **0** | Repository discovery and baseline freeze | ✅ **PASS** | `artifacts/gate0/` (4 required + 6 supporting files) |
-| 1 | Single-process correctness | ⬜ next | — |
-| 2 | Full-model DDP | ⬜ | — |
-| 3 | Distributed correctness tests | 🔒 blocked on hardware (B-001) for PASS; logic work can proceed | — |
-| 4 | PARAM/SLURM infrastructure | ⬜ (scripts writable now, unrunnable) | — |
-| 5 | Fresh PARAM scientific campaign | 🔒 B-001, B-002, B-006 | — |
-| 6 | Fresh ablation campaign | 🔒 B-001, B-002, B-006 | — |
-| 7 | DDP systems baseline | 🔒 B-001 | — |
-| 8 | Scale-Aware Partitioner | 🔒 B-001 for execution; implementable now | — |
-| 9 | Real TCP | 🔒 B-001 for execution; implementable now | — |
-| 10 | SAP/TCP systems experiments | 🔒 B-001 | — |
-| 11 | Theorem and formal claims | 🔒 depends on Gate 9 | — |
-| 12 | Final evidence generation | 🔒 depends on Gates 5–10 | — |
+| **0** | Repository discovery and baseline freeze | ✅ **PASS** | `artifacts/gate0/` |
+| **1** | Single-process correctness | ✅ **PASS** | `artifacts/gate1/` |
+| **2** | Full-model DDP | ✅ LOGIC-VERIFIED (CPU/gloo) | `artifacts/gate2/` — parity 1.49e-08 |
+| **3** | Distributed correctness tests | ✅ LOGIC-VERIFIED · 🔒 hardware half open | `artifacts/gate3/` |
+| **4** | PARAM/SLURM infrastructure | ✅ BUILT · 🔒 not executed | `artifacts/gate4/`, `scripts/param/` |
+| **5** | Fresh PARAM scientific campaign | ✅ PLANNED (294 tasks) · 🔒 not executed | `artifacts/gate5/` |
+| **6** | Fresh ablation campaign | ✅ PLANNED (78 tasks) · 🔒 not executed | `artifacts/gate6/` |
+| **7** | DDP systems baseline | ✅ IMPLEMENTED · 🔒 not executed | `artifacts/gate7/` |
+| **8** | Scale-Aware Partitioner | ✅ EQUIVALENCE-VERIFIED (gloo ws4) · 🔒 no NCCL | `artifacts/gate8/` |
+| **9** | Real TCP | ✅ IMPLEMENTED + VERIFIED · 🔒 no NCCL | `artifacts/gate9/` |
+| **10** | SAP/TCP systems experiments | ✅ IMPLEMENTED · 🔒 needs 2 nodes | `artifacts/gate10/` |
+| **11** | Theorem and formal claims | ✅ **RESOLVED — Outcome B** | `artifacts/gate11/` |
+| **12** | Final evidence generation | ✅ IMPLEMENTED · admits nothing (correct) | `artifacts/gate12/`, `artifacts/final/` |
+| — | PARAM monitoring | ✅ BUILT | `scripts/param/monitor.py`, `artifacts/monitoring/` |
 
-**PARAM-ready: NO.** None of the seven required conditions is met (DDP parity, two-V100
-execution, no duplicate evaluation samples, checkpoint resume, rank-0 write enforcement, tested
-SLURM launchers, auditor-admitted PARAM output).
+**Test suite: 316 passed, 0 failures, 0 errors** (Gate 0 baseline was 31).
 
----
+**PARAM-ready: NO.** Every gate from 3 onward requires execution on PARAM. The gating job is
+`sbatch scripts/param/2gpu_ddp_smoke.sbatch` — see `RUNBOOK.md`.
 
 ## Gate 0 — PASS
 
