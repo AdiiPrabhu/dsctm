@@ -12,6 +12,10 @@ import torch.nn as nn
 
 from .blocks import CSAG, Branch, FiLMAdapter, Head
 
+# "attention" is retained as the historical default name; "linear_csag" is its explicit
+# alias. Both build the manuscript-faithful gate. See DECISIONS.md D-006.
+CSAG_MODES = ("attention", "linear_csag", "nonlinear_csag", "mean", "static")
+
 
 @dataclass
 class DMSTCNConfig:
@@ -31,7 +35,11 @@ class DMSTCNConfig:
     enabled_branches: tuple = ("ssb", "msb", "lsb")  # for branch ablations (EXP-5.1)
     use_film: bool = True       # for personalization ablation (EXP-5.5)
     film_mode: str = "subject"  # subject | global | global_matched
-    csag_mode: str = "attention"  # attention | mean | static
+    # attention == linear_csag == manuscript-faithful Eqs. (3)-(4) (DEFAULT, unchanged).
+    # linear_csag is an explicit alias for "attention" so configs can name the variant.
+    # nonlinear_csag is an experimental DEVIATION (DECISIONS.md D-006), never a default.
+    csag_mode: str = "attention"  # attention | linear_csag | nonlinear_csag | mean | static
+    csag_nonlinearity: str = "relu"  # only consulted when csag_mode == "nonlinear_csag"
 
 
 class DMSTCN(nn.Module):
@@ -44,10 +52,12 @@ class DMSTCN(nn.Module):
         for name in cfg.enabled_branches:
             self._branches[name] = Branch(cfg.D, cfg.K, schedules[name], cfg.dropout)
         n_active = len(cfg.enabled_branches)
-        if cfg.csag_mode not in ("attention", "mean", "static"):
-            raise ValueError(f"unknown csag_mode {cfg.csag_mode!r}")
-        self.csag = (CSAG(cfg.D, n_active, cfg.temperature)
-                     if n_active > 1 and cfg.csag_mode == "attention" else None)
+        if cfg.csag_mode not in CSAG_MODES:
+            raise ValueError(f"unknown csag_mode {cfg.csag_mode!r}; expected one of {sorted(CSAG_MODES)}")
+        attention_like = cfg.csag_mode in ("attention", "linear_csag", "nonlinear_csag")
+        nonlinearity = cfg.csag_nonlinearity if cfg.csag_mode == "nonlinear_csag" else None
+        self.csag = (CSAG(cfg.D, n_active, cfg.temperature, nonlinearity)
+                     if n_active > 1 and attention_like else None)
         self.static_alpha = (nn.Parameter(torch.zeros(n_active))
                              if n_active > 1 and cfg.csag_mode == "static" else None)
         if cfg.film_mode not in ("subject", "global", "global_matched"):

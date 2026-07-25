@@ -205,12 +205,13 @@ def exp_0_4_causality(device="cpu"):
         r["batch_invariance_max_diff"] = float((full - alone).abs().max())
     r["batch_invariant"] = r["batch_invariance_max_diff"] < 1e-4
 
-    # (3) determinism
-    set_seed(0, "scientific")
-    a = model(X, s)
-    set_seed(0, "scientific")
-    b = model(X, s)
-    r["determinism_max_diff"] = float((a - b).abs().max())
+    # (3) determinism (G1-W1: probe under no_grad so the scalar cast does not warn)
+    with torch.no_grad():
+        set_seed(0, "scientific")
+        a = model(X, s)
+        set_seed(0, "scientific")
+        b = model(X, s)
+        r["determinism_max_diff"] = float((a - b).abs().max())
     r["deterministic"] = r["determinism_max_diff"] < 1e-6
 
     # (4) variable sequence length

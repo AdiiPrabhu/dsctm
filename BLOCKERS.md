@@ -7,18 +7,46 @@ Last updated: 2026-07-26 (Gate 0)
 
 ---
 
-## B-001 · No PARAM Utkarsh access from the working environment — **CRITICAL**
+## B-001 · PARAM execution is remote — **DEPLOYMENT MODEL, not a blocker**
 
-**Blocks:** Gate 3 (hardware parity), Gate 4 (SLURM execution), Gate 5 (scientific campaign),
-Gate 6 (ablations), Gate 7 (scaling), Gate 8 (SAP execution), Gate 9 (TCP execution),
-Gate 10 (systems sweeps), Gate 12 (final evidence).
+**Status changed 2026-07-26** after the author confirmed PARAM Utkarsh access. This is no longer
+an access blocker; it is a two-environment workflow.
 
-**Detail.** The working environment is macOS 26.5.2 / arm64 / Python 3.9.6 / PyTorch 2.8.0 CPU.
-`torch.cuda.is_available()` is `False`, device count 0, **NCCL unavailable**. There is no SLURM,
-no V100, no CUDA toolchain. Evidence: `artifacts/gate0/environment.json`.
+```
+  THIS MACHINE (macOS/CPU)                 GITHUB                PARAM UTKARSH (SLURM, 2×V100)
+  ────────────────────────                 ──────                ──────────────────────────────
+  implement + CPU/gloo verify   ──push──►  param-main  ──pull──► env bootstrap, dataset staging,
+  SLURM scripts, env bootstrap                                   sbatch, authoritative runs
+                                                       ◄─push──  results/param_utkarsh_authoritative/
+```
 
-**Needed to unblock:** shell access to a PARAM Utkarsh login node, a valid account/project
-allocation, and confirmed queue/partition names.
+**Consequences for how the code must be written.** Because the author executes on PARAM and the
+implementer cannot, every script must be **self-bootstrapping and self-checking**:
+
+1. `scripts/param/env.sh` creates the venv and installs pinned deps; it must not assume a
+   pre-existing environment.
+2. `scripts/param/preflight.py` must verify — and refuse to proceed on failure — CUDA
+   availability, `device_count`, compute capability **sm_70**, NCCL availability, PyTorch build,
+   Python version, disk space, and dataset hashes.
+3. Every failure mode must produce an actionable message, not a traceback, because the
+   implementer will not be at the terminal.
+4. Nothing may silently degrade. A missing `thop` currently turns FLOPs into the string
+   `"unavailable"`; on PARAM that must be a hard error or an explicit recorded skip.
+
+**Local verification remains bounded.** CPU/gloo passes are recorded as
+`LOGIC-VERIFIED (CPU/gloo)` and never satisfy a hardware gate. Gates 3 and 7 must be re-run on
+PARAM before any gate is marked PASS.
+
+**Still required from the author** (needed to write Gate 4 correctly):
+
+| Item | Why |
+|---|---|
+| SLURM partition/queue names and account/project code | `#SBATCH --partition` / `--account` cannot be guessed |
+| Module system commands (e.g. `module load python/3.10 cuda/12.4`) | Determines `env.sh` |
+| Whether login **and compute** nodes have internet egress | Many HPC centres block egress from compute nodes; if so, dataset pulls and `pip install` must happen on the login node in a staging step |
+| Scratch / work filesystem path and quota | Datasets are ~90 GB+ for DAIC-WOZ audio alone |
+| Max wall-clock per job and max concurrent array tasks | Sizes the SLURM arrays |
+| Python version available | B-004 depends on it |
 
 **What proceeds meanwhile.** Everything that does not require a GPU:
 
@@ -38,9 +66,20 @@ from 3 onward may be marked PASS until re-run on PARAM.
 
 ---
 
-## B-002 · No datasets and no cached features — **CRITICAL**
+## B-002 · Datasets staged on PARAM, not here — **AUTHOR-OWNED, needs links recorded**
 
-**Blocks:** Gate 5, Gate 6, and the data-dependent half of Gate 1.
+**Status changed 2026-07-26.** The author holds the dataset links and will pull them directly on
+PARAM. This is no longer an acquisition blocker; what remains is that the **exact sources must be
+recorded in-repo** so the staging step is reproducible and hashable rather than manual.
+
+**Needed:** the resolvable URLs (or the exact `wget`/`rsync` commands) for StudentLife, DAIC-WOZ
+and E-DAIC, so `scripts/param/stage_datasets.sh` can be written with them pinned, and so
+`dataset_hashes.json` in every run directory means something. Until those are in the repo,
+Gate 5 cannot be reproduced by anyone but the author.
+
+**Blocks (reduced):** Gate 5 and Gate 6 execution; the data-dependent half of Gate 1 is now
+partly satisfied — see Gate 1 finding F1-1, which verified the E-DAIC split files that *are*
+present in `reviewer-package/data/`.
 
 **Detail.** `.gitignore` excludes `dataset/`. No raw data, no `.npz` caches, no extracted
 eGeMAPS features exist in the repository. `opensmile` is not installed.
@@ -49,7 +88,7 @@ Present and usable: DAIC-WOZ official split and PHQ-8 label CSVs under `reviewer
 (`train_split.csv`, `dev_split.csv`, `test_split.csv`, `Detailed_PHQ8_Labels.csv`,
 `metadata_mapped.csv`, `detailed_lables.csv`, `PROVENANCE.md`).
 
-**Needed to unblock:**
+**Still to stage on PARAM:**
 
 | Dataset | Needed | Note |
 |---|---|---|

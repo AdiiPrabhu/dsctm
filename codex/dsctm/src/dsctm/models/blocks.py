@@ -80,20 +80,50 @@ class CSAG(nn.Module):
         A = W_α·Z + b_α                (4)   3D -> n_branches
         α = softmax(A / √D)            (5)   per-timestep weights over branches
         H = Σ_b α_{:,b} ⊙ H_b          (6)
+
+    ``nonlinearity`` selects the variant (Gate 1, DECISIONS.md D-006):
+
+      None      -- MANUSCRIPT-FAITHFUL ``linear_csag``. Eqs. (3) and (4) exactly as
+                   printed: two affine maps with nothing between them. Note that
+                   W_α∘W_z therefore collapses algebraically to a single affine map
+                   R^{nD} -> R^{n}; this is a property of the published equations,
+                   not an implementation shortcut. This is the DEFAULT and its
+                   numerics are unchanged from the pre-Gate-1 implementation.
+      "relu" /  -- experimental ``nonlinear_csag``: a declared activation is applied
+      "gelu" /     to Z before W_α, making the gate a genuine two-layer MLP. This is
+      "tanh"       a DEVIATION from the manuscript and is only ever selected by an
+                   explicit ``csag_mode="nonlinear_csag"``.
     """
 
-    def __init__(self, D: int, n_branches: int = 3, temperature: float | None = None):
+    _ACTIVATIONS = {"relu": F.relu, "gelu": F.gelu, "tanh": torch.tanh}
+
+    def __init__(self, D: int, n_branches: int = 3, temperature: float | None = None,
+                 nonlinearity: str | None = None):
         super().__init__()
         self.D = D
         self.n = n_branches
         self.W_z = nn.Linear(n_branches * D, n_branches * D)
         self.W_a = nn.Linear(n_branches * D, n_branches)
         self.temperature = float(temperature) if temperature else math.sqrt(D)
+        if nonlinearity is not None and nonlinearity not in self._ACTIVATIONS:
+            raise ValueError(
+                f"unknown CSAG nonlinearity {nonlinearity!r}; "
+                f"expected None or one of {sorted(self._ACTIVATIONS)}"
+            )
+        self.nonlinearity = nonlinearity
+
+    @property
+    def is_manuscript_faithful(self) -> bool:
+        """True iff this gate implements Eqs. (3)-(4) exactly as published."""
+        return self.nonlinearity is None
 
     def forward(self, branch_outs):  # list of n × (B, T, D)
         H = torch.stack(branch_outs, dim=2)          # (B, T, n, D)
         cat = torch.cat(branch_outs, dim=-1)         # (B, T, nD)
-        A = self.W_a(self.W_z(cat))                  # (B, T, n)
+        Z = self.W_z(cat)                            # (B, T, nD)   Eq. 3
+        if self.nonlinearity is not None:            # nonlinear_csag variant only
+            Z = self._ACTIVATIONS[self.nonlinearity](Z)
+        A = self.W_a(Z)                              # (B, T, n)    Eq. 4
         alpha = torch.softmax(A / self.temperature, dim=-1)  # (B, T, n)
         out = (alpha.unsqueeze(-1) * H).sum(dim=2)   # (B, T, D)
         return out, alpha
