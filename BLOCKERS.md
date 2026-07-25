@@ -175,3 +175,91 @@ PARAM campaign under-delivers. Recorded so the risk is explicit.
 **Optional recovery:** if the original RTX 4060 Ti machine still holds
 `artifacts/resubmission/`, archiving it would restore the audit trail behind the ledgers. Worth
 attempting before that machine is wiped.
+
+---
+
+## B-008 · PARAM V100s are **16 GB**, not 32 GB — task brief assumption corrected
+
+**Source:** `PARAM_Utkarsh_User_Manual-v3.0-1.pdf` p.10 — *"2*nVidia V100 per node,
+GPU Memory = 16 GB HBM2 per nVidia V100."*
+
+The engagement brief specifies "2x NVIDIA V100 SXM2 32GB GPUs per node". The cluster has
+**V100 SXM2 16 GB**. Half the assumed memory.
+
+**Why it matters now.** DAIC-WOZ is the heavy case: T = 2000, F = 88, D = 128, three
+branches of four residual blocks, activations retained for backward. Activation memory
+scales as `batch x T x D x depth`. At 16 GB the workable per-rank batch is materially
+smaller than at 32 GB, and `DAIC_CFG` currently sets `batch_size: 8` for a single device.
+
+**Action:** a memory-probe job is now a Gate 3 deliverable — sweep per-rank batch on one
+V100 until OOM, record the ceiling, and set the scientific global batch from the measured
+ceiling rather than from an assumption. Until that runs, no batch size in any config is
+trustworthy for PARAM.
+
+---
+
+## B-009 · The cluster has 20 V100s total — the 16-GPU scaling target is not schedulable
+
+**Source:** manual p.10 — GPU Compute Nodes: **10**, each with 2 V100 → **20 V100s in the
+entire machine**, shared by every user. (The architecture diagram on p.11 says 30 GPU
+nodes and the Access Guide spec table says 10; CDAC's own documents disagree. The
+preflight script queries `sinfo` and records the truth rather than trusting either.)
+
+**Consequence for the Gate 7 scaling matrix:**
+
+| Config | Nodes x GPUs | Share of cluster GPUs | Realistic? |
+|---|---|---:|---|
+| Single GPU | 1 x 1 | 5 % | ✅ |
+| One-node DDP | 1 x 2 | 10 % | ✅ |
+| Two-node DDP | 2 x 4 | 20 % | ✅ likely |
+| Four-node DDP | 4 x 8 | **40 %** | ⚠️ long queue |
+| Eight-node DDP | 8 x 16 | **80 %** | ❌ effectively unschedulable |
+
+**This is also the answer to tracker T2-07.** The manuscript reports N = 16 on an
+eight-GPU server and Table 3 reports efficiency at N = 16. Neither the original hardware
+nor PARAM can produce a genuine 16-rank measurement. The scaling section must be restated
+against what is actually schedulable — realistically 1, 2, 4 and possibly 8 GPUs — and the
+node/GPU/rank conflation must be removed rather than carried forward.
+
+**Action:** Gate 7 targets 1 / 2 / 4 GPUs as the committed matrix, with 8 as a
+best-effort stretch. 16 is dropped unless CDAC grants a reservation, and its absence is
+stated in the paper rather than papered over.
+
+---
+
+## B-010 · CentOS 7.9 (glibc 2.17) may not run modern PyTorch wheels
+
+**Source:** manual p.10 and p.14 — OS CentOS 7.9, SLURM 20.11.8.
+
+Recent PyTorch wheels are built against `manylinux_2_28` (glibc >= 2.28). CentOS 7.9 ships
+glibc 2.17. A `pip install torch==2.6.0+cu124` may therefore fail outright or, worse,
+install and then fail at import inside a queued job.
+
+Available modules per the Access Guide include `anaconda3/pytorch` and
+`python/conda-python/3.7`. Python 3.7 is too old for this codebase's dependency set
+(numpy 2.x needs >= 3.9; `StratifiedGroupKFold` needs a recent scikit-learn).
+
+**Action for `scripts/param/env.sh` (Gate 4):** do not assume. Try, in order —
+(1) a conda env with Python 3.10 + a pinned torch known to work on glibc 2.17,
+(2) the site `anaconda3/pytorch` module. Then have `preflight.py` **hard-fail** on: torch
+import, CUDA availability, `device_count`, compute capability sm_70, NCCL availability,
+and a live 2-rank NCCL all-reduce. Report versions rather than guessing them.
+
+---
+
+## B-011 · Login nodes enforce CPU/memory limits and kill offending processes
+
+**Source:** manual p.9 — *"there will be a limit on the CPU time that can be used on a
+login node by a user and there is a limit/user on the memory as well. If any of these are
+exceeded, the job will get terminated."* Access Guide p.7 — *"Please don't run any jobs in
+login nodes."*
+
+Dataset staging is ~86 GB for DAIC-WOZ audio alone, plus eGeMAPS extraction over 189
+sessions, which is CPU-heavy. Running that on a login node will be killed part-way and
+leave a half-extracted cache that looks complete.
+
+**Action:** `scripts/param/stage_datasets.sh` splits into two phases — download on the
+login node (I/O-bound, low CPU, resumable with `wget -c`), then feature extraction as a
+batch job on the **`cpu`** partition, not the GPU partition. Whether compute nodes have
+internet egress is still unconfirmed and determines whether the download itself must also
+be a login-node-only step.
