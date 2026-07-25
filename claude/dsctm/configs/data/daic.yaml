@@ -1,0 +1,16 @@
+# DAIC-WOZ data contract (master-prompt §7.2). Fill paths when authorized.
+dataset: daic_woz
+path: null                    # local authorized path — DO NOT commit raw data
+input_dim: 88                 # eGeMAPS (openSMILE); verify version from data
+n_classes: 2                  # PHQ-8 binarized at threshold 10 (verify)
+label_type: binary
+sampling_interval_s: 0.5
+protocol: official_split
+official_splits:              # official participant split files (107/35/47) — provide paths
+  train: null
+  dev: null
+  test: null
+test_eval_right: unknown      # GAP-6: if unavailable, report dev-only and mark test blocked
+notes: >
+  Use official 107/35/47 split. Select config/threshold/stopping on DEV only.
+  Never merge dev+test into an undocumented 107/82 evaluation.

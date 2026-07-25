@@ -1,0 +1,40 @@
+# Default training/eval configuration (manuscript Table 1 + §V).
+# Two execution modes: scientific (deterministic) | systems (throughput).
+mode: scientific
+seed: 0
+seeds: [0, 1, 2, 3, 4]        # 5 seeds = paired stability repetitions, NOT the unit of inference
+
+model:
+  name: dmstcn
+  D: 128
+  K: 3
+  d_s: 8
+  film_hidden: 32             # NOT SPECIFIED in paper; documented default
+  head_hidden: 128            # NOT SPECIFIED in paper; documented default
+  dropout: 0.0
+  temperature: null           # default sqrt(D)
+  ssb: [1, 2, 4, 8]
+  msb: [8, 16, 32, 64]
+  lsb: [32, 64, 128, 256]
+
+train:
+  optimizer: adam
+  betas: [0.9, 0.999]
+  lr: 3.0e-4
+  lr_schedule: cosine
+  lr_min: 1.0e-6
+  weight_decay: 1.0e-4
+  batch_size: 32
+  max_epochs: 100
+  early_stop_patience: 15
+  init: xavier_uniform
+
+tcp:
+  delta_max: 10
+  t_sync: 50
+
+eval:
+  primary_metric: macro_f1
+  metrics: [macro_f1, accuracy, auc_roc]
+  ci: 0.95
+  bootstrap: 10000

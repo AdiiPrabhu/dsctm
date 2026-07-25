@@ -1,0 +1,42 @@
+# ---- Protected data & credentials: NEVER commit (master-prompt §2) ----
+# Anchored to repo root so configs/data/ (contracts, no raw data) stays tracked.
+/data/
+/datasets/
+*.wav
+*.csv.gz
+*.parquet
+**/raw/
+**/features/
+*subject_ids*
+*participant*
+.env
+*.key
+*.pem
+credentials*.json
+
+# ---- Environments ----
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ---- Large / generated artifacts (reproducible from scripts; keep repo to source) ----
+artifacts/
+artifacts/resubmission/runs/
+artifacts/**/checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+runs/
+lightning_logs/
+tensorboard/
+wandb/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
