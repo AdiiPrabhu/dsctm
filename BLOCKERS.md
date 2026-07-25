@@ -263,3 +263,30 @@ login node (I/O-bound, low CPU, resumable with `wget -c`), then feature extracti
 batch job on the **`cpu`** partition, not the GPU partition. Whether compute nodes have
 internet egress is still unconfirmed and determines whether the download itself must also
 be a login-node-only step.
+
+---
+
+# Blockers added in Gates 6–12
+
+| ID | Gate | Blocker | Needs |
+|---|---|---|---|
+| **B-012** | 9, 11 | TCP invariant verified in simulation and 4-rank gloo only; real NCCL asynchrony unmeasured | Gate 10 on 2 PARAM nodes |
+| **B-013** | 10 | Four-mode comparison needs ≥ 4 ranks = 2 nodes = 20 % of the cluster. **Gating experiment for every TCP claim in the paper.** | 2-node allocation |
+| **B-014** | 11 | Retaining a convergence theorem requires writing one from scratch, about the protocol as implemented (HOLD suspends updates; no cited result models that) | author decision — mathematics, out of scope here |
+| **B-015** | 6 | **StudentLife T=60 but MSB RF=481 and LSB RF=1921.** The medium/long branches cannot see their claimed timescales on that corpus. | author decision: re-window, restrict the claim to DAIC-WOZ, or report the limitation |
+| **B-016** | 6 | `expanded` LSB has RF 10,881 > DAIC-WOZ T=2000; will be padding-dominated | kept as the upper bracket; degeneracy must be reported |
+| **B-017** | 7, 10 | Real network impairment (bandwidth/RTT/jitter/loss — tracker **E4-05**) needs `tc netem` + root, unavailable to a normal HPC user | admin-assisted experiment, or withdraw the claim |
+| **B-018** | 8 | SAP equivalence verified on gloo/CPU only; NCCL p2p semantics differ | 2-node PARAM run |
+| **B-019** | 8 | `replicate_gradients` creates a process group per call — wasteful in a hot loop | cache groups before any timing claim at ws > 4 |
+| **B-020** | 9 | `train/tcp.py` (simulator) and `tcp_real.py` now coexist; a future reader could cite the simulator | delete the simulator once Gate 10 output exists |
+| **B-021** | 10 | `--full-grid` is 288 cells × 4 modes — a large 2-node allocation | separate compute approval; default is an 8-cell subset |
+| **B-022** | 12 | `figures/` is empty — axes are not guessed for data that does not exist | generate once admitted data has a known shape |
+
+## Standing blockers still open
+
+B-002 (datasets to stage) · B-003 (no manuscript source) · B-005 (`thop`, `pyarrow`,
+`opensmile` absent locally) · B-006 (compute allocation) · B-008 (**16 GB V100s — every
+batch size is an assumption until `memory_probe.sbatch` runs**) · B-009 (**16-GPU target not
+schedulable; tracker T2-07 must be restated**) · B-010 (glibc 2.17 vs modern PyTorch wheels)
+· B-011 (login-node limits).
+

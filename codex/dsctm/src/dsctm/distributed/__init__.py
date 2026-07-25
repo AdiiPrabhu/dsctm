@@ -23,6 +23,15 @@ from .ddp import (
     unwrap,
     wrap_ddp,
 )
+from .sap import (
+    BRANCH_ORDER, CommStats, Placement, SAPModel, plan_placement,
+    predicted_bytes_per_sample, recv_activation, replicate_gradients, sap_step,
+    send_activation,
+)
+from .tcp_real import (
+    BranchAction, ExecutionMode, MODE_DESCRIPTIONS, SyncReason, TCPState,
+    TemporalConsistencyProtocol, describe_modes,
+)
 from .errors import (
     DistributedError,
     EvaluationCoverageError,
@@ -73,6 +82,10 @@ from .sampler import (
 )
 
 __all__ = [
+    "BRANCH_ORDER", "BranchAction", "CommStats", "ExecutionMode", "MODE_DESCRIPTIONS",
+    "Placement", "SAPModel", "SyncReason", "TCPState", "TemporalConsistencyProtocol",
+    "describe_modes", "plan_placement", "predicted_bytes_per_sample", "recv_activation",
+    "replicate_gradients", "sap_step", "send_activation",
     "BatchSemantics", "DistContext", "DistributedError", "EarlyStopCoordinator",
     "EarlyStopDecision", "EvaluationCoverageError", "PredictionRecord", "PreflightFailure",
     "REQUIRED_RUN_FILES", "RankFailure", "RunLogger", "UnpaddedDistributedSampler",
