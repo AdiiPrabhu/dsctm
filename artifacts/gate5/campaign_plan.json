@@ -1,0 +1,89 @@
+{
+  "families": {
+    "ablation": {
+      "family_filter": "ablation",
+      "n_tasks": 78,
+      "plan_digest": "7876bb29c494c34b",
+      "by_family": {
+        "ablation": 78
+      },
+      "by_experiment": {
+        "EXP-1.3": 12,
+        "EXP-5.1": 21,
+        "EXP-5.2": 18,
+        "EXP-5.3": 15,
+        "EXP-5.5": 12
+      },
+      "unique_task_ids": 78
+    },
+    "confirm-daicwoz": {
+      "family_filter": "confirm-daicwoz",
+      "n_tasks": 60,
+      "plan_digest": "9f44701755325d6b",
+      "by_family": {
+        "confirm": 60
+      },
+      "by_experiment": {
+        "EXP-4.2": 60
+      },
+      "unique_task_ids": 60
+    },
+    "confirm-studentlife": {
+      "family_filter": "confirm-studentlife",
+      "n_tasks": 60,
+      "plan_digest": "6bfcb4986429ff6c",
+      "by_family": {
+        "confirm": 60
+      },
+      "by_experiment": {
+        "EXP-4.1": 60
+      },
+      "unique_task_ids": 60
+    },
+    "tuning-daicwoz": {
+      "family_filter": "tuning-daicwoz",
+      "n_tasks": 48,
+      "plan_digest": "236956a0f6b99059",
+      "by_family": {
+        "tuning": 48
+      },
+      "by_experiment": {
+        "EXP-2.2": 48
+      },
+      "unique_task_ids": 48
+    },
+    "tuning-studentlife": {
+      "family_filter": "tuning-studentlife",
+      "n_tasks": 48,
+      "plan_digest": "99e8187f2cd00615",
+      "by_family": {
+        "tuning": 48
+      },
+      "by_experiment": {
+        "EXP-2.2": 48
+      },
+      "unique_task_ids": 48
+    }
+  },
+  "total": {
+    "family_filter": null,
+    "n_tasks": 294,
+    "plan_digest": "dcb6e197431c369d",
+    "by_family": {
+      "ablation": 78,
+      "confirm": 120,
+      "tuning": 96
+    },
+    "by_experiment": {
+      "EXP-1.3": 12,
+      "EXP-2.2": 96,
+      "EXP-4.1": 60,
+      "EXP-4.2": 60,
+      "EXP-5.1": 21,
+      "EXP-5.2": 18,
+      "EXP-5.3": 15,
+      "EXP-5.5": 12
+    },
+    "unique_task_ids": 294
+  }
+}
