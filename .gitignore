@@ -1,0 +1,28 @@
+# --- Environments (not tracked; see requirements.txt) ---
+venv/
+.venv/
+env/
+
+# --- Large dataset (hosted on Kaggle, not in git) ---
+dataset/
+
+# --- Local tooling / editor config ---
+.claude/
+.idea/
+.vscode/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db

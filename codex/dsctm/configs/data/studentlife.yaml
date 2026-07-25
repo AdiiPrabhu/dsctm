@@ -1,0 +1,15 @@
+# StudentLife data contract (master-prompt §7.1). Fill `path` when data is authorized.
+dataset: studentlife
+path: null                    # local authorized path — DO NOT commit raw data
+input_dim: 8                  # accel, GPS, audio energy, screen, sleep, ... (verify from data)
+n_classes: 3                  # low / moderate / high stress (verify EMA threshold from data)
+label_type: multiclass
+T: 60                         # 60 one-minute steps preceding each EMA
+sampling_interval_s: 60
+protocol: subject_grouped_kfold   # corrected primary protocol
+n_splits: 5
+stratify: true
+notes: >
+  Realized context at 1-min sampling with T=60 is <=60 minutes regardless of the
+  theoretical receptive field. Report theoretical vs realized context separately.
+  Split subjects BEFORE preprocessing/normalization/windowing.

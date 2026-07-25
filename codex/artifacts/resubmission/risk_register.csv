@@ -1,0 +1,16 @@
+risk_id,severity,priority,risk,consequence,mitigation,status
+RISK-01,critical,P0,No implementation/configuration checkout,All correctness and training evidence blocked,Provide exact source repository/commit and configs,open
+RISK-02,critical,P0,No authorized dataset paths or split manifests,Leakage audit and quality reruns blocked,Provide paths and access constraints without copying protected data,open
+RISK-03,critical,P0,No raw logs/checkpoints/predictions,Submitted values have no traceable provenance,Provide immutable old artifact bundle; otherwise remove/rerun values,open
+RISK-04,critical,P0,No editable manuscript source/bibliography/figures,Exact revisions and clean rebuild blocked,Provide LaTeX/Word source and assets,open
+RISK-05,high,P0,Only one physical GPU available locally,2-8 GPU equivalence/scaling claims cannot be tested,Use authorized multi-GPU single server or remove those claims,open
+RISK-06,critical,P0,DAIC test-label/evaluator authorization unknown,Test-set claims cannot be regenerated,Document evaluator right; otherwise report dev-only limitation,open
+RISK-07,high,P0,Submitted five-seed two-sided Wilcoxon p<0.05 claim is mathematically impossible with five nonzero pairs,Significance markers invalid,Withdraw markers; rerun participant/fold-level analysis,open
+RISK-08,high,P0,Submitted 107/82 DAIC partition conflicts with official partition convention,Potential protocol invalidity,Verify official files and quarantine prior DAIC results,open
+RISK-09,high,P0,PDF reports 1-8 compute nodes and N=16 simulation on an eight-GPU single host,Systems scope is overstated,Adopt single-server GPU-worker wording and remove unphysical counts,open
+RISK-10,high,P0,Convergence theorem is unsupported by supplied evidence,Correctness/rejection risk,Remove theorem; retain only tested version-lag invariant,open
+RISK-11,high,P0,StudentLife 60-step input caps realized context at 60 minutes,Hours/days claim unsupported,Report theoretical and input-capped realized context separately,open
+RISK-12,medium,P1,Original reviewer letter absent; R5 citation details missing,Verbatim coverage and suggested-citation decisions incomplete,Provide decision letter/reviews,open
+RISK-13,medium,P0,"Author AI-use, biography, ethics, funding and conflicts need confirmation",Administrative facts cannot be inferred,Obtain dated author confirmations,open
+RISK-14,medium,P1,Compute estimates precede code/data benchmarking,Budget may differ materially,Run <=30-minute smoke benchmark then revise estimates,open
+RISK-15,high,P0,No Git repository or immutable revision identity,Cannot link evidence to code revision,Provide/init authorized source repository; do not tag this input-only package,open

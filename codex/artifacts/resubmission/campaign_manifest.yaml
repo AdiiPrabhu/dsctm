@@ -1,0 +1,53 @@
+campaign_id: dmstcn-ieee-access-resubmission-gate-p-20260718
+protocol_version: '1.0'
+generated_utc: '2026-07-18T10:21:38.856310+00:00'
+repository:
+  path: '/media/adii/adissd/phd/dsctm-resubmission/codex'
+  branch: null
+  commit: null
+  status: input_only_not_a_git_repository
+inputs:
+  tracker:
+    path: reviews/D_MSTCN_IEEE_Access_Resubmission_Tracker_Completed.xlsx
+    sha256: ac58d8189940d905458353e78c2612f3fb833971d6350c507ac561354c491a6a
+  rejected_manuscript:
+    path: reviews/D_MSTCN_Rejected_Manuscript.pdf
+    sha256: 06a9d051ef9d758e28c64455a87e637cef35a3907cbf54f5adac066917f793ec
+  reviewer_letter: null
+  source_checkout: null
+datasets:
+  StudentLife: {available: false, version: null, splits: null, restrictions: unknown}
+  DAIC_WOZ: {available: false, version: null, splits: null, evaluator_right: unknown, restrictions: unknown}
+  SEED: {available: false, version: null, splits: null, restrictions: unknown}
+hardware:
+  host: adii-MS-7D90
+  physical_gpu_count: 1
+  gpu: 'NVIDIA GeForce RTX 4060 Ti, 16380 MiB'
+  interconnect: 'PCIe; multi-GPU topology not available'
+compute_budget:
+  status: conditional_unapproved
+  p0_run_units: 675
+  p0_estimated_gpu_hours: 270.09
+  p0_storage_gb: 112.8
+decisions:
+  - reframe_to_single_server_branch_parallel_multi_gpu_if_supported
+  - remove_convergence_theorem
+  - remove_inherent_ddp_causality_claim
+  - verify_official_daic_protocol_or_report_dev_only
+  - report_theoretical_and_realized_receptive_fields_separately
+unresolved_blockers:
+  - source_and_configs_missing
+  - editable_manuscript_missing
+  - datasets_and_splits_missing
+  - raw_results_missing
+  - reviewer_letter_missing
+  - multi_gpu_hardware_unavailable_locally
+phase_status:
+  gate_p: complete
+  gate_0: blocked
+  gate_1: blocked
+  later_phases: not_started
+phase_tags: []
+run_registry_path: artifacts/resubmission/runs.csv
+claim_registry_path: artifacts/resubmission/claim_registry.csv
+tracker_output_path: artifacts/resubmission/master_tracker_gate_p_updated.xlsx

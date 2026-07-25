@@ -1,0 +1,116 @@
+# D-MSTCN IEEE Access Resubmission — Campaign Manifest
+# Gate P (preflight). Generated 2026-07-18. This manifest is authoritative for the
+# revision campaign state; update it at every gate.
+
+campaign:
+  id: dmstcn-ieee-access-resub-2026
+  protocol_version: D_MSTCN_ONE_FILE_MASTER_PROMPT.md
+  protocol_sha256: 1c9517ef3a09c469e8b2e98d69d996ca650a65ee0969610257a5301a2ef0990d
+  current_phase: "Gate P — preflight (inspection, planning, analytic checks only)"
+  generated: "2026-07-18"
+
+repository:
+  path: /media/adii/adissd/phd/dsctm-resubmission/claude
+  is_git_repo: false           # no VCS; branch/tag actions from master-prompt sec5 not applicable yet
+  branch: null
+  commit: null
+  phase_tags: []               # none created (no repo); do not push anything
+  note: >
+    This directory is a documentation/planning package, not the D-MSTCN source
+    repository. Create a git repo + immutable revision tag once the implementation lands.
+
+input_hashes:
+  tracker_completed_xlsx: ac58d8189940d905458353e78c2612f3fb833971d6350c507ac561354c491a6a
+  rejected_manuscript_pdf: 06a9d051ef9d758e28c64455a87e637cef35a3907cbf54f5adac066917f793ec
+  master_prompt_md: 1c9517ef3a09c469e8b2e98d69d996ca650a65ee0969610257a5301a2ef0990d
+  start_here_md: 210c3ed338f2f7344356ebd33356f790c257df329c1f330e3d1f7fd975d2bb67
+  package_zip: bbd988412fba9b02287872c9c53ae2b1ff681985fd726ed2e090e9893aa53d95
+  manuscript_source: MISSING            # no .tex/.bib/.docx in package
+  environment_lock: MISSING             # no requirements/lock/container recipe
+  split_manifests: MISSING              # no StudentLife/DAIC/SEED splits
+  decision_letter: MISSING              # reviewer text only as tracker summaries
+
+manuscript_facts:   # read from the compiled PDF (not source)
+  submitted_title: "Distributed Temporal Neural Architectures for Scalable Cognitive Modeling"
+  submission_id: 09b4954d-5a8c-4ba0-ae60-d67ea6040203
+  authors: ["Aditya Prabhu (corresponding, ORCID 0009-0002-1057-2275)", "Basavaraj Hiremath"]
+  affiliation: "Dept. of CSE, Dayananda Sagar University, Bengaluru 560111, India"
+  pages: 15  # portal cover pp.1-3; paper body pp.4-15
+  references_count: 38
+
+datasets:
+  studentlife:   {present: false, subjects_claimed: 48,  sampling: "1 min", T: 60,   status: blocked_missing_data}
+  daic_woz:      {present: false, sessions_claimed: 189, sampling: "0.5 s", T_range: "200-4000", split_claimed: "107/82", test_eval_right: unknown, status: blocked_missing_data}
+  seed:          {present: false, subjects_claimed: 15,  status: blocked_missing_data_and_license}
+  label_provenance: unavailable
+  access_restrictions: "protected human-subjects data; never commit raw data or subject IDs"
+
+hardware:
+  this_host:
+    gpu: "1 x NVIDIA GeForce RTX 4060 Ti"
+    gpu_memory_gb: 16
+    gpu_count: 1
+    interconnect: "single consumer GPU (PCIe)"
+    cpu_cores: 24
+    ram_gb: 46
+    disk_free_gb: 748
+    os: "Ubuntu, Linux 6.8.0-101-generic, x86_64"
+    python: "3.12.3"
+    dl_runtime: "not installed"
+  manuscript_reported_host:
+    gpu: "8 x NVIDIA A100 SXM4 (80 GB each)"
+    interconnect: "NVLink 3.0, NCCL backend"
+    available_here: false
+  consequence: >
+    Systems/scaling experiments (EXP-6.x) cannot be reproduced on this host and must be
+    run on the original 8-GPU server (or equivalent). Quality experiments (Phases 0-5,
+    non-systems) are feasible on the single GPU once code+data are provided (~418 GPU-h,
+    serialized).
+
+compute_budget:
+  total_runs_planned: 1661
+  total_gpu_hours_est: 778
+  by_priority: {P0: 555, P1: 214, P2: 9}
+  needs_8gpu_server_gpu_hours: 360
+  feasible_single_gpu_gpu_hours: 418
+  note: "Estimates only; real per-run cost needs profiling (EXP-6.1), which needs code."
+
+approved_decisions:   # drafted in tracker Decision Log; NONE author-approved yet
+  DEC-01: {decision: "single-server branch-parallel multi-GPU reframe (Option B)", status: proposed_pending_author}
+  DEC-02: {decision: "remove Theorem 1; keep operational version-lag invariant", status: proposed_pending_author}
+  DEC-03: {decision: "remove broad DDP-causality claim; narrow to controlled setting", status: proposed_pending_author}
+
+blockers:            # see input_gap_report.md for full detail
+  - GAP-1: D-MSTCN implementation + configs + environment lock (blocks ~40 tasks)
+  - GAP-2: authorized StudentLife/DAIC/SEED data + official splits
+  - GAP-3: raw logs / predictions / checkpoints
+  - GAP-4: manuscript LaTeX/Word source + .bib + figure sources
+  - GAP-5: original 8-GPU A100 NVLink server (or equivalent)
+  - GAP-6: DAIC test-evaluation right / access status
+  - GAP-7: author facts (AI disclosure, coauthor sign-off, biographies)
+  - GAP-8: verbatim reviewer text / decision letter
+
+phase_status:
+  gate_P_preflight:   done
+  gate_0_correctness: blocked   # needs GAP-1
+  gate_1_data:        blocked   # needs GAP-2
+  phase_2_baselines:  blocked   # needs GAP-1,2
+  phase_3_causal:     blocked   # needs GAP-1,2 (+GAP-5 for systems realism)
+  phase_4_headline:   blocked   # needs GAP-1,2 (+GAP-6 for DAIC test)
+  phase_5_ablation:   blocked   # needs GAP-1,2
+  phase_6_systems:    blocked   # needs GAP-1,5
+  manuscript_edits:   blocked   # needs GAP-4
+  response_letter:    partial   # can draft from tracker summaries; verbatim quotes need GAP-8
+
+registry_paths:
+  preflight_report: artifacts/resubmission/preflight_report.md
+  input_gap_report: artifacts/resubmission/input_gap_report.md
+  reviewer_map: artifacts/resubmission/reviewer_to_experiment_map.csv
+  compute_plan: artifacts/resubmission/compute_plan.csv
+  risk_register: artifacts/resubmission/risk_register.csv
+  claim_registry: artifacts/resubmission/claim_registry.csv
+  analytic_checks: artifacts/resubmission/statistics/gateP_analytic_checks.md
+  run_registry: artifacts/resubmission/runs.csv    # to be created when runs begin
+  tracker_output: artifacts/resubmission/master_tracker_updated.xlsx  # to be created (originals preserved)
+
+external_actions_taken: none   # no upload/push/publish/reviewer contact — none authorized

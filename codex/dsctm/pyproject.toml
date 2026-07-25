@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsctm"
+version = "0.0.1"
+description = "D-MSTCN: Multi-Scale Temporal Convolutional Network for cognitive-state modeling with branch-parallel multi-GPU execution — resubmission experimentation harness"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
