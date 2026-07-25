@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.418" timestamp="2026-07-26T00:56:15.674885+05:30" hostname="Adityas-MacBook-Pro.local"><testcase classname="" name="tests.test_model" time="0.000"><error message="collection failure">tests/test_model.py:4: in &lt;module&gt;
+    from dmstcn import DMSTCN, DMSTCNConfig
+src/dmstcn/__init__.py:4: in &lt;module&gt;
+    from dmstcn.model import DMSTCN, DMSTCNOutput
+src/dmstcn/model.py:105: in &lt;module&gt;
+    class DMSTCN(nn.Module):
+src/dmstcn/model.py:132: in DMSTCN
+    def forward(self, inputs: Tensor, subject_ids: Tensor, mask: Tensor | None = None) -&gt; DMSTCNOutput:
+E   TypeError: unsupported operand type(s) for |: 'torch._C._TensorMeta' and 'NoneType'</error></testcase></testsuite></testsuites>
