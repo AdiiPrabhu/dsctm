@@ -1,0 +1,26 @@
+{
+  "2": {
+    "max_abs_param_diff": 1.4901161193847656e-08,
+    "max_rel_param_diff": 1.0691233143234058e-07,
+    "param_count": 163,
+    "replicas_bitwise_identical": true,
+    "per_rank_batch": 8,
+    "effective_global_batch": 16
+  },
+  "3": {
+    "max_abs_param_diff": 1.4901161193847656e-08,
+    "max_rel_param_diff": 4.977110847903532e-07,
+    "param_count": 163,
+    "replicas_bitwise_identical": true,
+    "per_rank_batch": 8,
+    "effective_global_batch": 24
+  },
+  "4": {
+    "max_abs_param_diff": 1.4901161193847656e-08,
+    "max_rel_param_diff": 1.155460793711427e-07,
+    "param_count": 163,
+    "replicas_bitwise_identical": true,
+    "per_rank_batch": 8,
+    "effective_global_batch": 32
+  }
+}
