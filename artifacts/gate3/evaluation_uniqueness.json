@@ -1,0 +1,770 @@
+[
+  {
+    "dataset_len": 47,
+    "world_size": 1,
+    "shard_sizes": [
+      47
+    ],
+    "total_emitted": 47,
+    "unique_emitted": 47,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 47,
+    "duplicates_avoided": 0,
+    "split": "DAIC-WOZ official test"
+  },
+  {
+    "dataset_len": 47,
+    "world_size": 2,
+    "shard_sizes": [
+      24,
+      23
+    ],
+    "total_emitted": 47,
+    "unique_emitted": 47,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 48,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official test"
+  },
+  {
+    "dataset_len": 47,
+    "world_size": 4,
+    "shard_sizes": [
+      12,
+      12,
+      12,
+      11
+    ],
+    "total_emitted": 47,
+    "unique_emitted": 47,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 48,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official test"
+  },
+  {
+    "dataset_len": 47,
+    "world_size": 8,
+    "shard_sizes": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      5
+    ],
+    "total_emitted": 47,
+    "unique_emitted": 47,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 48,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official test"
+  },
+  {
+    "dataset_len": 47,
+    "world_size": 16,
+    "shard_sizes": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2
+    ],
+    "total_emitted": 47,
+    "unique_emitted": 47,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 48,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official test"
+  },
+  {
+    "dataset_len": 35,
+    "world_size": 1,
+    "shard_sizes": [
+      35
+    ],
+    "total_emitted": 35,
+    "unique_emitted": 35,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 35,
+    "duplicates_avoided": 0,
+    "split": "DAIC-WOZ official dev"
+  },
+  {
+    "dataset_len": 35,
+    "world_size": 2,
+    "shard_sizes": [
+      18,
+      17
+    ],
+    "total_emitted": 35,
+    "unique_emitted": 35,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 36,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official dev"
+  },
+  {
+    "dataset_len": 35,
+    "world_size": 4,
+    "shard_sizes": [
+      9,
+      9,
+      9,
+      8
+    ],
+    "total_emitted": 35,
+    "unique_emitted": 35,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 36,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official dev"
+  },
+  {
+    "dataset_len": 35,
+    "world_size": 8,
+    "shard_sizes": [
+      5,
+      5,
+      5,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "total_emitted": 35,
+    "unique_emitted": 35,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 40,
+    "duplicates_avoided": 5,
+    "split": "DAIC-WOZ official dev"
+  },
+  {
+    "dataset_len": 35,
+    "world_size": 16,
+    "shard_sizes": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "total_emitted": 35,
+    "unique_emitted": 35,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 48,
+    "duplicates_avoided": 13,
+    "split": "DAIC-WOZ official dev"
+  },
+  {
+    "dataset_len": 107,
+    "world_size": 1,
+    "shard_sizes": [
+      107
+    ],
+    "total_emitted": 107,
+    "unique_emitted": 107,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 107,
+    "duplicates_avoided": 0,
+    "split": "DAIC-WOZ official train"
+  },
+  {
+    "dataset_len": 107,
+    "world_size": 2,
+    "shard_sizes": [
+      54,
+      53
+    ],
+    "total_emitted": 107,
+    "unique_emitted": 107,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 108,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official train"
+  },
+  {
+    "dataset_len": 107,
+    "world_size": 4,
+    "shard_sizes": [
+      27,
+      27,
+      27,
+      26
+    ],
+    "total_emitted": 107,
+    "unique_emitted": 107,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 108,
+    "duplicates_avoided": 1,
+    "split": "DAIC-WOZ official train"
+  },
+  {
+    "dataset_len": 107,
+    "world_size": 8,
+    "shard_sizes": [
+      14,
+      14,
+      14,
+      13,
+      13,
+      13,
+      13,
+      13
+    ],
+    "total_emitted": 107,
+    "unique_emitted": 107,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 112,
+    "duplicates_avoided": 5,
+    "split": "DAIC-WOZ official train"
+  },
+  {
+    "dataset_len": 107,
+    "world_size": 16,
+    "shard_sizes": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "total_emitted": 107,
+    "unique_emitted": 107,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 112,
+    "duplicates_avoided": 5,
+    "split": "DAIC-WOZ official train"
+  },
+  {
+    "dataset_len": 56,
+    "world_size": 1,
+    "shard_sizes": [
+      56
+    ],
+    "total_emitted": 56,
+    "unique_emitted": 56,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 56,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC official dev/test"
+  },
+  {
+    "dataset_len": 56,
+    "world_size": 2,
+    "shard_sizes": [
+      28,
+      28
+    ],
+    "total_emitted": 56,
+    "unique_emitted": 56,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 56,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC official dev/test"
+  },
+  {
+    "dataset_len": 56,
+    "world_size": 4,
+    "shard_sizes": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "total_emitted": 56,
+    "unique_emitted": 56,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 56,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC official dev/test"
+  },
+  {
+    "dataset_len": 56,
+    "world_size": 8,
+    "shard_sizes": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "total_emitted": 56,
+    "unique_emitted": 56,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 56,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC official dev/test"
+  },
+  {
+    "dataset_len": 56,
+    "world_size": 16,
+    "shard_sizes": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "total_emitted": 56,
+    "unique_emitted": 56,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 64,
+    "duplicates_avoided": 8,
+    "split": "E-DAIC official dev/test"
+  },
+  {
+    "dataset_len": 163,
+    "world_size": 1,
+    "shard_sizes": [
+      163
+    ],
+    "total_emitted": 163,
+    "unique_emitted": 163,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 163,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC official train"
+  },
+  {
+    "dataset_len": 163,
+    "world_size": 2,
+    "shard_sizes": [
+      82,
+      81
+    ],
+    "total_emitted": 163,
+    "unique_emitted": 163,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 164,
+    "duplicates_avoided": 1,
+    "split": "E-DAIC official train"
+  },
+  {
+    "dataset_len": 163,
+    "world_size": 4,
+    "shard_sizes": [
+      41,
+      41,
+      41,
+      40
+    ],
+    "total_emitted": 163,
+    "unique_emitted": 163,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 164,
+    "duplicates_avoided": 1,
+    "split": "E-DAIC official train"
+  },
+  {
+    "dataset_len": 163,
+    "world_size": 8,
+    "shard_sizes": [
+      21,
+      21,
+      21,
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    "total_emitted": 163,
+    "unique_emitted": 163,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 168,
+    "duplicates_avoided": 5,
+    "split": "E-DAIC official train"
+  },
+  {
+    "dataset_len": 163,
+    "world_size": 16,
+    "shard_sizes": [
+      11,
+      11,
+      11,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "total_emitted": 163,
+    "unique_emitted": 163,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 176,
+    "duplicates_avoided": 13,
+    "split": "E-DAIC official train"
+  },
+  {
+    "dataset_len": 275,
+    "world_size": 1,
+    "shard_sizes": [
+      275
+    ],
+    "total_emitted": 275,
+    "unique_emitted": 275,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 275,
+    "duplicates_avoided": 0,
+    "split": "E-DAIC full"
+  },
+  {
+    "dataset_len": 275,
+    "world_size": 2,
+    "shard_sizes": [
+      138,
+      137
+    ],
+    "total_emitted": 275,
+    "unique_emitted": 275,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 276,
+    "duplicates_avoided": 1,
+    "split": "E-DAIC full"
+  },
+  {
+    "dataset_len": 275,
+    "world_size": 4,
+    "shard_sizes": [
+      69,
+      69,
+      69,
+      68
+    ],
+    "total_emitted": 275,
+    "unique_emitted": 275,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 276,
+    "duplicates_avoided": 1,
+    "split": "E-DAIC full"
+  },
+  {
+    "dataset_len": 275,
+    "world_size": 8,
+    "shard_sizes": [
+      35,
+      35,
+      35,
+      34,
+      34,
+      34,
+      34,
+      34
+    ],
+    "total_emitted": 275,
+    "unique_emitted": 275,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 280,
+    "duplicates_avoided": 5,
+    "split": "E-DAIC full"
+  },
+  {
+    "dataset_len": 275,
+    "world_size": 16,
+    "shard_sizes": [
+      18,
+      18,
+      18,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17
+    ],
+    "total_emitted": 275,
+    "unique_emitted": 275,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 1,
+    "padded_sampler_would_emit": 288,
+    "duplicates_avoided": 13,
+    "split": "E-DAIC full"
+  },
+  {
+    "dataset_len": 2160,
+    "world_size": 1,
+    "shard_sizes": [
+      2160
+    ],
+    "total_emitted": 2160,
+    "unique_emitted": 2160,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 2160,
+    "duplicates_avoided": 0,
+    "split": "StudentLife windows"
+  },
+  {
+    "dataset_len": 2160,
+    "world_size": 2,
+    "shard_sizes": [
+      1080,
+      1080
+    ],
+    "total_emitted": 2160,
+    "unique_emitted": 2160,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 2160,
+    "duplicates_avoided": 0,
+    "split": "StudentLife windows"
+  },
+  {
+    "dataset_len": 2160,
+    "world_size": 4,
+    "shard_sizes": [
+      540,
+      540,
+      540,
+      540
+    ],
+    "total_emitted": 2160,
+    "unique_emitted": 2160,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 2160,
+    "duplicates_avoided": 0,
+    "split": "StudentLife windows"
+  },
+  {
+    "dataset_len": 2160,
+    "world_size": 8,
+    "shard_sizes": [
+      270,
+      270,
+      270,
+      270,
+      270,
+      270,
+      270,
+      270
+    ],
+    "total_emitted": 2160,
+    "unique_emitted": 2160,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 2160,
+    "duplicates_avoided": 0,
+    "split": "StudentLife windows"
+  },
+  {
+    "dataset_len": 2160,
+    "world_size": 16,
+    "shard_sizes": [
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135,
+      135
+    ],
+    "total_emitted": 2160,
+    "unique_emitted": 2160,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 2160,
+    "duplicates_avoided": 0,
+    "split": "StudentLife windows"
+  },
+  {
+    "dataset_len": 432,
+    "world_size": 1,
+    "shard_sizes": [
+      432
+    ],
+    "total_emitted": 432,
+    "unique_emitted": 432,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 432,
+    "duplicates_avoided": 0,
+    "split": "StudentLife CV fold"
+  },
+  {
+    "dataset_len": 432,
+    "world_size": 2,
+    "shard_sizes": [
+      216,
+      216
+    ],
+    "total_emitted": 432,
+    "unique_emitted": 432,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 432,
+    "duplicates_avoided": 0,
+    "split": "StudentLife CV fold"
+  },
+  {
+    "dataset_len": 432,
+    "world_size": 4,
+    "shard_sizes": [
+      108,
+      108,
+      108,
+      108
+    ],
+    "total_emitted": 432,
+    "unique_emitted": 432,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 432,
+    "duplicates_avoided": 0,
+    "split": "StudentLife CV fold"
+  },
+  {
+    "dataset_len": 432,
+    "world_size": 8,
+    "shard_sizes": [
+      54,
+      54,
+      54,
+      54,
+      54,
+      54,
+      54,
+      54
+    ],
+    "total_emitted": 432,
+    "unique_emitted": 432,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 432,
+    "duplicates_avoided": 0,
+    "split": "StudentLife CV fold"
+  },
+  {
+    "dataset_len": 432,
+    "world_size": 16,
+    "shard_sizes": [
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "total_emitted": 432,
+    "unique_emitted": 432,
+    "covers_exactly_once": true,
+    "max_size_imbalance": 0,
+    "padded_sampler_would_emit": 432,
+    "duplicates_avoided": 0,
+    "split": "StudentLife CV fold"
+  }
+]

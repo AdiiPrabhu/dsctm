@@ -8,6 +8,8 @@ neutral embedding instead of an accidental one.
 """
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -53,7 +55,13 @@ def _build_loss(cfg, y_train, n_classes, device):
     return nn.CrossEntropyLoss(weight=weight)
 
 
-def _make_loader(ds, idx, subj_map, mean, std, batch_size, shuffle):
+def _build_tensor_dataset(ds, idx, subj_map, mean, std):
+    """Normalize, mask padding, and carry the DATASET-GLOBAL sample id.
+
+    The sample id is what makes distributed evaluation auditable: it lets the gather step
+    prove each sample was scored exactly once. It is the index into the full dataset, not
+    the position within this split, so ids remain unique across folds.
+    """
     X = ((ds.X[idx] - mean) / std).astype(np.float32)
     X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
     lengths = np.asarray(ds.lengths[idx], dtype=np.int64)
@@ -61,42 +69,155 @@ def _make_loader(ds, idx, subj_map, mean, std, batch_size, shuffle):
     X[~mask] = 0.0
     y = ds.y[idx].astype(np.int64)
     subj = np.array([subj_map.get(s, 0) for s in ds.subject_id[idx]], dtype=np.int64)
-    tds = TensorDataset(
+    sample_id = np.asarray(idx, dtype=np.int64)
+    return TensorDataset(
         torch.from_numpy(X), torch.from_numpy(y), torch.from_numpy(subj),
-        torch.from_numpy(mask),
+        torch.from_numpy(mask), torch.from_numpy(sample_id),
     )
-    return DataLoader(tds, batch_size=batch_size, shuffle=shuffle, drop_last=False,
-                      worker_init_fn=seed_worker)
+
+
+def _make_loader(ds, idx, subj_map, mean, std, batch_size, shuffle,
+                 ctx=None, train: bool | None = None, seed: int = 0):
+    """Build a DataLoader.
+
+    Single-process (``ctx`` None or world_size 1) reproduces the pre-Gate-2 behaviour
+    exactly. Distributed uses a padded sampler for training (DDP needs equal step counts)
+    and the UNPADDED sampler for evaluation (no sample may be scored twice).
+    """
+    tds = _build_tensor_dataset(ds, idx, subj_map, mean, std)
+    is_train = shuffle if train is None else train
+
+    if ctx is None or not getattr(ctx, "is_distributed", False):
+        return DataLoader(tds, batch_size=batch_size, shuffle=shuffle, drop_last=False,
+                          worker_init_fn=seed_worker)
+
+    from ..distributed import (loader_kwargs_for_param, make_eval_sampler,
+                               make_train_sampler)
+    sampler = (make_train_sampler(tds, ctx, shuffle=shuffle, seed=seed) if is_train
+               else make_eval_sampler(tds, ctx))
+    kwargs = loader_kwargs_for_param(num_workers=int(os.environ.get("DSCTM_NUM_WORKERS", 4)))
+    return DataLoader(tds, batch_size=batch_size, sampler=sampler,
+                      worker_init_fn=seed_worker, **kwargs)
 
 
 @torch.no_grad()
-def evaluate(model, loader, device, personalize):
+def evaluate(model, loader, device, personalize, ctx=None, expected_n=None,
+             autocast_dtype=None, subject_lookup=None):
+    """Evaluate and return (metrics, probabilities, labels).
+
+    Distributed: every rank scores its shard, predictions are all-gathered, and coverage is
+    validated BEFORE any metric is computed. A duplicate or missing sample raises rather
+    than silently distorting macro-F1.
+    """
     model.eval()
-    probs, ys = [], []
-    for X, y, subj, mask in loader:
-        logits = model(
-            X.to(device), subj.to(device) if personalize else None, mask=mask.to(device)
-        )
-        probs.append(torch.softmax(logits, 1).cpu().numpy())
-        ys.append(y.numpy())
-    probs = np.concatenate(probs)
-    ys = np.concatenate(ys)
-    return classification_metrics(ys, probs.argmax(1), probs), probs, ys
+    distributed = ctx is not None and getattr(ctx, "is_distributed", False)
+
+    if not distributed:
+        probs, ys = [], []
+        for batch in loader:
+            X, y, subj, mask = batch[0], batch[1], batch[2], batch[3]
+            logits = model(
+                X.to(device), subj.to(device) if personalize else None, mask=mask.to(device)
+            )
+            probs.append(torch.softmax(logits.float(), 1).cpu().numpy())
+            ys.append(y.numpy())
+        probs = np.concatenate(probs)
+        ys = np.concatenate(ys)
+        return classification_metrics(ys, probs.argmax(1), probs), probs, ys
+
+    from ..distributed import build_records, gather_and_validate, records_to_arrays
+
+    records = []
+    for X, y, subj, mask, sample_id in loader:
+        with torch.autocast(device_type=device if isinstance(device, str) else device.type,
+                            dtype=autocast_dtype, enabled=autocast_dtype is not None):
+            logits = model(
+                X.to(device, non_blocking=True),
+                subj.to(device, non_blocking=True) if personalize else None,
+                mask=mask.to(device, non_blocking=True),
+            )
+        ids = sample_id.tolist()
+        subjects = ([str(subject_lookup[i]) for i in ids] if subject_lookup is not None
+                    else [str(i) for i in ids])
+        records.extend(build_records(ids, subjects, y.tolist(),
+                                     logits.float(), rank=ctx.rank))
+    n = expected_n if expected_n is not None else len(loader.dataset)
+    merged, audit = gather_and_validate(records, n)
+    y_true, y_pred, y_prob, _ = records_to_arrays(merged)
+    metrics = classification_metrics(y_true, y_pred, y_prob)
+    metrics["_coverage_audit"] = audit
+    return metrics, y_prob, y_true
+
+
+def _prepare_distributed(model, ds, ctx, device, precision):
+    """Wrap in DDP (materialising any lazy parameter first) and resolve AMP settings.
+
+    Single-process returns the model untouched and AMP disabled, so the audited
+    single-process numerics are bit-for-bit unchanged.
+    """
+    if ctx is None or not getattr(ctx, "is_distributed", False):
+        return model, None, None
+    from ..distributed import autocast_dtype as _autocast_dtype
+    from ..distributed import build_grad_scaler, wrap_ddp
+
+    example = (
+        torch.zeros(2, int(ds.T), int(ds.F), device=device),
+        torch.zeros(2, dtype=torch.long, device=device),
+        torch.ones(2, int(ds.T), dtype=torch.bool, device=device),
+    )
+    wrapped = wrap_ddp(model, ctx, example_input=example)
+    amp_dtype = _autocast_dtype(precision, torch.device(device) if isinstance(device, str)
+                                else device)
+    scaler = build_grad_scaler(precision, torch.device(device) if isinstance(device, str)
+                               else device)
+    return wrapped, amp_dtype, scaler
+
+
+def _train_one_epoch(model, loader, opt, lossf, device, personalize, emb_dropout,
+                     amp_dtype=None, scaler=None, epoch=0, sampler=None):
+    """One training epoch. AMP-aware; identical to the pre-Gate-2 loop when amp is off."""
+    model.train()
+    if sampler is not None and hasattr(sampler, "set_epoch"):
+        sampler.set_epoch(epoch)          # without this every epoch reuses one shuffle
+    device_type = device if isinstance(device, str) else device.type
+    for X, y, subj, mask, _sid in loader:
+        X, y = X.to(device, non_blocking=True), y.to(device, non_blocking=True)
+        subj, mask = subj.to(device, non_blocking=True), mask.to(device, non_blocking=True)
+        if personalize and emb_dropout > 0:
+            subj = subj.clone()
+            subj[torch.rand(subj.shape[0], device=device) < emb_dropout] = 0
+        opt.zero_grad(set_to_none=True)
+        with torch.autocast(device_type=device_type, dtype=amp_dtype,
+                            enabled=amp_dtype is not None):
+            loss = lossf(model(X, subj if personalize else None, mask=mask), y)
+        if scaler is not None and scaler.is_enabled():
+            scaler.scale(loss).backward()
+            scaler.step(opt)
+            scaler.update()
+        else:
+            loss.backward()
+            opt.step()
 
 
 def train_model(build_model, ds, tr_idx, va_idx, cfg, device, seed=0,
-                personalize=False, emb_dropout=0.1):
+                personalize=False, emb_dropout=0.1, ctx=None, precision="fp32"):
     """Train one model on tr_idx, early-stop on val macro-F1. Returns best val metrics,
-    val probabilities (for pooled OOF), and the training curve."""
+    val probabilities (for pooled OOF), and the training curve.
+
+    ``ctx`` None (default) reproduces the audited single-process path exactly.
+    """
     set_seed(seed, "scientific")
     train_subjects = sorted(set(ds.subject_id[tr_idx].tolist()))
     subj_map = {s: i + 1 for i, s in enumerate(train_subjects)}  # 0 = unknown
     n_subjects = len(train_subjects) + 1
 
     model = build_model(n_subjects).to(device)
+    model, amp_dtype, scaler = _prepare_distributed(model, ds, ctx, device, precision)
     mean, std = fit_normalizer(ds.X[tr_idx], ds.lengths[tr_idx])
-    tr = _make_loader(ds, tr_idx, subj_map, mean, std, cfg["batch_size"], True)
-    va = _make_loader(ds, va_idx, subj_map, mean, std, cfg["batch_size"], False)
+    tr = _make_loader(ds, tr_idx, subj_map, mean, std, cfg["batch_size"], True,
+                      ctx=ctx, train=True, seed=seed)
+    va = _make_loader(ds, va_idx, subj_map, mean, std, cfg["batch_size"], False,
+                      ctx=ctx, train=False)
 
     opt = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(0.9, 0.999),
                            weight_decay=cfg["weight_decay"])
@@ -104,23 +225,30 @@ def train_model(build_model, ds, tr_idx, va_idx, cfg, device, seed=0,
                                                        eta_min=cfg["lr_min"])
     lossf = _build_loss(cfg, ds.y[tr_idx], int(ds.n_classes), device)
 
+    stopper = None
+    if ctx is not None and getattr(ctx, "is_distributed", False):
+        from ..distributed import EarlyStopCoordinator
+        stopper = EarlyStopCoordinator(cfg["early_stop_patience"], ctx=ctx, mode="max")
+
     best = {"macro_f1": -1.0}
     best_probs, best_epoch, patience, curve = None, 0, 0, []
     for epoch in range(cfg["max_epochs"]):
-        model.train()
-        for X, y, subj, mask in tr:
-            X, y, subj, mask = X.to(device), y.to(device), subj.to(device), mask.to(device)
-            if personalize and emb_dropout > 0:
-                subj = subj.clone()
-                subj[torch.rand(subj.shape[0], device=device) < emb_dropout] = 0
-            opt.zero_grad()
-            loss = lossf(model(X, subj if personalize else None, mask=mask), y)
-            loss.backward()
-            opt.step()
+        _train_one_epoch(model, tr, opt, lossf, device, personalize, emb_dropout,
+                         amp_dtype, scaler, epoch, getattr(tr, "sampler", None))
         sched.step()
-        vm, probs, _ = evaluate(model, va, device, personalize)
+        vm, probs, _ = evaluate(model, va, device, personalize, ctx=ctx,
+                                expected_n=len(va_idx), autocast_dtype=amp_dtype,
+                                subject_lookup=ds.subject_id)
         curve.append({"epoch": epoch, "val_macro_f1": vm["macro_f1"], "val_acc": vm["accuracy"]})
-        if vm["macro_f1"] > best["macro_f1"]:
+        if stopper is not None:
+            # Decided on rank 0 and broadcast: every rank leaves the loop on the same epoch.
+            decision = stopper.step(vm["macro_f1"], epoch)
+            if decision.improved:
+                best, best_probs, best_epoch = vm, probs, epoch
+            patience = decision.patience
+            if decision.should_stop:
+                break
+        elif vm["macro_f1"] > best["macro_f1"]:
             best, best_probs, best_epoch, patience = vm, probs, epoch, 0
         else:
             patience += 1
@@ -182,7 +310,7 @@ def train_select_evaluate(build_model, ds, tr_idx, dev_idx, test_idx, cfg, devic
     best_state, patience, best_epoch = None, 0, -1
     for epoch in range(cfg["max_epochs"]):
         model.train()
-        for X, y, subj, mask in tr:
+        for X, y, subj, mask, _sid in tr:
             X, y, subj, mask = X.to(device), y.to(device), subj.to(device), mask.to(device)
             if personalize and emb_dropout > 0:
                 subj = subj.clone()
