@@ -1,0 +1,42 @@
+...............................                                          [100%]
+=============================== warnings summary ===============================
+tests/test_causality.py::test_causality_and_reproducibility
+  /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/codex/dsctm/src/dsctm/experiments/gate0.py:213: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+    r["determinism_max_diff"] = float((a - b).abs().max())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==================================== PASSES ====================================
+- generated xml file: /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/artifacts/gate0/codex_baseline_tests.xml -
+=========================== short test summary info ============================
+PASSED tests/test_ablation_modes.py::test_prespecified_phase5_control_family_is_complete
+PASSED tests/test_ablation_modes.py::test_static_csag_and_global_film_modes_have_expected_semantics
+PASSED tests/test_ablation_statistics.py::test_ablation_multiplicity_helpers_preserve_shape_and_bounds
+PASSED tests/test_causality.py::test_causality_and_reproducibility
+PASSED tests/test_causality.py::test_tcp_invariants
+PASSED tests/test_causality.py::test_padding_mask_makes_head_invariant_to_masked_tail
+PASSED tests/test_delay_task.py::test_delay_task_is_balanced_grouped_and_has_exact_signal_positions
+PASSED tests/test_fair_tuning.py::test_equal_prespecified_search_budget_and_model_specific_spaces
+PASSED tests/test_headline_registry.py::test_studentlife_headline_registers_every_completed_fold
+PASSED tests/test_metrics.py::test_binary_metrics_include_pr_auc_and_calibration
+PASSED tests/test_participant_audio.py::test_participant_intervals_exclude_interviewer_and_invalid_rows
+PASSED tests/test_receptive_field.py::test_measured_rf_matches_two_conv_formula
+PASSED tests/test_receptive_field.py::test_manuscript_printed_rf_is_wrong
+PASSED tests/test_registry_artifacts.py::test_completed_fit_writes_required_artifacts_without_subject_ids
+PASSED tests/test_registry_artifacts.py::test_completed_fit_is_resume_safe_and_failure_is_preserved
+PASSED tests/test_result_audit.py::test_result_audit_accepts_complete_consistent_summary
+PASSED tests/test_result_audit.py::test_result_audit_rejects_incomplete_or_inconsistent_summary
+PASSED tests/test_splits.py::test_subject_grouped_folds_have_no_leakage
+PASSED tests/test_splits.py::test_leakage_detector_catches_overlap
+PASSED tests/test_splits.py::test_grouped_stratification_does_not_reduce_multiclass_subjects_to_mean_label
+PASSED tests/test_statistics.py::test_wilcoxon_n5_two_sided_cannot_reach_significance
+PASSED tests/test_statistics.py::test_significance_reachable_at_n6
+PASSED tests/test_statistics.py::test_cluster_bootstrap_ci_brackets_point_estimate
+PASSED tests/test_statistics.py::test_paired_effect_sizes_sign
+PASSED tests/test_statistics.py::test_multiplicity_monotone
+PASSED tests/test_studentlife_imputation.py::test_forward_fill_never_uses_a_future_observation
+PASSED tests/test_studentlife_imputation.py::test_forward_fill_all_missing_is_zero
+PASSED tests/test_studentlife_imputation.py::test_train_mean_normalizer_ignores_missing_and_padding
+PASSED tests/test_studentlife_imputation.py::test_early_v2_cache_filename_recovers_unambiguous_version
+PASSED tests/test_studentlife_imputation.py::test_ambiguous_metadata_free_cache_remains_legacy
+PASSED tests/test_timesnet.py::test_official_timesnet_shape_and_mask

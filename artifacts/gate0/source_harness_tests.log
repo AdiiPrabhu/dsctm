@@ -1,0 +1,17 @@
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting tests/test_model.py _____________________
+tests/test_model.py:4: in <module>
+    from dmstcn import DMSTCN, DMSTCNConfig
+src/dmstcn/__init__.py:4: in <module>
+    from dmstcn.model import DMSTCN, DMSTCNOutput
+src/dmstcn/model.py:105: in <module>
+    class DMSTCN(nn.Module):
+src/dmstcn/model.py:132: in DMSTCN
+    def forward(self, inputs: Tensor, subject_ids: Tensor, mask: Tensor | None = None) -> DMSTCNOutput:
+E   TypeError: unsupported operand type(s) for |: 'torch._C._TensorMeta' and 'NoneType'
+- generated xml file: /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/artifacts/gate0/source_harness_tests.xml -
+=========================== short test summary info ============================
+ERROR tests/test_model.py - TypeError: unsupported operand type(s) for |: 'to...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.42s

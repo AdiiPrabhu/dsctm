@@ -26,3 +26,10 @@ htmlcov/
 # --- OS cruft ---
 .DS_Store
 Thumbs.db
+
+# --- PARAM campaign: keep result roots tracked but never their payloads ---
+results/**/runs/
+results/**/*.pt
+results/**/*.ckpt
+results/**/*.parquet
+results/**/*.npz

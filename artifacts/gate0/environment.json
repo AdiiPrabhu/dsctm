@@ -1,0 +1,31 @@
+{
+  "captured_utc": "2026-07-25T19:28:03Z",
+  "cuda_available": false,
+  "cuda_device_count": 0,
+  "dist_available": true,
+  "git_branch": "param-main",
+  "git_dirty": true,
+  "git_sha": "52ad6b1714c89d0e543c389004fe41c8c3ef1fc6",
+  "gloo_available": true,
+  "machine": "arm64",
+  "mpi_available": false,
+  "mps_available": true,
+  "nccl_available": false,
+  "packages": {
+    "numpy": "2.0.2",
+    "opensmile": "MISSING",
+    "pandas": "2.3.3",
+    "pyarrow": "MISSING",
+    "pytest": "8.4.2",
+    "scipy": "1.13.1",
+    "sklearn": "1.6.1",
+    "thop": "MISSING",
+    "yaml": "6.0.3"
+  },
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "processor": "arm",
+  "python": "3.9.6",
+  "python_full": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "torch": "2.8.0",
+  "torch_cuda_build": null
+}

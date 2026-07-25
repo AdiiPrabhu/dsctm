@@ -1,0 +1,22 @@
+...........                                                              [100%]
+=============================== warnings summary ===============================
+tests/test_causality.py::test_causality_and_reproducibility
+  /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/claude/dsctm/src/dsctm/experiments/gate0.py:195: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+    r["determinism_max_diff"] = float((a - b).abs().max())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==================================== PASSES ====================================
+- generated xml file: /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/artifacts/gate0/claude_archived_tests.xml -
+=========================== short test summary info ============================
+PASSED tests/test_causality.py::test_causality_and_reproducibility
+PASSED tests/test_causality.py::test_tcp_invariants
+PASSED tests/test_receptive_field.py::test_measured_rf_matches_two_conv_formula
+PASSED tests/test_receptive_field.py::test_manuscript_printed_rf_is_wrong
+PASSED tests/test_splits.py::test_subject_grouped_folds_have_no_leakage
+PASSED tests/test_splits.py::test_leakage_detector_catches_overlap
+PASSED tests/test_statistics.py::test_wilcoxon_n5_two_sided_cannot_reach_significance
+PASSED tests/test_statistics.py::test_significance_reachable_at_n6
+PASSED tests/test_statistics.py::test_cluster_bootstrap_ci_brackets_point_estimate
+PASSED tests/test_statistics.py::test_paired_effect_sizes_sign
+PASSED tests/test_statistics.py::test_multiplicity_monotone

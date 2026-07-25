@@ -1,0 +1,28 @@
+claim_id,claim,value,source_document,produced_on,status
+SL-4.1-DMSTCN,StudentLife EXP-4.1 corrected D-MSTCN pooled macro-F1,0.3428 +/- 0.0067 (rank 4/6),codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-4.1-TRF,StudentLife corrected transformer,0.3675 +/- 0.0047,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-4.1-ITRF,StudentLife corrected itransformer,0.3612 +/- 0.0098,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-4.1-TN,StudentLife corrected timesnet,0.3493 +/- 0.0073,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-4.1-TCN,StudentLife corrected temporal-cnn,0.3243 +/- 0.0077,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-4.1-LSTM,StudentLife corrected lstm,0.2970 +/- 0.0041,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-SPLITHASH,StudentLife split hash,6208d08f0b8db52b,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-DATAHASH-V2,StudentLife v2 causal-ffill cache hash,a9cbaa3a22c2bf4e,codex/dsctm/STATUS.md,RTX 4060 Ti,unverifiable_no_artifact
+SL-DATAHASH-V1,StudentLife v1 cache hash (leakage-quarantined),62de62987570bc40,codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+DW-MASK-DMSTCN,DAIC-WOZ 88d masked D-MSTCN macro-F1,0.4818 (rank 3/6),codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+DW-MASK-ITRF,DAIC-WOZ 88d masked itransformer,0.5090,codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+DW-MASK-LSTM,DAIC-WOZ 88d masked lstm,0.4841,codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+DW-UNMASK-DMSTCN,DAIC-WOZ 88d unmasked D-MSTCN,0.4854 +/- 0.0307 (rank 2/6),claude/dsctm/HANDOFF.md,RTX 4060 Ti,unverifiable_and_padding_defective
+EDAIC23-DMSTCN,E-DAIC 23d D-MSTCN,0.5529 +/- 0.0918 (rank 2/6),claude/dsctm/HANDOFF.md,RTX 4060 Ti,unverifiable_and_padding_defective
+EDAIC88-DMSTCN,E-DAIC 88d D-MSTCN,0.5222 (rank 3/6),claude/dsctm/HANDOFF.md,RTX 4060 Ti,unverifiable_and_padding_defective
+SL-PRECORR-DMSTCN,StudentLife pre-correction D-MSTCN,0.3233 (rank 4/6),claude/dsctm/HANDOFF.md,RTX 4060 Ti,unverifiable_and_imputation_leakage
+SYS-SL-LAT,Single-device StudentLife inference,1.427 ms median / 22418 samples-s / 27.9 MiB,codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+SYS-DW-LAT,Single-device DAIC-WOZ inference,7.545 ms median / 1060 samples-s / 130.2 MiB,codex/dsctm/METRICS.md,RTX 4060 Ti,unverifiable_no_artifact
+COH-SL,StudentLife cohort,46 subjects / 2160 windows / 578-973-609,both ledgers,RTX 4060 Ti,unverifiable_rederive_on_param
+COH-EDAIC,E-DAIC cohort,275 sessions / 163-56-56 / 209 neg 66 pos,both ledgers,RTX 4060 Ti,unverifiable_rederive_on_param
+COH-DW,DAIC-WOZ cohort,188 of 189 sessions / 107-34-47,claude/dsctm/HANDOFF.md,RTX 4060 Ti,partially_checkable_split_csvs_present
+DW-LEN,DAIC session lengths,median 1821 / min 830 / max 2000,both ledgers,RTX 4060 Ti,unverifiable_rederive_on_param
+SL-MISS,StudentLife sensor missingness,approx 0.61,both ledgers,RTX 4060 Ti,unverifiable_rederive_on_param
+PARAMCOUNT,Total D-MSTCN parameters,approx 1.36 M,both ledgers,RTX 4060 Ti,recomputable_from_source_gate1
+RF,Receptive fields SSB-MSB-LSB,61 / 481 / 1921,both ledgers,code property,SURVIVES_reverified_gate0
+FILM,Per-subject stored adapter cost,d_s = 8 (not 2D = 256),both ledgers,code property,SURVIVES_assert_added_gate1
+WILCOXON,Two-sided exact Wilcoxon n=5 minimum p,0.0625 (p<0.05 unreachable),both ledgers,arithmetic,SURVIVES_reverified_gate0
