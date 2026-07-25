@@ -1,0 +1,79 @@
+<meta charset="utf-8"><title>D-MSTCN · PARAM Utkarsh</title>
+<style>
+:root{--bg:#0f1116;--fg:#e6e9ef;--dim:#8b93a7;--card:#171a21;--line:#252a35;
+--ok:#3fb950;--warn:#d29922;--bad:#f85149;--run:#58a6ff}
+@media(prefers-color-scheme:light){:root{--bg:#f6f7f9;--fg:#1c2027;--dim:#6b7280;
+--card:#fff;--line:#e3e6ea}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);
+font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;padding:24px}
+h1{font-size:18px;margin:0 0 4px}h2{font-size:13px;text-transform:uppercase;
+letter-spacing:.08em;color:var(--dim);margin:28px 0 10px}
+.meta{color:var(--dim);font-size:12px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.big{font-size:26px;font-weight:600}.card .k{color:var(--dim);font-size:11px;
+text-transform:uppercase;letter-spacing:.06em}
+table{width:100%;border-collapse:collapse;background:var(--card);
+border:1px solid var(--line);border-radius:8px;overflow:hidden}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+color:var(--dim);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:7px 10px;border-bottom:1px solid var(--line);font-size:13px}
+tr:last-child td{border-bottom:0}.n{text-align:right;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)}.mono{font-size:11px}.bad{color:var(--bad)}
+.pill{padding:1px 7px;border-radius:99px;font-size:11px;background:var(--line)}
+.pill.running{background:rgba(88,166,255,.18);color:var(--run)}
+.pill.completed{background:rgba(63,185,80,.18);color:var(--ok)}
+.pill.pending{background:rgba(210,153,34,.18);color:var(--warn)}
+.pill.failed,.pill.cancelled,.pill.timeout{background:rgba(248,81,73,.18);color:var(--bad)}
+.track{display:inline-block;height:7px;background:var(--line);border-radius:99px;
+overflow:hidden;width:100%;vertical-align:middle}
+.track.sm{width:120px}.track i{display:block;height:100%}
+.row{display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;
+margin:6px 0}.lbl{color:var(--dim);font-size:12px}.val{text-align:right;font-size:12px}
+.spark{width:100%;height:70px;margin-top:8px}
+.spark polyline{fill:none;stroke:var(--ok);stroke-width:2;vector-effect:non-scaling-stroke}
+.note{color:var(--dim);font-size:11px;margin-top:8px}
+</style>
+<h1>D-MSTCN — PARAM Utkarsh</h1>
+<div class="meta">Adityas-MacBook-Pro.local · user adii ·
+snapshot 2026-07-25T20:44:20.429738+00:00 · 1 samples ·
+SLURM NOT DETECTED (off-cluster render)</div>
+
+<div class="grid">
+  <div class="card"><div class="k">Campaign complete</div>
+    <div class="big">0<span class="dim" style="font-size:15px">/294</span></div>
+    <div class="note">0.0% of planned tasks</div></div>
+  <div class="card"><div class="k">Jobs running</div>
+    <div class="big">0</div>
+    <div class="note">0 pending</div></div>
+  <div class="card"><div class="k">Failures</div>
+    <div class="big ">
+      0</div>
+    <div class="note">model + infrastructure</div></div>
+  <div class="card"><div class="k">Cluster GPUs in use</div>
+    <div class="big">—<span class="dim" style="font-size:15px">/20</span></div>
+    <div class="note">V100s across all users</div></div>
+</div>
+
+<h2>Progress by family</h2>
+<table><tr><th>family</th><th class=n>planned</th><th class=n>done</th><th class=n>running</th>
+<th class=n>failed</th><th>progress</th><th class=n>%</th></tr><tr><td>ablation</td><td class=n>78</td><td class=n>0</td><td class=n>0</td><td class='n '>0</td><td><span class='track sm'><i style='width:0.0%;background:var(--ok)'></i></span></td><td class=n>0%</td></tr><tr><td>confirm-daicwoz</td><td class=n>60</td><td class=n>0</td><td class=n>0</td><td class='n '>0</td><td><span class='track sm'><i style='width:0.0%;background:var(--ok)'></i></span></td><td class=n>0%</td></tr><tr><td>confirm-studentlife</td><td class=n>60</td><td class=n>0</td><td class=n>0</td><td class='n '>0</td><td><span class='track sm'><i style='width:0.0%;background:var(--ok)'></i></span></td><td class=n>0%</td></tr><tr><td>tuning-daicwoz</td><td class=n>48</td><td class=n>0</td><td class=n>0</td><td class='n '>0</td><td><span class='track sm'><i style='width:0.0%;background:var(--ok)'></i></span></td><td class=n>0%</td></tr><tr><td>tuning-studentlife</td><td class=n>48</td><td class=n>0</td><td class=n>0</td><td class='n '>0</td><td><span class='track sm'><i style='width:0.0%;background:var(--ok)'></i></span></td><td class=n>0%</td></tr></table>
+
+
+
+<h2>Queue</h2>
+<table><tr><th>job</th><th>name</th><th>state</th><th>elapsed/limit</th><th class=n>nodes</th>
+<th>partition</th><th>node list / reason</th></tr><tr><td colspan=7 class=dim>no jobs in queue</td></tr></table>
+
+<h2>Recent accounting (48 h)</h2>
+<table><tr><th>job</th><th>name</th><th>state</th><th>elapsed</th><th>max RSS</th>
+<th>exit</th></tr><tr><td colspan=6 class=dim>no accounting records</td></tr></table>
+
+<h2>Failures</h2>
+<table><tr><th>family</th><th>task</th><th>class</th></tr><tr><td colspan=3 class=dim>no failures recorded</td></tr></table>
+
+<div class="note" style="margin-top:24px">
+Self-contained: no external assets, works offline. Regenerate with
+<code>python scripts/param/monitor.py --dashboard &lt;path&gt;</code>.
+Only <code>results/param_utkarsh_authoritative/</code> is citable.
+</div>

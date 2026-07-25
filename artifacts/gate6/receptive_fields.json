@@ -1,0 +1,271 @@
+{
+  "kernel_size": 3,
+  "formula": "R = 1 + 2(K-1)*sum(r_l)",
+  "note": "Every value derived from Branch.theoretical_rf_two_conv(). The manuscript's 47/383/1535 satisfy 6*r_max-1, which corresponds to no standard dilated-TCN derivation.",
+  "rows": [
+    {
+      "schedule": "original",
+      "branch": "ssb",
+      "dilations": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "sum_dilations": 15,
+      "kernel_size": 3,
+      "rf_two_conv": 61,
+      "rf_one_conv": 31,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "61.0 min",
+      "span_daicwoz": "30 s",
+      "manuscript_printed": 47,
+      "manuscript_correct": false,
+      "manuscript_formula_6rmax_minus_1": 47
+    },
+    {
+      "schedule": "original",
+      "branch": "msb",
+      "dilations": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "sum_dilations": 120,
+      "kernel_size": 3,
+      "rf_two_conv": 481,
+      "rf_one_conv": 241,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "8.0 h",
+      "span_daicwoz": "4.0 min",
+      "manuscript_printed": 383,
+      "manuscript_correct": false,
+      "manuscript_formula_6rmax_minus_1": 383
+    },
+    {
+      "schedule": "original",
+      "branch": "lsb",
+      "dilations": [
+        32,
+        64,
+        128,
+        256
+      ],
+      "sum_dilations": 480,
+      "kernel_size": 3,
+      "rf_two_conv": 1921,
+      "rf_one_conv": 961,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "32.0 h",
+      "span_daicwoz": "16.0 min",
+      "manuscript_printed": 1535,
+      "manuscript_correct": false,
+      "manuscript_formula_6rmax_minus_1": 1535
+    },
+    {
+      "schedule": "compressed",
+      "branch": "ssb",
+      "dilations": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "sum_dilations": 10,
+      "kernel_size": 3,
+      "rf_two_conv": 41,
+      "rf_one_conv": 21,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "41.0 min",
+      "span_daicwoz": "20 s"
+    },
+    {
+      "schedule": "compressed",
+      "branch": "msb",
+      "dilations": [
+        4,
+        8,
+        12,
+        16
+      ],
+      "sum_dilations": 40,
+      "kernel_size": 3,
+      "rf_two_conv": 161,
+      "rf_one_conv": 81,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "2.7 h",
+      "span_daicwoz": "80 s"
+    },
+    {
+      "schedule": "compressed",
+      "branch": "lsb",
+      "dilations": [
+        16,
+        32,
+        48,
+        64
+      ],
+      "sum_dilations": 160,
+      "kernel_size": 3,
+      "rf_two_conv": 641,
+      "rf_one_conv": 321,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "10.7 h",
+      "span_daicwoz": "5.3 min"
+    },
+    {
+      "schedule": "expanded",
+      "branch": "ssb",
+      "dilations": [
+        1,
+        4,
+        16,
+        64
+      ],
+      "sum_dilations": 85,
+      "kernel_size": 3,
+      "rf_two_conv": 341,
+      "rf_one_conv": 171,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "5.7 h",
+      "span_daicwoz": "2.8 min"
+    },
+    {
+      "schedule": "expanded",
+      "branch": "msb",
+      "dilations": [
+        8,
+        32,
+        128,
+        512
+      ],
+      "sum_dilations": 680,
+      "kernel_size": 3,
+      "rf_two_conv": 2721,
+      "rf_one_conv": 1361,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "45.4 h",
+      "span_daicwoz": "22.7 min"
+    },
+    {
+      "schedule": "expanded",
+      "branch": "lsb",
+      "dilations": [
+        32,
+        128,
+        512,
+        2048
+      ],
+      "sum_dilations": 2720,
+      "kernel_size": 3,
+      "rf_two_conv": 10881,
+      "rf_one_conv": 5441,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "7.6 d",
+      "span_daicwoz": "1.5 h"
+    },
+    {
+      "schedule": "uniform",
+      "branch": "ssb",
+      "dilations": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "sum_dilations": 4,
+      "kernel_size": 3,
+      "rf_two_conv": 17,
+      "rf_one_conv": 9,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "17.0 min",
+      "span_daicwoz": "8 s"
+    },
+    {
+      "schedule": "uniform",
+      "branch": "msb",
+      "dilations": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "sum_dilations": 32,
+      "kernel_size": 3,
+      "rf_two_conv": 129,
+      "rf_one_conv": 65,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "2.1 h",
+      "span_daicwoz": "64 s"
+    },
+    {
+      "schedule": "uniform",
+      "branch": "lsb",
+      "dilations": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "sum_dilations": 128,
+      "kernel_size": 3,
+      "rf_two_conv": 513,
+      "rf_one_conv": 257,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "8.6 h",
+      "span_daicwoz": "4.3 min"
+    },
+    {
+      "schedule": "duration_aligned",
+      "branch": "ssb",
+      "dilations": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "sum_dilations": 15,
+      "kernel_size": 3,
+      "rf_two_conv": 61,
+      "rf_one_conv": 31,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "61.0 min",
+      "span_daicwoz": "30 s"
+    },
+    {
+      "schedule": "duration_aligned",
+      "branch": "msb",
+      "dilations": [
+        16,
+        32,
+        64,
+        128
+      ],
+      "sum_dilations": 240,
+      "kernel_size": 3,
+      "rf_two_conv": 961,
+      "rf_one_conv": 481,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "16.0 h",
+      "span_daicwoz": "8.0 min"
+    },
+    {
+      "schedule": "duration_aligned",
+      "branch": "lsb",
+      "dilations": [
+        64,
+        128,
+        256,
+        512
+      ],
+      "sum_dilations": 960,
+      "kernel_size": 3,
+      "rf_two_conv": 3841,
+      "rf_one_conv": 1921,
+      "formula": "R = 1 + 2(K-1)*sum(r_l)",
+      "span_studentlife": "2.7 d",
+      "span_daicwoz": "32.0 min"
+    }
+  ]
+}
