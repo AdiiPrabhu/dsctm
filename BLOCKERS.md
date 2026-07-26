@@ -407,3 +407,64 @@ Escalation order if the conda build fails: (1) `anaconda3/pytorch` site module,
 | Account | `nsmexternal` (no partition restriction, QOS `normal`) |
 | Scratch | `/scratch` — Lustre, 859 TB total, **548 TB free** |
 | Login node | `login03` |
+
+
+---
+
+## B-026 CONFIRMED — PARAM has NO internet egress (2026-07-26)
+
+`pip install` from `login03` fails at **DNS resolution**, not at the proxy or firewall:
+
+```
+NameResolutionError: Failed to resolve 'download.pytorch.org'
+([Errno -2] Name or service not known)
+```
+
+This is the strongest form of the blocker. It is not "compute nodes are restricted, stage
+from login" — **the login node itself cannot resolve external hostnames.**
+
+### What it breaks
+
+| Assumed | Reality |
+|---|---|
+| `pip install torch` in `env.sh` | ❌ cannot reach PyPI or download.pytorch.org |
+| `wget` the DAIC-WOZ / E-DAIC archives (~86 GB) | ❌ cannot reach `dcapswoz.ict.usc.edu` |
+| `kaggle datasets download` | ❌ cannot reach kaggle.com |
+| `git clone` from GitHub | ❌ unless an internal mirror exists |
+| `stage_datasets.sbatch` | correctly aborts on its egress check — working as designed |
+
+### Paths that remain
+
+**Environment** — three options, cheapest first:
+
+1. `DSCTM_USE_SITE_TORCH=1 source scripts/param/env.sh` — use the cluster's
+   `anaconda3/pytorch` module directly. No download at all. You inherit the site's Python
+   and torch versions, which may be too old.
+2. **Offline wheel bundle** (implemented): run `scripts/param/offline_bundle.sh` on a
+   machine with internet, `rsync` the ~2.5 GB archive to PARAM, then
+   `DSCTM_OFFLINE_WHEELS=~/dsctm_wheels source scripts/param/env.sh`. Wheels are fetched
+   for `linux_x86_64 / cp310` regardless of the building host, so a Mac can produce a
+   CentOS bundle.
+3. Ask CDAC support for an HTTP/HTTPS proxy or a local PyPI mirror. Many national HPC
+   facilities have one that is simply not advertised in the MOTD. **Ask before assuming
+   options 1–2 are the only routes.**
+
+**Datasets** — no automated path exists. Either:
+
+1. CDAC provides a proxy or a data-transfer node, or
+2. the author downloads ~90 GB locally and `rsync`s it:
+   `rsync -avP --partial -e 'ssh -p 4422' ./datasets/ $USER@paramutkarsh.cdac.in:$DSCTM_DATA_ROOT/`
+
+**This is now the critical-path blocker for the entire campaign.** Compute is allocated,
+the environment has a workaround, but 90 GB of data cannot be moved by any script in this
+repository without either a proxy or a long local download plus transfer.
+
+### Recommended action
+
+Raise a ticket with `utkarsh-support@cdac.in` asking specifically for:
+
+* an HTTP/HTTPS proxy for compute or login nodes, or a local PyPI/conda mirror
+* whether a data-transfer node with egress exists for staging research datasets
+* whether `dcapswoz.ict.usc.edu` can be whitelisted for the duration of the project
+
+The answer determines whether staging takes an afternoon or a week.

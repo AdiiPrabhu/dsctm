@@ -50,13 +50,24 @@ else
   echo "WARNING: no 'module' command; assuming conda is already on PATH"
 fi
 
-if ! command -v conda >/dev/null 2>&1; then
+if [[ -n "${DSCTM_USE_SITE_TORCH:-}" ]]; then
+  # Use the cluster's own PyTorch module instead of building an env. Fastest path on an
+  # air-gapped node, but you inherit whatever Python and torch version the site ships.
+  echo "using SITE torch module (DSCTM_USE_SITE_TORCH set); skipping conda env creation"
+  export PYTHONPATH="$REPO_ROOT/src:$REPO_ROOT:${PYTHONPATH:-}"
+  export DSCTM_REPO_ROOT="$REPO_ROOT"
+  python -c "import torch,sys;print('site python',sys.version.split()[0],'torch',torch.__version__,'cuda',torch.version.cuda)" \
+    || { echo "FATAL: site torch not importable. module load anaconda3/pytorch first."; return 1 2>/dev/null || exit 1; }
+  SKIP_ENV=1
+fi
+
+if [[ -z "${SKIP_ENV:-}" ]] && ! command -v conda >/dev/null 2>&1; then
   echo "FATAL: conda not found after module load."
   echo "  Run 'module avail' and re-run with, e.g.:"
   echo "    DSCTM_MODULES='anaconda3/anaconda3' source scripts/param/env.sh"
   return 1 2>/dev/null || exit 1
 fi
-eval "$(conda shell.bash hook)"
+[[ -z "${SKIP_ENV:-}" ]] && eval "$(conda shell.bash hook)"
 
 # --------------------------------------------------------------------------- #
 # 2. Create or reuse the environment
@@ -66,7 +77,9 @@ if [[ $REBUILD -eq 1 && -d "$ENV_PREFIX" ]]; then
   conda env remove -p "$ENV_PREFIX" -y || rm -rf "$ENV_PREFIX"
 fi
 
-if [[ ! -d "$ENV_PREFIX" ]]; then
+if [[ -n "${SKIP_ENV:-}" ]]; then
+  :
+elif [[ ! -d "$ENV_PREFIX" ]]; then
   echo "creating conda env at $ENV_PREFIX ..."
   conda create -p "$ENV_PREFIX" -y "python=$PY_VERSION"
   conda activate "$ENV_PREFIX"
@@ -83,15 +96,48 @@ if [[ ! -d "$ENV_PREFIX" ]]; then
   # Override with DSCTM_TORCH_SPEC / DSCTM_TORCH_INDEX after checking `nvidia-smi`.
   TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"
   TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://download.pytorch.org/whl/cu118}"
-  echo "installing: $TORCH_SPEC  (index $TORCH_INDEX)"
-  pip install --no-cache-dir $TORCH_SPEC --index-url "$TORCH_INDEX"
 
-  pip install --no-cache-dir \
-    "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
-    "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
-    "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
-
-  pip install -e "$REPO_ROOT"
+  if [[ -n "${DSCTM_OFFLINE_WHEELS:-}" ]]; then
+    # ---- OFFLINE: install from a pre-staged wheel directory --------------- #
+    # PARAM login and compute nodes have NO internet egress (DNS resolution
+    # fails outright), so pip cannot reach PyPI or download.pytorch.org.
+    # Build the bundle on a machine that does have egress:
+    #     bash scripts/param/offline_bundle.sh      # on your laptop
+    # then rsync it here and point DSCTM_OFFLINE_WHEELS at it.
+    if [[ ! -d "$DSCTM_OFFLINE_WHEELS" ]]; then
+      echo "FATAL: DSCTM_OFFLINE_WHEELS=$DSCTM_OFFLINE_WHEELS does not exist"
+      return 1 2>/dev/null || exit 1
+    fi
+    echo "installing OFFLINE from $DSCTM_OFFLINE_WHEELS"
+    pip install --no-cache-dir --no-index --find-links "$DSCTM_OFFLINE_WHEELS" \
+      torch torchvision numpy scipy scikit-learn pandas pyyaml pytest \
+      pyarrow thop opensmile soundfile matplotlib \
+      || { echo "FATAL: offline install failed. Is the bundle complete for cp${PY_VERSION/./}?"; \
+           return 1 2>/dev/null || exit 1; }
+    pip install --no-cache-dir --no-index --no-build-isolation -e "$REPO_ROOT" \
+      || pip install --no-cache-dir --no-deps -e "$REPO_ROOT"
+  else
+    # ---- ONLINE ------------------------------------------------------------ #
+    echo "installing: $TORCH_SPEC  (index $TORCH_INDEX)"
+    if ! pip install --no-cache-dir $TORCH_SPEC --index-url "$TORCH_INDEX"; then
+      echo
+      echo "FATAL: pip could not reach $TORCH_INDEX."
+      echo "  PARAM nodes may have no internet egress. Check first:"
+      echo "     env | grep -i proxy ; getent hosts pypi.org"
+      echo "  If there is no egress, use the offline route:"
+      echo "     1. on a machine WITH internet:  bash scripts/param/offline_bundle.sh"
+      echo "     2. rsync dsctm_wheels.tar.gz to PARAM and untar it"
+      echo "     3. DSCTM_OFFLINE_WHEELS=~/dsctm_wheels source scripts/param/env.sh"
+      echo "  Or try the site PyTorch instead:"
+      echo "     DSCTM_USE_SITE_TORCH=1 source scripts/param/env.sh"
+      return 1 2>/dev/null || exit 1
+    fi
+    pip install --no-cache-dir \
+      "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
+      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
+      "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
+    pip install -e "$REPO_ROOT"
+  fi
 else
   conda activate "$ENV_PREFIX"
   echo "reusing existing env"
