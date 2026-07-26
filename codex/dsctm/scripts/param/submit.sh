@@ -8,11 +8,29 @@
 #   bash scripts/param/submit.sh --debug 2gpu_ddp_smoke.sbatch   # 1 h debug partition
 set -euo pipefail
 
+# Resolve the account. sacctmgr's default column width is 10 characters and it TRUNCATES
+# with a trailing '+', so "nsmextern+" is not a usable account name. -P (parsable) and an
+# explicit width both avoid that; we use -P because it is exact.
 if [[ -z "${DSCTM_ACCOUNT:-}" ]]; then
-  echo "FATAL: DSCTM_ACCOUNT is unset."
-  echo "  PARAM requires an account on every job. Find yours with:"
-  echo "     sacctmgr show associations user=\$USER format=Account,Partition,QOS"
+  DSCTM_ACCOUNT="$(sacctmgr -n -P show associations user="$USER" format=Account 2>/dev/null \
+                   | grep -v '^$' | sort -u | head -n1)"
+  [[ -n "$DSCTM_ACCOUNT" ]] && echo "auto-detected account: $DSCTM_ACCOUNT"
+fi
+
+if [[ -z "${DSCTM_ACCOUNT:-}" ]]; then
+  echo "FATAL: could not determine your SLURM account."
+  echo "  PARAM requires one on every job. Get the UNTRUNCATED name with either:"
+  echo "     sacctmgr -P show associations user=\$USER format=Account,Partition,QOS"
+  echo "     sacctmgr show associations user=\$USER format=Account%30,Partition,QOS"
+  echo "  (plain 'format=Account' truncates at 10 chars and appends '+')"
   echo "  then:  export DSCTM_ACCOUNT=<account>"
+  exit 2
+fi
+
+if [[ "$DSCTM_ACCOUNT" == *+ ]]; then
+  echo "FATAL: DSCTM_ACCOUNT='$DSCTM_ACCOUNT' ends in '+' - that is sacctmgr truncation,"
+  echo "  not part of the name. Get the full value with:"
+  echo "     sacctmgr -P show associations user=\$USER format=Account"
   exit 2
 fi
 
