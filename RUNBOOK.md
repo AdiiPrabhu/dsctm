@@ -171,6 +171,47 @@ Closes **BLOCKER B-008**.
 
 ---
 
+## Phase 4b — DRY RUN before the 294-task campaign  *(~1-4 h, `gpu` partition)*  ← DO THIS
+
+Never submit a 294-task array on an estimate. Run five real tasks first, one per family,
+fully instrumented.
+
+```bash
+sbatch scripts/param/1task_dryrun.sbatch
+```
+
+It prints the plan, runs one real task per family, extrapolates to the full campaign from
+the **measured** time, and audits the contract on what it produced.
+
+What it answers that an estimate cannot:
+
+| Question | Why it matters |
+|---|---|
+| Does a task complete end-to-end on PARAM? | the whole pipeline, not just imports |
+| Are all 15 contract files produced? | a run without them is not citable |
+| What does one task actually cost? | replaces the a-priori bracket |
+| How many epochs does early stopping really use? | the largest unknown in the estimate |
+
+Then extrapolate and decide:
+
+```bash
+python scripts/param/calibrate.py --extrapolate $DSCTM_RESULTS_ROOT/calibration_<JOBID>.json
+```
+
+Want it faster and cheaper still? Cap the epochs — but the extrapolation then **understates**
+real cost and is only good for proving the pipeline works:
+
+```bash
+python scripts/param/calibrate.py --sample 1 --max-epochs 3
+```
+
+**A note on "price".** PARAM Utkarsh is a national facility. You are not billed in currency;
+you consume node-hours against your project's allocation. The number that matters is
+GPU-hours (see `artifacts/gate5/compute_estimate.json`) and, socially, the share of the
+cluster's **20 V100s** you hold at once. The arrays are throttled to `%4` for that reason.
+
+---
+
 ## Phase 5 — Scientific campaign  *(days, `gpu` partition, 1 V100 per task)*
 
 ### 5a. Verify the array bounds — never type them
