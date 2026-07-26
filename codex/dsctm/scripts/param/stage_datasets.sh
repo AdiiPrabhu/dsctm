@@ -120,14 +120,44 @@ stage_studentlife() {
   log "StudentLife -> $SL_ROOT"
   log "  source: https://www.kaggle.com/datasets/${STUDENTLIFE_KAGGLE}"
   if ! command -v kaggle >/dev/null 2>&1; then
-    log "FATAL: kaggle CLI not found."
-    log "  pip install kaggle"
-    log "  then place your API token at ~/.kaggle/kaggle.json (chmod 600)"
-    log "  token: kaggle.com -> Account -> Create New API Token"
+    log "FATAL: kaggle CLI not found.  pip install kaggle kagglehub"
     return 1
   fi
-  if [[ ! -f "$HOME/.kaggle/kaggle.json" ]]; then
-    log "FATAL: ~/.kaggle/kaggle.json missing. Kaggle downloads need an API token."
+
+  # Credentials, in precedence order. NOTHING is written into the repository, and no
+  # credential is ever echoed. Set these in your shell before running:
+  #
+  #   export KAGGLE_API_TOKEN=KGAT_...              # newer single-token form
+  #   export KAGGLE_USERNAME=... KAGGLE_KEY=...     # classic pair
+  #   ~/.kaggle/kaggle.json                         # classic file (chmod 600)
+  #
+  # A token pasted into a terminal is in your shell history. Expire it at
+  # kaggle.com -> Settings -> API once staging is done.
+  if [[ -n "${KAGGLE_API_TOKEN:-}" ]]; then
+    log "  auth: KAGGLE_API_TOKEN (env)"
+    export KAGGLEHUB_TOKEN="${KAGGLE_API_TOKEN}"
+    # The classic CLI wants username+key. If only the single token is present, write it to
+    # a private temp file OUTSIDE the repo and remove it on exit.
+    if [[ -z "${KAGGLE_USERNAME:-}" && ! -f "$HOME/.kaggle/kaggle.json" ]]; then
+      export KAGGLE_CONFIG_DIR="$(mktemp -d)"
+      chmod 700 "$KAGGLE_CONFIG_DIR"
+      printf '{"username":"%s","key":"%s"}' \
+        "${KAGGLE_USERNAME:-${USER}}" "${KAGGLE_API_TOKEN}" \
+        > "$KAGGLE_CONFIG_DIR/kaggle.json"
+      chmod 600 "$KAGGLE_CONFIG_DIR/kaggle.json"
+      trap 'rm -rf "$KAGGLE_CONFIG_DIR"' RETURN
+      log "  (ephemeral KAGGLE_CONFIG_DIR created; removed on exit)"
+    fi
+  elif [[ -n "${KAGGLE_USERNAME:-}" && -n "${KAGGLE_KEY:-}" ]]; then
+    log "  auth: KAGGLE_USERNAME + KAGGLE_KEY (env)"
+  elif [[ -f "$HOME/.kaggle/kaggle.json" ]]; then
+    log "  auth: ~/.kaggle/kaggle.json"
+    chmod 600 "$HOME/.kaggle/kaggle.json" 2>/dev/null || true
+  else
+    log "FATAL: no Kaggle credentials found. Set ONE of:"
+    log "    export KAGGLE_API_TOKEN=KGAT_..."
+    log "    export KAGGLE_USERNAME=... KAGGLE_KEY=..."
+    log "    ~/.kaggle/kaggle.json   (kaggle.com -> Settings -> API)"
     return 1
   fi
   mkdir -p "$(dirname "$SL_ROOT")"
