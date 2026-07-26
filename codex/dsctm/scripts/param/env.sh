@@ -143,7 +143,25 @@ elif [[ ! -d "$ENV_PREFIX" ]]; then
   fi
 else
   conda activate "$ENV_PREFIX"
-  echo "reusing existing env"
+  echo "reusing existing env  ($(python -V 2>&1))"
+  # An env directory can exist while the install that was meant to fill it FAILED --
+  # exactly what happens when `conda create` succeeds and the following `pip install torch`
+  # dies on a DNS error. Reusing it blindly leaves a Python with no torch and a very
+  # confusing preflight. Verify, and finish the job if it is incomplete.
+  if ! python -c "import torch" >/dev/null 2>&1; then
+    echo "  env is INCOMPLETE (torch not importable) - completing the install"
+    TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"
+    TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://pypi.org/simple}"
+    pip install --no-cache-dir $TORCH_SPEC --index-url "$TORCH_INDEX" \
+      || { echo "FATAL: torch install failed. If pypi.org is unreachable, use:"; \
+           echo "  bash scripts/param/bootstrap_offline.sh ~/dsctm_wheels"; \
+           return 1 2>/dev/null || exit 1; }
+    pip install --no-cache-dir \
+      "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
+      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
+      "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
+    pip install -e "$REPO_ROOT" || true
+  fi
 fi
 
 export PYTHONPATH="$REPO_ROOT/src:$REPO_ROOT:${PYTHONPATH:-}"
