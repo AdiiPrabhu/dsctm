@@ -371,3 +371,39 @@ running Step 4 of `RUN_ORDER.md`.
 **Revised scaling arithmetic.** The `gpu` partition is 9 nodes = **18 V100s**, not 20.
 2 nodes = 22 %, 4 nodes = 44 %, and the manuscript's N=16 would be **89 %** of the entire
 GPU partition. B-009 stands and is now slightly worse than recorded.
+
+
+---
+
+## Module survey on PARAM Utkarsh (2026-07-26, login03)
+
+Confirmed available and now the pinned defaults:
+
+| Module | Status |
+|---|---|
+| `anaconda3/anaconda3` | ✅ the conda base `env.sh` uses |
+| `cuda/11.8` | ✅ matches the `torch==2.1.2+cu118` pin exactly |
+| `cuda/12.0` | available (cluster default), untested here |
+| **`glibc/2.28`** | ✅ **available as a module** |
+| `anaconda3/pytorch` | site-built PyTorch; version unverified |
+| `python/conda-python/3.7`, `python/3.7.11` | too old for this dependency set |
+| `horovod_python/3.9` | present, not used (we use native DDP) |
+| `singularity/3.4.1` | present — a container fallback if the conda route fails |
+
+**B-010 — DOWNGRADED from blocker to a documented choice.** CentOS 7.9 ships glibc 2.17,
+which is why the default pin is `torch==2.1.2+cu118` (manylinux_2_17). But PARAM also
+provides a **`glibc/2.28` module**, so a newer PyTorch is achievable if ever required.
+It is deliberately not the default: loading an alternate glibc manipulates the dynamic
+linker path at runtime and can break unrelated libraries in ways that surface deep inside a
+queued job. The cu118 route needs no such intervention.
+
+Escalation order if the conda build fails: (1) `anaconda3/pytorch` site module,
+(2) `glibc/2.28` + a newer wheel, (3) `singularity/3.4.1` container.
+
+**Confirmed environment facts**
+
+| | |
+|---|---|
+| Account | `nsmexternal` (no partition restriction, QOS `normal`) |
+| Scratch | `/scratch` — Lustre, 859 TB total, **548 TB free** |
+| Login node | `login03` |

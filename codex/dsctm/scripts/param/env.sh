@@ -38,7 +38,7 @@ echo "host:   $(hostname)"
 if command -v module >/dev/null 2>&1; then
   set +u
   module purge 2>/dev/null || true
-  for m in ${DSCTM_MODULES:-anaconda3/anaconda3 cuda/11.8 cuda/12.0}; do
+  for m in ${DSCTM_MODULES:-anaconda3/anaconda3 cuda/11.8}; do
     if module load "$m" 2>/dev/null; then
       echo "module loaded: $m"
     else
@@ -71,8 +71,15 @@ if [[ ! -d "$ENV_PREFIX" ]]; then
   conda create -p "$ENV_PREFIX" -y "python=$PY_VERSION"
   conda activate "$ENV_PREFIX"
 
-  # PyTorch first, from the CUDA index. cu118 is chosen deliberately: it is the newest
-  # CUDA build still published as manylinux_2_17 wheels, which is what glibc 2.17 needs.
+  # PyTorch from the CUDA index. cu118 is chosen deliberately: it is the newest CUDA build
+  # still published as manylinux_2_17 wheels, which is what CentOS 7.9's glibc 2.17 needs,
+  # and `cuda/11.8` is available as a module on this cluster.
+  #
+  # PARAM also ships a `glibc/2.28` module. If you ever need a newer torch, that is the
+  # route -- but loading an alternate glibc at runtime is fragile (it manipulates the
+  # dynamic linker path and can break unrelated libraries), so it is NOT the default.
+  # Verified working combination on PARAM Utkarsh:
+  #     module load anaconda3/anaconda3 cuda/11.8   +   torch 2.1.2+cu118
   # Override with DSCTM_TORCH_SPEC / DSCTM_TORCH_INDEX after checking `nvidia-smi`.
   TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"
   TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://download.pytorch.org/whl/cu118}"
