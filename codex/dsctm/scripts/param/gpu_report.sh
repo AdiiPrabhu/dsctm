@@ -68,9 +68,26 @@ TOT=$(sinfo -h -p gpu -o "%D" | awk '{s+=$1} END{print s+0}')
 sinfo -h -p gpu -o "%D %t" | awk '{printf "  %-12s %s node(s)\n", $2, $1}'
 echo "  ------------------------------"
 printf "  %-12s %s node(s)\n" TOTAL "$TOT"
-IDLE=$(sinfo -h -p gpu -t idle -o "%D" | awk '{s+=$1} END{print s+0}')
+# CAREFUL: `sinfo -t idle` is WRONG here. In SLURM a drained node keeps base state
+# "idle" with a DRAIN flag on top, so -t idle counts drained nodes as available. Match on
+# the rendered state string instead, which shows "drained"/"reserved"/"mixed"/"allocated".
+FREE=$(sinfo -h -p gpu -N -o "%T" 2>/dev/null | grep -cx "idle")
 echo
-echo "  usable by you right now: ${IDLE:-0} node(s)  =  $(( ${IDLE:-0} * 2 )) V100(s)"
+echo "  GPU nodes genuinely free : ${FREE:-0}   =  $(( ${FREE:-0} * 2 )) V100(s)"
+echo
+echo "  (a node shown as drained/reserved/mixed/allocated is NOT available to you;"
+echo "   'mixed' means some resources on it are already taken)"
+
+# Per-GPU accounting: gres allocated vs installed, which is what actually matters.
+INST=$(sinfo -h -p gpu -N -o "%G" | grep -o '[0-9]*$' | awk '{s+=$1} END{print s+0}')
+USED=$(squeue -h -p gpu -t RUNNING -o "%b" | grep -o '[0-9]*$' | awk '{s+=$1} END{print s+0}')
+BLOCKED=$(sinfo -h -p gpu -N -o "%T %G" | grep -E "drain|reserved" | grep -o '[0-9]*$' \
+          | awk '{s+=$1} END{print s+0}')
+echo
+printf "  V100s installed in partition : %s\n" "${INST:-?}"
+printf "  V100s held by running jobs   : %s\n" "${USED:-0}"
+printf "  V100s in drained/reserved    : %s\n" "${BLOCKED:-0}"
+printf "  V100s actually free for you  : %s\n" "$(( ${INST:-0} - ${USED:-0} - ${BLOCKED:-0} ))"
 echo
 echo "  my queued jobs and estimated starts:"
 squeue --me --start -h -o "    %i %P %S %R" 2>/dev/null || echo "    (none)"
