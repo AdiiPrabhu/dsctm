@@ -332,3 +332,42 @@ the DAIC-WOZ per-step time; re-run with `--probe` after `memory_probe.sbatch`.
 The job binary-searches the per-rank batch ceiling on a real 16 GB V100 for every model at
 fp32 and fp16, and writes it to `results/param_utkarsh_authoritative/systems/`. Set
 `DSCTM_BATCH_SIZE` from the output. Nothing to choose; something to run.
+
+
+---
+
+## Login-banner corrections (2026-07-26, after first PARAM login)
+
+The MOTD contradicted three documented assumptions. All scripts were corrected.
+
+| | Assumed from the PDFs | **Actual (login banner)** |
+|---|---|---|
+| Partitions | `standard`, `cpu`, `gpu`, `hm` | **`standard*`, `gpu`, `hm`, `debug`** — **no `cpu` partition exists** |
+| `gpu` partition | 10 nodes | **9** (`gpu002-010`); `gpu001` is in `debug` |
+| Account | not mentioned in either PDF | **`#SBATCH -A <account>` is required on every job** |
+| Login-node policy | "please don't run jobs" | **"user will be disabled automatically"** |
+
+**B-023 — `--partition=cpu` did not exist.** `extract_features.sbatch` would have been
+rejected at submit. Corrected to `standard`. Had this not surfaced, the first attempt to
+extract features would have failed with an unhelpful scheduler error.
+
+**B-024 — every job requires an account.** Neither the Access Guide nor the User Manual
+mentions this; the banner does. All 14 sbatch files now carry a placeholder and
+`scripts/param/submit.sh` substitutes `$DSCTM_ACCOUNT` at submit time, so the account is
+never committed. Find it with `sacctmgr show associations user=$USER`.
+
+**B-025 — login-node staging is now an account-suspension risk, not a courtesy issue.**
+The original plan ran an 86 GB `wget` on the login node. The banner says users are
+**disabled automatically** for running jobs there. Staging moved to
+`stage_datasets.sbatch` on `standard`, which first verifies egress on the compute node and
+aborts with instructions rather than silently producing an empty dataset tree.
+`scripts/param/check_egress.sh` (three HEAD requests) determines which path is available.
+
+**B-026 — compute-node egress still unconfirmed.** If compute nodes are blocked and only
+the login node has egress, there is no safe automated path: the fallback is `rsync` from a
+machine the author controls, or a data-transfer route from CDAC support. Resolved by
+running Step 4 of `RUN_ORDER.md`.
+
+**Revised scaling arithmetic.** The `gpu` partition is 9 nodes = **18 V100s**, not 20.
+2 nodes = 22 %, 4 nodes = 44 %, and the manuscript's N=16 would be **89 %** of the entire
+GPU partition. B-009 stands and is now slightly worse than recorded.

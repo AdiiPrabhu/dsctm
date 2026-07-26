@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH --account=DSCTM_ACCOUNT_PLACEHOLDER
 #SBATCH --job-name=dsctm-ablate
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
