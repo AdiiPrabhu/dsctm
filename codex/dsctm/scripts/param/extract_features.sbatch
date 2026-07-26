@@ -1,6 +1,7 @@
 #!/bin/bash
+#SBATCH --account=DSCTM_ACCOUNT_PLACEHOLDER
 #SBATCH --job-name=dsctm-extract
-#SBATCH --partition=cpu
+#SBATCH --partition=standard   # NOT 'cpu' - no such partition here
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=48
