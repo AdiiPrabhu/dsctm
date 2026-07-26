@@ -241,7 +241,9 @@ def _load_cache(path):
         # Early v2 caches were generated before version/feature-name metadata was added
         # to the NPZ schema. Recover only versions that are unambiguous from the
         # prespecified cache filename; genuinely ambiguous old caches remain legacy.
-        stem = os.path.basename(os.fspath(path)).removesuffix(".npz")
+        name = os.path.basename(os.fspath(path))
+        # str.removesuffix is 3.9+; PARAM Utkarsh ships Python 3.8.5.
+        stem = name[:-4] if name.endswith(".npz") else name
         known = {
             "studentlife_causal_ffill_v2": "causal_ffill",
             "studentlife_v2_causal_ffill": "causal_ffill",

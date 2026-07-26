@@ -23,7 +23,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ENV_NAME="${DSCTM_ENV_NAME:-dsctm}"
 ENV_PREFIX="${DSCTM_ENV_PREFIX:-$HOME/.conda/envs/$ENV_NAME}"
-PY_VERSION="${DSCTM_PY_VERSION:-3.10}"
+PY_VERSION="${DSCTM_PY_VERSION:-3.8}"   # PARAM ships anaconda3 with 3.8.5
 REBUILD=0
 [[ "${1:-}" == "--rebuild" ]] && REBUILD=1
 
@@ -94,8 +94,11 @@ elif [[ ! -d "$ENV_PREFIX" ]]; then
   # Verified working combination on PARAM Utkarsh:
   #     module load anaconda3/anaconda3 cuda/11.8   +   torch 2.1.2+cu118
   # Override with DSCTM_TORCH_SPEC / DSCTM_TORCH_INDEX after checking `nvidia-smi`.
-  TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"
-  TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://download.pytorch.org/whl/cu118}"
+  TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"  # supports py3.8
+  # download.pytorch.org does NOT resolve from PARAM, but pypi.org does.
+  # PyPI's torch==2.1.2 is the cu121 build: manylinux (glibc 2.17 OK) and
+  # CUDA 12.1 supports sm_70, so it runs on the V100s.
+  TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://pypi.org/simple}"
 
   if [[ -n "${DSCTM_OFFLINE_WHEELS:-}" ]]; then
     # ---- OFFLINE: install from a pre-staged wheel directory --------------- #
