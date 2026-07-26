@@ -94,7 +94,7 @@ elif [[ ! -d "$ENV_PREFIX" ]]; then
   # Verified working combination on PARAM Utkarsh:
   #     module load anaconda3/anaconda3 cuda/11.8   +   torch 2.1.2+cu118
   # Override with DSCTM_TORCH_SPEC / DSCTM_TORCH_INDEX after checking `nvidia-smi`.
-  TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"  # supports py3.8
+  TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2}"  # torchvision is unused by this project
   # download.pytorch.org does NOT resolve from PARAM, but pypi.org does.
   # PyPI's torch==2.1.2 is the cu121 build: manylinux (glibc 2.17 OK) and
   # CUDA 12.1 supports sm_70, so it runs on the V100s.
@@ -135,10 +135,13 @@ elif [[ ! -d "$ENV_PREFIX" ]]; then
       echo "     DSCTM_USE_SITE_TORCH=1 source scripts/param/env.sh"
       return 1 2>/dev/null || exit 1
     fi
-    pip install --no-cache-dir \
+    pip install --no-cache-dir --only-binary=:all: \
       "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
-      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
-      "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
+      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0"
+      for pkg in "thop>=0.1.1" "soundfile>=0.12" "opensmile>=2.5.0" "matplotlib>=3.7"; do
+        pip install --no-cache-dir --only-binary=:all: "$pkg" >/dev/null 2>&1 \
+          && echo "  ok: $pkg" || echo "  SKIPPED (no compatible wheel): $pkg"
+      done
     pip install -e "$REPO_ROOT"
   fi
 else
@@ -150,16 +153,19 @@ else
   # confusing preflight. Verify, and finish the job if it is incomplete.
   if ! python -c "import torch" >/dev/null 2>&1; then
     echo "  env is INCOMPLETE (torch not importable) - completing the install"
-    TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2 torchvision==0.16.2}"
+    TORCH_SPEC="${DSCTM_TORCH_SPEC:-torch==2.1.2}"
     TORCH_INDEX="${DSCTM_TORCH_INDEX:-https://pypi.org/simple}"
     pip install --no-cache-dir $TORCH_SPEC --index-url "$TORCH_INDEX" \
       || { echo "FATAL: torch install failed. If pypi.org is unreachable, use:"; \
            echo "  bash scripts/param/bootstrap_offline.sh ~/dsctm_wheels"; \
            return 1 2>/dev/null || exit 1; }
-    pip install --no-cache-dir \
+    pip install --no-cache-dir --only-binary=:all: \
       "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
-      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
-      "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
+      "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0"
+      for pkg in "thop>=0.1.1" "soundfile>=0.12" "opensmile>=2.5.0" "matplotlib>=3.7"; do
+        pip install --no-cache-dir --only-binary=:all: "$pkg" >/dev/null 2>&1 \
+          && echo "  ok: $pkg" || echo "  SKIPPED (no compatible wheel): $pkg"
+      done
     pip install -e "$REPO_ROOT" || true
   fi
 fi

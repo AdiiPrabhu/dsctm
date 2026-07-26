@@ -42,16 +42,33 @@ echo
 echo "=== torch (largest download; ~2.5 GB) ==="
 # download.pytorch.org does not resolve from PARAM; pypi.org does. PyPI's torch==2.1.2 is
 # the cu121 build: manylinux (glibc 2.17 OK) and CUDA 12.1 supports sm_70, so V100s work.
-pip install --no-cache-dir \
-  "${DSCTM_TORCH_SPEC:-torch==2.1.2}" "${DSCTM_TV_SPEC:-torchvision==0.16.2}" \
+# torchvision is NOT imported anywhere in this project. It was only ever pulled in as a
+# habit, and it drags in pillow, which has no wheel that builds under CentOS 7's gcc 4.8.
+# Dropping it removes the entire failure mode.
+pip install --no-cache-dir --only-binary=:all: \
+  "${DSCTM_TORCH_SPEC:-torch==2.1.2}" \
   --index-url "${DSCTM_TORCH_INDEX:-https://pypi.org/simple}"
 
 echo
 echo "=== scientific stack ==="
-pip install --no-cache-dir \
+# CORE: must succeed. --only-binary=:all: is essential on CentOS 7 -- its gcc is 4.8.5
+# and defaults to C89, so any package that falls back to a source build fails with
+# "'for' loop initial declarations are only allowed in C99 mode". Refusing sdists makes
+# pip pick a wheel or fail loudly, instead of trying to compile and dying halfway.
+pip install --no-cache-dir --only-binary=:all: \
   "numpy>=1.24,<2.1" "scipy>=1.10" "scikit-learn>=1.3" "pandas>=2.0" \
-  "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0" "thop>=0.1.1" \
-  "opensmile>=2.5.0" "soundfile>=0.12" "matplotlib>=3.7"
+  "pyyaml>=6.0" "pytest>=7.4" "pyarrow>=14.0"
+
+# OPTIONAL: never blocks the environment.
+#   thop      -> FLOPs accounting (tracker E4-07)
+#   opensmile -> eGeMAPS extraction (needed before DAIC experiments, not before GPU tests)
+#   matplotlib-> one plotting script; pulls pillow, which has no C89-safe sdist path
+echo
+echo "=== optional packages (failures are non-fatal) ==="
+for pkg in "thop>=0.1.1" "soundfile>=0.12" "opensmile>=2.5.0" "matplotlib>=3.7"; do
+  pip install --no-cache-dir --only-binary=:all: "$pkg" \
+    && echo "  ok: $pkg" || echo "  SKIPPED (no compatible wheel): $pkg"
+done
 
 echo
 echo "=== project (editable) ==="
@@ -66,7 +83,7 @@ print("python:", sys.version.split()[0])
 import torch, torch.distributed as d
 print("torch :", torch.__version__, "cuda-build", torch.version.cuda)
 print("nccl  :", d.is_nccl_available())
-for m in ("numpy","scipy","sklearn","pandas","yaml","pyarrow","thop"):
+for m in ("numpy","scipy","sklearn","pandas","yaml","pyarrow"):
     mod = __import__(m); print(f"{m:8s}:", getattr(mod, "__version__", "present"))
 PYEOF
 
