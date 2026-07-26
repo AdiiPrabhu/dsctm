@@ -69,6 +69,12 @@ def check_packages():
         try:
             mod = __import__(name)
             record(f"package.{name}", True, getattr(mod, "__version__", "present"), hard=hard)
+        except OSError as exc:
+            # Wheel present but a system shared library is not (typically libsndfile for
+            # soundfile/opensmile). "pip install X" is the wrong advice here.
+            record(f"package.{name}", False, f"installed but unusable ({exc})", hard=hard,
+                   fix="conda install -y -c conda-forge libsndfile "
+                       "  # missing system library, not a missing wheel")
         except Exception as exc:
             record(f"package.{name}", False, f"MISSING ({type(exc).__name__})", hard=hard,
                    fix=f"pip install {name}")

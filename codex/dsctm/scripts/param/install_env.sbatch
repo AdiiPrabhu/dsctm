@@ -69,6 +69,21 @@ for pkg in "thop>=0.1.1" "soundfile>=0.12" "opensmile>=2.5.0" "matplotlib>=3.7";
   pip install --no-cache-dir --only-binary=:all: "$pkg" \
     && echo "  ok: $pkg" || echo "  SKIPPED (no compatible wheel): $pkg"
 done
+# soundfile/opensmile can install and still fail to import with OSError: the wheel is fine
+# but the system libsndfile.so is missing. Detect that and say so, because "pip install
+# soundfile" is the wrong advice for it.
+python - <<'PYEOF'
+for m in ("soundfile", "opensmile"):
+    try:
+        __import__(m); print(f"  import ok: {m}")
+    except OSError as e:
+        print(f"  import FAILS: {m} -> OSError: {e}")
+        print(f"    wheel is installed but a system library is missing (libsndfile).")
+        print(f"    Only needed for eGeMAPS extraction, NOT for GPU validation.")
+        print(f"    Fix later with:  conda install -y -c conda-forge libsndfile opensmile")
+    except Exception as e:
+        print(f"  import FAILS: {m} -> {type(e).__name__}: {e}")
+PYEOF
 
 echo
 echo "=== project (editable) ==="
@@ -86,6 +101,16 @@ print("nccl  :", d.is_nccl_available())
 for m in ("numpy","scipy","sklearn","pandas","yaml","pyarrow"):
     mod = __import__(m); print(f"{m:8s}:", getattr(mod, "__version__", "present"))
 PYEOF
+
+# Export the data roots so this job's own preflight is meaningful. They normally come
+# from ~/.bashrc; a batch job does not source it.
+export DSCTM_SCRATCH="${DSCTM_SCRATCH:-/scratch/$USER/dsctm}"
+export DSCTM_DATA_ROOT="${DSCTM_DATA_ROOT:-$DSCTM_SCRATCH/datasets}"
+export DSCTM_DAICWOZ_ROOT="${DSCTM_DAICWOZ_ROOT:-$DSCTM_DATA_ROOT/DAIC-WOZ}"
+export DSCTM_EDAIC_ROOT="${DSCTM_EDAIC_ROOT:-$DSCTM_DATA_ROOT/E-DAIC}"
+export DSCTM_STUDENTLIFE_ROOT="${DSCTM_STUDENTLIFE_ROOT:-$DSCTM_DATA_ROOT/StudentLife/dataset}"
+export DSCTM_RESULTS_ROOT="${DSCTM_RESULTS_ROOT:-$REPO_ROOT/../../results/param_utkarsh_authoritative}"
+mkdir -p "$DSCTM_SCRATCH" "$DSCTM_DATA_ROOT" "$DSCTM_RESULTS_ROOT"
 
 echo
 echo "=== preflight ==="
