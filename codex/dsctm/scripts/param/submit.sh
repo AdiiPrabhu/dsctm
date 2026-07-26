@@ -43,12 +43,30 @@ shift || true
 TMP="$(mktemp)"; trap 'rm -f "$TMP"' EXIT
 sed "s|DSCTM_ACCOUNT_PLACEHOLDER|${DSCTM_ACCOUNT}|" "$SCRIPT" > "$TMP"
 
+# Which partitions can this account actually submit to? The login banner advertises
+# `debug`, but sinfo may not expose it to every association -- and sbatch only tells you
+# after you have already tried. Check first.
+AVAILABLE="$(sinfo -h -o '%P' 2>/dev/null | tr -d '*' | sort -u | tr '\n' ' ')"
+[[ -n "$AVAILABLE" ]] && echo "partitions available: $AVAILABLE"
+
 if [[ $USE_DEBUG -eq 1 ]]; then
-  # debug: cn001-005, gpu001, hm001 - max 01:00:00. Ideal for a first smoke test:
-  # it is a separate pool, so it does not queue behind the production gpu partition.
-  sed -i.bak -E 's|^#SBATCH --partition=.*|#SBATCH --partition=debug|; s|^#SBATCH --time=.*|#SBATCH --time=01:00:00|' "$TMP"
-  rm -f "$TMP.bak"
-  echo "submitting to DEBUG partition (1 h cap, gpu001)"
+  if [[ " $AVAILABLE " == *" debug "* ]]; then
+    sed -i.bak -E 's|^#SBATCH --partition=.*|#SBATCH --partition=debug|; s|^#SBATCH --time=.*|#SBATCH --time=01:00:00|' "$TMP"
+    rm -f "$TMP.bak"
+    echo "submitting to DEBUG partition (1 h cap)"
+  else
+    echo "NOTE: --debug requested but no 'debug' partition is available to this account."
+    echo "      Falling back to the partition declared in the script."
+  fi
+fi
+
+# Validate the partition the script actually asks for, so a typo or a stale assumption
+# fails here with a useful message rather than inside sbatch.
+WANT="$(grep -m1 -E '^#SBATCH --partition=' "$TMP" | sed -E 's/.*--partition=([^ ]*).*/\1/')"
+if [[ -n "$AVAILABLE" && -n "$WANT" && " $AVAILABLE " != *" $WANT "* ]]; then
+  echo "FATAL: partition '$WANT' is not available to you."
+  echo "       available: $AVAILABLE"
+  exit 2
 fi
 
 echo "account   : $DSCTM_ACCOUNT"
