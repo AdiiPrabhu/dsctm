@@ -42,3 +42,9 @@ kaggle.json
 *_TOKEN
 .env
 .env.*
+
+# --- Offline wheel bundle: multi-GB, built locally, never committed ---
+dsctm_wheels/
+dsctm_wheels.tar.gz
+dsctm_wheels.tar.gz.sha256
+*.whl
