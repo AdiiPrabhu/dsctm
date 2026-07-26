@@ -5,7 +5,8 @@
 #
 #   export DSCTM_ACCOUNT=<your project account>
 #   bash scripts/param/submit.sh 2gpu_ddp_smoke.sbatch
-#   bash scripts/param/submit.sh --debug 2gpu_ddp_smoke.sbatch   # 1 h debug partition
+#   bash scripts/param/submit.sh -p standard 2gpu_ddp_smoke.sbatch   # gpu nodes via standard
+#   bash scripts/param/submit.sh -p standard -t 00:20:00 memory_probe.sbatch
 set -euo pipefail
 
 # Resolve the account. sacctmgr's default column width is 10 characters and it TRUNCATES
@@ -35,7 +36,16 @@ if [[ "$DSCTM_ACCOUNT" == *+ ]]; then
 fi
 
 USE_DEBUG=0
-[[ "${1:-}" == "--debug" ]] && { USE_DEBUG=1; shift; }
+OVERRIDE_PARTITION=""
+OVERRIDE_TIME=""
+while true; do
+  case "${1:-}" in
+    --debug)      USE_DEBUG=1; shift ;;
+    -p|--partition) OVERRIDE_PARTITION="${2:?--partition needs a value}"; shift 2 ;;
+    -t|--time)      OVERRIDE_TIME="${2:?--time needs a value}"; shift 2 ;;
+    *) break ;;
+  esac
+done
 SCRIPT="${1:?usage: submit.sh [--debug] <script.sbatch> [sbatch args...]}"
 shift || true
 [[ -f "$SCRIPT" ]] || SCRIPT="$(dirname "$0")/$SCRIPT"
@@ -58,6 +68,21 @@ if [[ $USE_DEBUG -eq 1 ]]; then
     echo "NOTE: --debug requested but no 'debug' partition is available to this account."
     echo "      Falling back to the partition declared in the script."
   fi
+fi
+
+# Explicit override. On PARAM the `gpu` partition is heavily reserved (2-day queues are
+# normal), while `standard` ALSO contains gpu[001-010] per the login banner and often
+# schedules far sooner. `-p standard` with --gres=gpu:N is a legitimate route to the same
+# hardware through a different queue.
+if [[ -n "$OVERRIDE_PARTITION" ]]; then
+  sed -i.bak -E "s|^#SBATCH --partition=.*|#SBATCH --partition=${OVERRIDE_PARTITION}|" "$TMP"
+  rm -f "$TMP.bak"
+  echo "partition overridden -> $OVERRIDE_PARTITION"
+fi
+if [[ -n "$OVERRIDE_TIME" ]]; then
+  sed -i.bak -E "s|^#SBATCH --time=.*|#SBATCH --time=${OVERRIDE_TIME}|" "$TMP"
+  rm -f "$TMP.bak"
+  echo "walltime overridden -> $OVERRIDE_TIME"
 fi
 
 # Validate the partition the script actually asks for, so a typo or a stale assumption
