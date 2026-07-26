@@ -33,3 +33,12 @@ results/**/*.pt
 results/**/*.ckpt
 results/**/*.parquet
 results/**/*.npz
+
+# --- Credentials: never commit, even accidentally ---
+kaggle.json
+.kaggle/
+*.pem
+*_token
+*_TOKEN
+.env
+.env.*

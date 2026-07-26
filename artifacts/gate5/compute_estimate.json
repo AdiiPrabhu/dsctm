@@ -1,0 +1,104 @@
+{
+  "note": "a-priori estimate; per-step timings are ASSUMPTIONS listed below",
+  "families": [
+    {
+      "family": "ablation",
+      "tasks": 78,
+      "dataset": "studentlife",
+      "gpu_hours_low": 1.3,
+      "gpu_hours_high": 3.9
+    },
+    {
+      "family": "confirm-daicwoz",
+      "tasks": 60,
+      "dataset": "daicwoz",
+      "gpu_hours_low": 0.1,
+      "gpu_hours_high": 0.4
+    },
+    {
+      "family": "confirm-studentlife",
+      "tasks": 60,
+      "dataset": "studentlife",
+      "gpu_hours_low": 1.0,
+      "gpu_hours_high": 3.0
+    },
+    {
+      "family": "tuning-daicwoz",
+      "tasks": 48,
+      "dataset": "daicwoz",
+      "gpu_hours_low": 0.1,
+      "gpu_hours_high": 0.3
+    },
+    {
+      "family": "tuning-studentlife",
+      "tasks": 48,
+      "dataset": "studentlife",
+      "gpu_hours_low": 0.8,
+      "gpu_hours_high": 2.4
+    }
+  ],
+  "systems": [
+    {
+      "job": "2gpu_ddp_smoke",
+      "gpus": 2,
+      "hours": 0.5
+    },
+    {
+      "job": "memory_probe",
+      "gpus": 1,
+      "hours": 1.0
+    },
+    {
+      "job": "scaling 1/2/4 GPU x strong+weak x 5 rep",
+      "gpus": 4,
+      "hours": 3.0
+    },
+    {
+      "job": "sap_tcp_sweep (8-cell default) x 4 modes",
+      "gpus": 4,
+      "hours": 4.0
+    },
+    {
+      "job": "extract_features (CPU partition)",
+      "gpus": 0,
+      "hours": 6.0
+    }
+  ],
+  "science_gpu_hours": {
+    "low": 3.18625,
+    "high": 10.06671875
+  },
+  "systems_gpu_hours": 30.0,
+  "grand_total_low": 33.18625,
+  "grand_total_high": 70.06671875,
+  "request_with_contingency": 91,
+  "assumptions": {
+    "step_ms": {
+      "studentlife": {
+        "low": 8.0,
+        "high": 25.0
+      },
+      "daicwoz": {
+        "low": 60.0,
+        "high": 220.0
+      }
+    },
+    "shape": {
+      "studentlife": {
+        "n": 2160,
+        "batch": 64,
+        "max_epochs": 100,
+        "typical_epochs": 35,
+        "folds": 5
+      },
+      "daicwoz": {
+        "n": 163,
+        "batch": 32,
+        "max_epochs": 40,
+        "typical_epochs": 18,
+        "folds": 1
+      }
+    },
+    "overhead": 1.25
+  }
+}

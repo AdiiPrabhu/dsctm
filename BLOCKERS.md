@@ -290,3 +290,45 @@ batch size is an assumption until `memory_probe.sbatch` runs**) · B-009 (**16-G
 schedulable; tracker T2-07 must be restated**) · B-010 (glibc 2.17 vs modern PyTorch wheels)
 · B-011 (login-node limits).
 
+
+
+---
+
+## Resolutions recorded 2026-07-26
+
+**B-002 — RESOLVED (credentials + sources).** All three dataset sources are pinned in
+`scripts/param/stage_datasets.sh`. Kaggle auth now accepts, in precedence order:
+`KAGGLE_API_TOKEN` (env), `KAGGLE_USERNAME`+`KAGGLE_KEY` (env), or `~/.kaggle/kaggle.json`.
+When only the single token is present, an ephemeral `KAGGLE_CONFIG_DIR` is created outside
+the repository and removed on exit. No credential is written into the repo, echoed to a
+log, or committed; `.gitignore` additionally blocks `kaggle.json`, `.env*`, `*_token`.
+
+> **Action for the author:** the token was transmitted in plaintext and is in shell history.
+> Expire it at kaggle.com → Settings → API once StudentLife is staged, and issue a fresh one.
+
+Remaining under B-002: actually running the staging on PARAM, and confirming the E-DAIC
+feature archives your EULA covers.
+
+**B-006 — SIZED.** `scripts/param/estimate_compute.py` converts the 294-task plan into an
+allocation request. A-priori bracket:
+
+| | GPU-hours |
+|---|---:|
+| Science (294 tasks) | 3.2 – 10.1 |
+| Systems experiments | 30 – 60 |
+| **Grand total** | **33 – 70** |
+| **Request with 30 % contingency** | **~91 GPU-hours** |
+
+Also request: peak concurrency 4 GPUs plus one 2-node reservation; longest job 12 h (limit
+is 72 h); ~6 h × 48 cores on the `cpu` partition for eGeMAPS extraction; ~250 GB Lustre
+scratch.
+
+The science half is small because the datasets are small — 2,160 StudentLife windows and
+189 DAIC-WOZ sessions. **The systems experiments dominate the request**, which is the
+correct shape for a paper whose contested claims are about scaling. Dominant uncertainty is
+the DAIC-WOZ per-step time; re-run with `--probe` after `memory_probe.sbatch`.
+
+**B-008 — NOT A DECISION.** It is resolved by running `sbatch scripts/param/memory_probe.sbatch`.
+The job binary-searches the per-rank batch ceiling on a real 16 GB V100 for every model at
+fp32 and fp16, and writes it to `results/param_utkarsh_authoritative/systems/`. Set
+`DSCTM_BATCH_SIZE` from the output. Nothing to choose; something to run.
