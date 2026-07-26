@@ -1,231 +1,193 @@
-# PARAM Utkarsh — Exact Run Order
+# PARAM Utkarsh — Run Order (authoritative)
 
-You are logged in. Run these in order. Every step says what it needs, what it proves, and
-what to check before moving on.
-
-> ## ⚠ Two hard rules from the login banner
->
-> **1. Never run anything substantial on a login node.**
-> *"Please Don't run any jobs in Login Nodes. If you run, user will be disabled
-> automatically."* Downloads, feature extraction and training all go through `sbatch`.
-> Editing files, `git`, `module avail` and a single `curl -I` are fine.
->
-> **2. Every job needs an account.** *"Use #SBATCH -A account name in your script."*
-> All scripts carry a placeholder; `submit.sh` substitutes your real account at submit time
-> so it never enters the repository.
+**Follow this file.** `RUNBOOK.md` is the original plan and is now partly stale — it was
+written before the cluster was inspected. Everything below is verified against the real
+machine on 2026-07-26.
 
 ---
 
-## Corrected cluster facts
+## Verified facts
 
-The banner corrects three things I had assumed:
-
-| | Assumed | **Actual** |
+| | Value | How we know |
 |---|---|---|
-| Partitions | `standard`, `cpu`, `gpu`, `hm` | **`standard*`, `gpu`, `hm`, `debug`** — there is **no `cpu` partition** |
-| GPU nodes in `gpu` | 10 | **9** (`gpu002-010`); `gpu001` sits in `debug` |
-| Max walltime | 72 h | **72 h** (`03-00:00:00`) ✓ · `debug` is capped at **1 h** |
+| Account | `nsmexternal` | `sacctmgr -P show associations` |
+| Partitions | `standard*` · `gpu` · `hm` · `debug` | login banner — **there is no `cpu` partition** |
+| `gpu` partition | 9 nodes (`gpu002-010`), 2×V100 **16 GB** each | banner + manual |
+| `debug` partition | `cn001-005`, `gpu001`, `hm001`, **1 h cap** | banner |
+| Max walltime | `03-00:00:00` (72 h) | banner |
+| Scratch | `/scratch` Lustre, **548 TB free** | `df -h` |
+| Conda env | `~/.conda/envs/dsctm`, **Python 3.10.18** | built on-cluster |
+| `pypi.org` | ✅ reachable (200) | `curl -I` |
+| `download.pytorch.org` | ❌ does **not** resolve | pip DNS failure |
+| `dcapswoz.ict.usc.edu` | ✅ reachable (200) — **datasets can be staged on-cluster** | `curl -I` |
+| GitHub | ✅ `git clone` / `git pull` work | done |
+| Login nodes | jobs are killed; **"user will be disabled automatically"** | banner |
 
-`standard` is the default partition and contains **everything** — `cn006-107`, `gpu001-010`,
-`hm001-039`. `debug` (`cn001-005`, `gpu001`, `hm001`) is a separate small pool, which makes
-it ideal for a first smoke test: it does not queue behind production GPU work.
+### Two rules that follow
 
----
-
-## Step 0 — Account and clone  *(login node, 2 min)*
-
-```bash
-sacctmgr show associations user=$USER format=Account,Partition,QOS
-export DSCTM_ACCOUNT=<the account it prints>          # required on every job
-
-git clone git@github.com:AdiiPrabhu/dsctm.git
-cd dsctm && git checkout param-main && cd codex/dsctm
-```
-
-Put `export DSCTM_ACCOUNT=...` in your `~/.bashrc` so you cannot forget it.
-
----
-
-## Step 1 — Find the real module names  *(login node, 2 min)*
-
-```bash
-module avail 2>&1 | tee ~/param_modules.txt
-grep -iE "anaconda|conda|python|cuda" ~/param_modules.txt
-```
-
-Note the exact anaconda and cuda module names. You need them in the next step.
+1. **Nothing heavy on a login node.** `git`, `module`, editing, a single `curl` — fine.
+   Installing torch, downloading datasets, extracting features, training — all `sbatch`.
+   A 2.5 GB pip install *will* be killed and take your SSH session with it.
+2. **Every job needs `-A nsmexternal`.** Always submit via `scripts/param/submit.sh`, which
+   injects it. Never call `sbatch` directly.
 
 ---
 
-## Step 2 — Build the environment  *(login node, ~15 min)*
+## One-time setup
 
-`pip install` is I/O-bound and short. This is the one heavy-ish thing that belongs on the
-login node, and it still takes minutes, not hours.
+### 0. SSH keepalive — 💻 **MacBook**
 
 ```bash
-export DSCTM_SCRATCH=/scratch/$USER/dsctm     # confirm the real Lustre path first
-DSCTM_MODULES="<anaconda module from step 1>" source scripts/param/env.sh
+cat >> ~/.ssh/config <<'EOF'
+
+Host param
+    HostName paramutkarsh.cdac.in
+    User basavarajh
+    Port 4422
+    ServerAliveInterval 30
+    ServerAliveCountMax 6
+    TCPKeepAlive yes
+EOF
 ```
 
-**Why torch 2.1.2 + cu118 by default:** CentOS 7.9 ships glibc 2.17; newer PyTorch wheels
-need ≥ 2.28 and will fail *at import inside a queued job*. Override only if `nvidia-smi`
-shows a driver that supports newer CUDA:
+Then connect with `ssh param`.
+
+### 1. Clone — 🖥 **PARAM**
 
 ```bash
-DSCTM_TORCH_SPEC="torch==2.4.1" \
-DSCTM_TORCH_INDEX="https://download.pytorch.org/whl/cu121" \
-  source scripts/param/env.sh --rebuild
+cd ~ && git clone git@github.com:AdiiPrabhu/dsctm.git
+cd ~/dsctm && git checkout param-main
 ```
 
----
+Already cloned? `cd ~/dsctm && git pull`
 
-## Step 3 — Preflight  *(login node, 30 s)*
+### 2. Shell profile — 🖥 **PARAM**
 
 ```bash
-python scripts/param/preflight.py
+cat >> ~/.bashrc <<'EOF'
+
+# ---- D-MSTCN ----
+export DSCTM_ACCOUNT=nsmexternal
+export DSCTM_SCRATCH=/scratch/$USER/dsctm
+export DSCTM_DATA_ROOT=$DSCTM_SCRATCH/datasets
+export DSCTM_RESULTS_ROOT=$HOME/dsctm/results/param_utkarsh_authoritative
+export PYTHONPATH=$HOME/dsctm/codex/dsctm/src:$HOME/dsctm/codex/dsctm
+module load anaconda3/anaconda3 cuda/11.8 2>/dev/null
+[ -d "$HOME/.conda/envs/dsctm" ] && conda activate "$HOME/.conda/envs/dsctm" 2>/dev/null
+EOF
+source ~/.bashrc
+mkdir -p "$DSCTM_SCRATCH" "$DSCTM_DATA_ROOT" "$DSCTM_RESULTS_ROOT"
 ```
 
-Expect dataset warnings. **Fix every hard failure before continuing** — each prints its own
-fix. Do not proceed with a red preflight; that is what it is for.
+> **Check before every interactive command:** `which python`
+> `…/.conda/envs/dsctm/bin/python` = good · `/usr/bin/python` = Python **2.7**, and every
+> script will fail with `SyntaxError`.
 
----
-
-## Step 4 — Can compute nodes reach the internet?  *(login node, 10 s)*
-
-```bash
-bash scripts/param/check_egress.sh
-```
-
-Three HEAD requests, a few hundred bytes. This decides how Step 5 works — many HPC sites
-block egress from compute nodes, and PARAM's is unconfirmed.
-
----
-
-## Step 5 — Stage datasets  *(batch job, hours)*
+### 3. Build the environment — as a JOB, ~20 min
 
 ```bash
-export KAGGLE_API_TOKEN=KGAT_...              # StudentLife only
-bash scripts/param/submit.sh stage_datasets.sbatch
+cd ~/dsctm/codex/dsctm && mkdir -p logs
+bash scripts/param/submit.sh install_env.sbatch
 squeue --me
 ```
 
-Runs on `standard`, **not** the login node. It re-checks egress on the compute node and
-**aborts with instructions** if blocked, rather than silently producing an empty tree.
-
-If compute nodes are blocked but the login node is not, the fallback is `rsync` from a
-machine you control:
+Safe to disconnect. When it finishes:
 
 ```bash
-rsync -avP --partial -e 'ssh -p 4422' ./datasets/ \
-  $USER@paramutkarsh.cdac.in:$DSCTM_DATA_ROOT/
+tail -40 logs/dsctm-install.*.out
 ```
 
-**Expire the Kaggle token once StudentLife lands** — it is in your shell history.
+Expect `torch : 2.1.2+cu121`, `nccl : True`, and preflight with **0 hard failures**.
+
+### 4. Verify
+
+```bash
+source ~/.bashrc
+cd ~/dsctm/codex/dsctm
+python scripts/param/preflight.py
+```
+
+Dataset warnings are expected here. **Any hard failure must be fixed before continuing.**
 
 ---
 
-## Step 6 — First GPU job: smoke test  *(debug partition, ~20 min)*  ← DO NOT SKIP
+## Campaign
+
+### 5. Smoke test — `debug`, ~20 min  ← DO NOT SKIP
 
 ```bash
 bash scripts/param/submit.sh --debug 2gpu_ddp_smoke.sbatch
-```
-
-`--debug` sends it to the `debug` pool (1 h cap, `gpu001`) so it does not queue behind
-production work. Validates env, both V100s, NCCL, fp16, and the distributed suite on real
-GPUs.
-
-```bash
-squeue --me ; squeue --start          # estimated start time
+squeue --me
 tail -f logs/dsctm-ddp-smoke.*.out
 ```
 
-**This closes Gate 3.** Twenty minutes here prevents a 24-hour job failing at hour 23.
+Validates both V100s, NCCL, fp16 and the distributed suite on real GPUs. **Closes Gate 3.**
+`--debug` uses the separate 1 h pool so you don't queue behind production work.
 
-If `debug` is busy, drop `--debug` to use the `gpu` partition.
-
----
-
-## Step 7 — Memory probe  *(gpu partition, ~1 h)*  ← SETS EVERY BATCH SIZE
+### 6. Memory probe — `gpu`, ~1 h  ← SETS EVERY BATCH SIZE
 
 ```bash
 bash scripts/param/submit.sh memory_probe.sbatch
+# when done:
+python -m json.tool $DSCTM_RESULTS_ROOT/systems/memory_probe_*.json | tail -40
+echo 'export DSCTM_BATCH_SIZE=<measured ceiling>' >> ~/.bashrc && source ~/.bashrc
 ```
 
-The brief assumed 32 GB V100s; PARAM has **16 GB**. Until this runs, every batch size in
-every config is an assumption.
+The brief assumed 32 GB V100s; these are **16 GB**. Until this runs, every batch size is an
+assumption. Closes **B-008**.
+
+### 7. Stage datasets — `standard`, hours
 
 ```bash
-python -m json.tool $DSCTM_RESULTS_ROOT/systems/memory_probe_*.json | tail -30
-export DSCTM_BATCH_SIZE=<measured ceiling>
+export KAGGLE_API_TOKEN=<your token>      # StudentLife only
+bash scripts/param/submit.sh stage_datasets.sbatch
 ```
 
----
+The USC host is reachable, so this works on-cluster — no local download, no rsync. The job
+re-checks egress on the compute node and aborts with instructions if that node is blocked.
 
-## Step 8 — Extract features  *(standard partition, 2–6 h)*
+**Expire the Kaggle token afterwards.**
+
+### 8. Extract features — `standard`, 2–6 h
 
 ```bash
 bash scripts/param/submit.sh extract_features.sbatch
 ```
 
-48 cores on `standard`. Needs Step 5 complete.
+### 9. Monitoring — optional, background
 
----
+```bash
+bash scripts/param/submit.sh monitor.sbatch
+# from the MacBook:
+scp -P 4422 basavarajh@paramutkarsh.cdac.in:~/dsctm/artifacts/monitoring/dashboard.html .
+open dashboard.html
+```
 
-## Step 9 — DRY RUN  *(gpu partition, 1–4 h)*  ← BEFORE THE 294
+### 10. Dry run — `gpu`, 1–4 h  ← BEFORE THE 294
 
 ```bash
 bash scripts/param/submit.sh 1task_dryrun.sbatch
-```
-
-Five real tasks, one per family. Measures actual cost, extrapolates to the full campaign,
-audits the contract on what it produced.
-
-```bash
+# when done:
 python scripts/param/calibrate.py --extrapolate \
   $DSCTM_RESULTS_ROOT/calibration_<JOBID>.json
 ```
 
-**Decide here.** If the extrapolation is much larger than the ~91 GPU-hour estimate, adjust
-scope before spending the allocation, not after.
+Five real tasks, one per family. **Decide here.** If the measured extrapolation greatly
+exceeds the ~91 GPU-hour estimate, cut scope before spending the allocation.
 
-Want it in minutes instead? `python scripts/param/calibrate.py --sample 1 --max-epochs 3`
-proves the pipeline but **understates** cost — good for plumbing, not for sizing.
-
----
-
-## Step 10 — Start monitoring  *(standard partition, background)*
+### 11. The campaign — `gpu`, days
 
 ```bash
-bash scripts/param/submit.sh monitor.sbatch
-# then, from your laptop:
-scp -P 4422 $USER@paramutkarsh.cdac.in:$PWD/../../artifacts/monitoring/dashboard.html .
-open dashboard.html
+python scripts/param/plan.py          # verify --array bounds; never type them
+bash scripts/param/submit.sh tuning_array.sbatch      # 48 tasks
+#   wait for completion, then:
+bash scripts/param/submit.sh seeds_array.sbatch       # 60 tasks
+bash scripts/param/submit.sh ablation_array.sbatch    # 78 tasks
 ```
 
-Self-contained HTML — no CDN, works offline.
+Order matters — confirmation seeds use configurations frozen by tuning.
 
----
-
-## Step 11 — The campaign  *(gpu partition, days)*
-
-Verify the array bounds first. **Never type them.**
-
-```bash
-python scripts/param/plan.py
-```
-
-```bash
-bash scripts/param/submit.sh tuning_array.sbatch     # 48 tasks, %4
-# wait for completion, then
-bash scripts/param/submit.sh seeds_array.sbatch      # 60 tasks
-bash scripts/param/submit.sh ablation_array.sbatch   # 78 tasks
-```
-
-Order matters: confirmation seeds use configurations frozen by tuning.
-
----
-
-## Step 12 — Systems experiments  *(2 nodes)*
+### 12. Systems — 2 nodes
 
 ```bash
 DSCTM_SCALING_MODE=strong bash scripts/param/submit.sh scaling.sbatch
@@ -233,43 +195,56 @@ DSCTM_SCALING_MODE=weak   bash scripts/param/submit.sh scaling.sbatch
 bash scripts/param/submit.sh 2node_4gpu_ddp.sbatch
 ```
 
-The `gpu` partition has **9 nodes = 18 V100s**. A 2-node job is 22 % of it; 4 nodes is 44 %.
-The manuscript's N = 16 would be 89 % — not schedulable, which is the honest answer to
-tracker T2-07.
+9 GPU nodes = 18 V100s. 2 nodes = 22 %, 4 nodes = 44 %. The manuscript's N=16 would be
+89 % — not schedulable, which is the honest answer to tracker T2-07.
 
----
-
-## Step 13 — Evidence
+### 13. Evidence
 
 ```bash
 python scripts/param/audit_campaign.py --all --aggregate --out audit.json
 python scripts/param/build_evidence.py --out artifacts/final
 ```
 
-The auditor is fail-closed: a family is admitted whole or not at all. If it admits nothing,
-nothing is citable — that is the pipeline working, not a bug.
+Fail-closed: a family is admitted whole or not at all. Admitting nothing is the pipeline
+working, not a bug.
 
 ---
 
-## Quick reference
+## Two open decisions — yours, not the code's
+
+**B-015 — StudentLife windowing.** MSB's receptive field is 481 steps and LSB's is 1921,
+but StudentLife windows are **60** steps. The medium and long branches cannot observe their
+claimed timescales on that corpus. Re-window, restrict the multi-scale claim to DAIC-WOZ,
+or report it as a limitation. **Decide before step 11** — it changes the ablation set.
+
+**Corpus identity.** DAIC-WOZ (189) or E-DAIC (275)? The repo ships E-DAIC splits; the paper
+cites DAIC-WOZ. Determines what step 11 runs.
+
+---
+
+## Reference
 
 ```bash
-squeue --me                       # my jobs
-squeue --start                    # estimated start times
-scontrol show job <id>            # full detail
+squeue --me                    # my jobs
+squeue --start                 # estimated start times
 sacct -j <id> --format=JobID,State,Elapsed,MaxRSS,ExitCode
 scancel <id>
-sinfo -p gpu                      # GPU partition state
-tail -f logs/<jobname>.<jobid>.out
+sinfo -p gpu
+which python && python -V      # BEFORE any interactive command
 ```
 
-## If something fails
+| Symptom | Cause | Fix |
+|---|---|---|
+| `SyntaxError: invalid syntax` on `: list[dict]` | `python` is system 2.7 | `source ~/.bashrc` |
+| every package `MISSING` | env half-built by a killed install | re-run step 3 |
+| SSH drops mid-command | login-node limit killed your process | use `sbatch`, never install interactively |
+| `Invalid account` | `-A` missing | use `submit.sh`, not `sbatch` |
+| `Invalid partition: cpu` | stale checkout | `git pull` |
+| Job pends forever | queue depth | `squeue --start`; try `--debug`; fewer nodes |
+| `IndexError: array index N outside family` | sbatch `--array` disagrees with the plan | `python scripts/param/plan.py --sbatch-array <family>` |
 
-| Symptom | Fix |
+| | Directory |
 |---|---|
-| `Invalid account` | `export DSCTM_ACCOUNT=<real account>`; find it with `sacctmgr show associations user=$USER` |
-| `Invalid partition: cpu` | already fixed — pull latest; the partition is `standard` |
-| `GLIBC_2.28 not found` | `DSCTM_TORCH_SPEC="torch==2.1.2" source scripts/param/env.sh --rebuild` |
-| Job pends forever | `squeue --start`; try `--debug` for short jobs; drop node count |
-| Staging aborts on egress | see Step 5 fallback — `rsync` from a machine you control |
-| `IndexError: array index N outside family` | `python scripts/param/plan.py --sbatch-array <family>` |
+| 💻 MacBook | `~/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/codex/dsctm` |
+| 🖥 PARAM | `~/dsctm/codex/dsctm` |
+| 🖥 PARAM data | `/scratch/basavarajh/dsctm/datasets` |
