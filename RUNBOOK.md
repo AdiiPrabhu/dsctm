@@ -1,3 +1,12 @@
+> # ⚠ SUPERSEDED — follow [`RUN_ORDER.md`](RUN_ORDER.md)
+>
+> This file was written before the cluster was inspected and several of its assumptions
+> turned out to be wrong: there is no `cpu` partition, jobs require `-A nsmexternal`,
+> `download.pytorch.org` does not resolve (but PyPI does), the Python is 3.10 not 3.8, and
+> installing torch on a login node gets the process killed.
+>
+> Retained for the reasoning behind each phase. **For commands, use `RUN_ORDER.md`.**
+
 # D-MSTCN on PARAM Utkarsh — Operator Runbook
 
 Everything you need to execute the campaign. Follow the phases in order; each one gates the
