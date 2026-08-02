@@ -108,7 +108,7 @@ FATAL: wheel/interpreter mismatch.
 
   REBUILD ON YOUR LAPTOP with the matching tag:
 
-    cd <repo>/codex/dsctm
+    cd <repo>/code/dsctm
     rm -rf dsctm_wheels dsctm_wheels.tar.gz
     DSCTM_PY_VERSION_TAG=${PYVER/./} bash scripts/param/offline_bundle.sh
     rsync -avP -e 'ssh -p 4422' dsctm_wheels.tar.gz \\

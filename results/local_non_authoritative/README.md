@@ -15,5 +15,5 @@ the historical RTX 4060 Ti campaign, CI, or CPU smoke tests.
 
 Empty. The historical RTX 4060 Ti campaign left **no raw artifacts in this repository** — see
 `artifacts/gate0/OLD_RESULT_QUARANTINE.md`. Its numbers survive only as narrative text inside
-`claude/dsctm/HANDOFF.md`, `codex/dsctm/STATUS.md` and `codex/dsctm/METRICS.md`, all of which are
+`cold/dsctm/HANDOFF.md`, `code/dsctm/STATUS.md` and `code/dsctm/METRICS.md`, all of which are
 registered as quarantined and unverifiable.

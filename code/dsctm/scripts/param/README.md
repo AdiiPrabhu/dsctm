@@ -21,7 +21,7 @@
 
 ```bash
 # 0. one time
-git clone <repo> && cd <repo>/codex/dsctm
+git clone <repo> && cd <repo>/code/dsctm
 source scripts/param/env.sh                  # creates the conda env, sets all roots
 
 # 1. login node: CPU-only checks

@@ -1,7 +1,7 @@
 # Gate 1 — Mathematical Corrections Required in the Manuscript
 
-Every correction below is derived from the implementation at `codex/dsctm/` and pinned by a
-test in `codex/dsctm/tests/`. None is a matter of opinion; each is recomputable on demand.
+Every correction below is derived from the implementation at `code/dsctm/` and pinned by a
+test in `code/dsctm/tests/`. None is a matter of opinion; each is recomputable on demand.
 
 Evidence: `artifacts/gate1/gate1_tests.{xml,log}` — 59 passed.
 

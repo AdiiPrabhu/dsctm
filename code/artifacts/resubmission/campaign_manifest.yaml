@@ -2,7 +2,7 @@ campaign_id: dmstcn-ieee-access-resubmission-gate-p-20260718
 protocol_version: '1.0'
 generated_utc: '2026-07-18T10:21:38.856310+00:00'
 repository:
-  path: '/media/adii/adissd/phd/dsctm-resubmission/codex'
+  path: '/media/adii/adissd/phd/dsctm-resubmission/code'
   branch: null
   commit: null
   status: input_only_not_a_git_repository

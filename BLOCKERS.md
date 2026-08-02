@@ -164,8 +164,8 @@ tasks. A costed compute plan is a Gate 4 deliverable and must be approved before
 
 ## B-007 · Prior results are unverifiable (informational, not blocking)
 
-**Detail.** Every artifact cited by `codex/dsctm/METRICS.md`, `codex/dsctm/STATUS.md` and
-`claude/dsctm/HANDOFF.md` is absent from the repository — no JSON, no `.npz`, no registry, no
+**Detail.** Every artifact cited by `code/dsctm/METRICS.md`, `code/dsctm/STATUS.md` and
+`cold/dsctm/HANDOFF.md` is absent from the repository — no JSON, no `.npz`, no registry, no
 figures. See `artifacts/gate0/OLD_RESULT_QUARANTINE.md`.
 
 **Effect.** No prior number may be cited to reviewers. This does not block forward work (the

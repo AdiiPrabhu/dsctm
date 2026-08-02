@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-26
 Branch: `param-main` · Baseline tag: `baseline-flattened` (`52ad6b1`)
-Foundation: `codex/dsctm/` — see `DECISIONS.md` D-001
+Foundation: `code/dsctm/` — see `DECISIONS.md` D-001
 
 ---
 
@@ -32,7 +32,7 @@ Foundation: `codex/dsctm/` — see `DECISIONS.md` D-001
 
 ## Gate 0 — PASS
 
-**Files changed:** none under `claude/`, `codex/`, `source/`, `reviewer-package/`. Gate 0 is
+**Files changed:** none under `cold/`, `code/`, `source/`, `reviewer-package/`. Gate 0 is
 read-only with respect to all four implementation trees.
 
 **Created:**
@@ -56,8 +56,8 @@ STATUS.md  DECISIONS.md  BLOCKERS.md  EXPERIMENT_LEDGER.md
 
 | Suite | Command | Result |
 |---|---|---|
-| Codex foundation | `cd codex/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | **31 passed** |
-| Claude archived | `cd claude/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | 11 passed |
+| Codex foundation | `cd code/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | **31 passed** |
+| Claude archived | `cd cold/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | 11 passed |
 | `source/` harness | `cd source && PYTHONPATH=src:. python3 -m pytest -q` | **1 collection error** (Python ≥ 3.10 required — B-004) |
 
 **Environment:** macOS 26.5.2 arm64 · Python 3.9.6 · PyTorch 2.8.0 · CUDA **unavailable** ·
@@ -68,8 +68,8 @@ NCCL **unavailable** · gloo available · `thop`/`opensmile`/`pyarrow` missing.
 1. **D0-1 — `03cc9ec` does not exist here.** Single squashed root commit `0993ed0`. The requested
    `baseline-03cc9ec` tag was not fabricated; four path-scoped tags were created instead
    (D-003).
-2. **D0-2 — three implementations, not two.** `codex/dsctm` (5,403 LOC, foundation),
-   `claude/dsctm` (3,352 LOC, archived), `source/` (851 LOC, contains a real DDP harness),
+2. **D0-2 — three implementations, not two.** `code/dsctm` (5,403 LOC, foundation),
+   `cold/dsctm` (3,352 LOC, archived), `source/` (851 LOC, contains a real DDP harness),
    plus `reviewer-package/code/` which is a byte-identical copy of `source/` except `README.md`.
 3. **D0-3 — a working DDP harness already exists** in `source/multi_gpu_validation/` (889 LOC),
    never executed, targeting a *different* minimal model with synthetic batches only. Adopted as
@@ -86,7 +86,7 @@ NCCL **unavailable** · gloo available · `thop`/`opensmile`/`pyarrow` missing.
 | Codex implementation identified unambiguously | ✅ eight independent source markers |
 | Baseline test suite passes | ✅ 31/31 |
 | Old results cannot be confused with PARAM results | ✅ separate roots + guards; and there are no old raw results |
-| No Claude correctness defect merged into the working tree | ✅ `claude/` untouched, zero cross-imports |
+| No Claude correctness defect merged into the working tree | ✅ `cold/` untouched, zero cross-imports |
 
 ### Known limitations at Gate 0
 
@@ -129,8 +129,8 @@ Gate 1 is fully executable locally: it is CPU logic and needs no GPU and no data
 cd /Users/adii/Documents/phd/DSTCM_Resubmission/resubmit/dsctm
 git checkout param-main
 
-cd codex/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q -rA
-cd ../../claude/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q -rA
+cd code/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q -rA
+cd ../../cold/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q -rA
 cd ../../source && PYTHONPATH=src:. python3 -m pytest -q -rA   # expected: collection error, B-004
 ```
 

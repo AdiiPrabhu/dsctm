@@ -103,7 +103,7 @@ Next, from this laptop:
 Then on PARAM:
   cd ~ && shasum -a 256 -c $(basename "${ARCHIVE}").sha256
   tar xzf ~/$(basename "$ARCHIVE") -C ~
-  cd ~/dsctm/codex/dsctm
+  cd ~/dsctm/code/dsctm
   DSCTM_OFFLINE_WHEELS=~/$(basename "$OUT") source scripts/param/env.sh
   python scripts/param/preflight.py
 EOF

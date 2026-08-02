@@ -16,7 +16,7 @@ The tracker already contains the detailed proposed resolutions and scientific ju
 Open the repository directory:
 
 ```bash
-cd /media/adii/adissd/phd/dsctm-resubmission/codex
+cd /media/adii/adissd/phd/dsctm-resubmission/code
 ```
 
 Start either Claude Code or Codex from this directory. Give the agent this instruction:

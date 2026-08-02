@@ -11,12 +11,12 @@ code-aligned mathematics records throughout.
 
 ## Current checkpoint
 
-- The original `codex/` directory is an input-only resubmission package and is not a
+- The original `code/` directory is an input-only resubmission package and is not a
   Git repository.
-- A full candidate Git checkout was found in sibling path `claude/dsctm`, branch
+- A full candidate Git checkout was found in sibling path `cold/dsctm`, branch
   `experimentation1`, local commit `03cc9ec` (three commits ahead of its remote).
 - That checkout has one modified `HANDOFF.md`; no edits will be made there.
-- Next: clone the candidate locally into `codex/dsctm`, create/use an isolated Codex
+- Next: clone the candidate locally into `code/dsctm`, create/use an isolated Codex
   branch, rerun tests and Gate 0/1, then audit all result JSON before scheduling new
   experiments.
 
@@ -32,6 +32,6 @@ code-aligned mathematics records throughout.
 
 ## Resume command
 
-Work from `/mnt/adissd/phd/dsctm-resubmission/codex/dsctm` after the isolated checkout
+Work from `/mnt/adissd/phd/dsctm-resubmission/code/dsctm` after the isolated checkout
 is created. Read this file plus `artifacts/resubmission/STATUS.md`,
 `METRICS_LOG.md`, and `MATHEMATICAL_FORMULATION.md` before continuing.

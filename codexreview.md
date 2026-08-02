@@ -74,7 +74,7 @@ For `K = 3`:
 - MSB: `1 + 4(8 + 16 + 32 + 64) = 481`
 - LSB: `1 + 4(32 + 64 + 128 + 256) = 1921`
 
-The manuscript’s 47/383/1535 values are incorrect and do not follow either the one- or two-convolution formula. The implementation is in `dsctm/codex/dsctm/src/dsctm/models/blocks.py`.
+The manuscript’s 47/383/1535 values are incorrect and do not follow either the one- or two-convolution formula. The implementation is in `dsctm/code/dsctm/src/dsctm/models/blocks.py`.
 
 ### Causal convolutions
 

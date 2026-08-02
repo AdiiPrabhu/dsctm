@@ -71,7 +71,7 @@ export DSCTM_ACCOUNT=nsmexternal
 export DSCTM_SCRATCH=/scratch/$USER/dsctm
 export DSCTM_DATA_ROOT=$DSCTM_SCRATCH/datasets
 export DSCTM_RESULTS_ROOT=$HOME/dsctm/results/param_utkarsh_authoritative
-export PYTHONPATH=$HOME/dsctm/codex/dsctm/src:$HOME/dsctm/codex/dsctm
+export PYTHONPATH=$HOME/dsctm/code/dsctm/src:$HOME/dsctm/code/dsctm
 module load anaconda3/anaconda3 cuda/11.8 2>/dev/null
 [ -d "$HOME/.conda/envs/dsctm" ] && conda activate "$HOME/.conda/envs/dsctm" 2>/dev/null
 EOF
@@ -86,7 +86,7 @@ mkdir -p "$DSCTM_SCRATCH" "$DSCTM_DATA_ROOT" "$DSCTM_RESULTS_ROOT"
 ### 3. Build the environment — as a JOB, ~20 min
 
 ```bash
-cd ~/dsctm/codex/dsctm && mkdir -p logs
+cd ~/dsctm/code/dsctm && mkdir -p logs
 bash scripts/param/submit.sh install_env.sbatch
 squeue --me
 ```
@@ -103,7 +103,7 @@ Expect `torch : 2.1.2+cu121`, `nccl : True`, and preflight with **0 hard failure
 
 ```bash
 source ~/.bashrc
-cd ~/dsctm/codex/dsctm
+cd ~/dsctm/code/dsctm
 python scripts/param/preflight.py
 ```
 
@@ -245,6 +245,6 @@ which python && python -V      # BEFORE any interactive command
 
 | | Directory |
 |---|---|
-| 💻 MacBook | `~/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/codex/dsctm` |
-| 🖥 PARAM | `~/dsctm/codex/dsctm` |
+| 💻 MacBook | `~/Documents/phd/DSTCM_Resubmission/resubmit/dsctm/code/dsctm` |
+| 🖥 PARAM | `~/dsctm/code/dsctm` |
 | 🖥 PARAM data | `/scratch/basavarajh/dsctm/datasets` |

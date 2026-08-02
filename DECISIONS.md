@@ -5,18 +5,18 @@ Newest last. A decision is only reversed by a superseding numbered entry.
 
 ---
 
-## D-001 · `codex/dsctm/` is the sole foundation; `claude/dsctm/` is frozen evidence
+## D-001 · `code/dsctm/` is the sole foundation; `cold/dsctm/` is frozen evidence
 
 **Date:** 2026-07-26 (Gate 0) · **Status:** ACTIVE
 
-Identification by source inspection, not directory name. All eight markers present in `codex/`
-and absent from `claude/`: `models/timesnet.py` (THUML port pinned to `4e938a1`),
+Identification by source inspection, not directory name. All eight markers present in `code/`
+and absent from `cold/`: `models/timesnet.py` (THUML port pinned to `4e938a1`),
 `experiments/fair_tuning.py`, `experiments/result_audit.py`, `scripts/audit_exp41_corrected.py`,
 mask-aware DAIC handling (`lengths` in `contract.py` → mask in `_make_loader` → `Head(H, mask)` →
 `pack_padded_sequence` / `src_key_padding_mask`), causal `_ffill`, a registry actually wired into
 five experiment modules, and 31 tests. Full evidence: `artifacts/gate0/REPOSITORY_DISCOVERY.md` §3.
 
-No file from `claude/` will be imported, copied or merged. `claude/` is tagged `claude-archived`
+No file from `cold/` will be imported, copied or merged. `cold/` is tagged `claude-archived`
 and retained read-only. Its defects (padding-unaware normalization and pooling, unmasked LSTM and
 Transformer, backward-fill leakage in `_ffill`, `round(mean(y))` multiclass stratification,
 repeated test-set evaluation, placeholder TimesNet, no fair tuning) are the reason.
@@ -31,11 +31,11 @@ A third implementation exists that neither review document mentions:
 `source/` (== `reviewer-package/code/` except `README.md`), package `dmstcn`, 851 LOC, containing
 a **real, well-written DDP validation harness** that has never been executed.
 
-**Decision:** port its primitives into `codex/dsctm/src/dsctm/distributed/`, retargeted at the
+**Decision:** port its primitives into `code/dsctm/src/dsctm/distributed/`, retargeted at the
 Codex `dsctm.models.DMSTCN`. Do not execute it, do not depend on it.
 
 **Why this does not violate D-001.** `source/` is an independent third tree that shares no code
-with `claude/`. The prohibition is on Claude's *pipeline* (trainer, loaders, splits, evaluation),
+with `cold/`. The prohibition is on Claude's *pipeline* (trainer, loaders, splits, evaluation),
 none of which is involved here.
 
 **Adopted patterns:** `set_device` before `init_process_group`; fail-fast on missing
@@ -77,9 +77,9 @@ inventory in `artifacts/gate0/FILE_INVENTORY.csv` (212 files).
 
 | Location | Contents |
 |---|---|
-| `codex/dsctm/src/dsctm/` | All library code, including the new `distributed/` package |
-| `codex/dsctm/scripts/param/` | SLURM and `torchrun` launchers |
-| `codex/dsctm/tests/` | All tests, including distributed tests |
+| `code/dsctm/src/dsctm/` | All library code, including the new `distributed/` package |
+| `code/dsctm/scripts/param/` | SLURM and `torchrun` launchers |
+| `code/dsctm/tests/` | All tests, including distributed tests |
 | `artifacts/gate<N>/` (repo root) | Per-gate governance artifacts |
 | `results/local_non_authoritative/` | Non-PARAM output |
 | `results/param_utkarsh_authoritative/` | PARAM output — the only evidence root |
@@ -152,3 +152,35 @@ receptive fields 61/481/1921; per-subject adapter cost `d_s` = 8; two-sided exac
 n = 5 cannot reach p < 0.05. **These are the only prior findings citable to reviewers today.**
 
 Register: `artifacts/gate0/quarantined_claims.csv` (27 claims).
+
+---
+
+## D-009 · `codex/` → `code/` and `claude/` → `cold/`; `artifacts/gate0/` exempt
+
+**Date:** 2026-08-02 · **Status:** ACTIVE
+
+The two implementation trees are renamed to reflect their roles rather than their authorship:
+`code/` is the foundation that executes (D-001), `cold/` is cold storage. 220 tracked files
+moved; both trees verified byte-identical to their pre-rename state.
+
+**What was rewritten:** path references only — 30 files, `RUN_ORDER.md` included. Prose naming
+the *implementations* ("the codex implementation", "Claude archived") is unchanged, because it
+records provenance, which the rename does not alter.
+
+**What was deliberately not rewritten:**
+
+| | Why |
+|---|---|
+| `artifacts/gate0/` — every file | Frozen pre-PARAM evidence baseline (tag `gate0-pass`, commit `52ad6b1`). `FILE_INVENTORY.csv` pairs 212 paths with their SHA-256; rewriting the path column while the hash column still describes the old tree would make the inventory self-contradictory. The directory is a snapshot of 2026-07-26 and stays internally consistent. Nothing executable reads it. |
+| Tags `claude-archived`, `codex-single-gpu-audit` | Path-scoped historical refs pinned to commits (D-003). A tag names the state it was cut from. |
+| `codexreview.md`, `claudereview.md` | Review documents *about* the two agents, not about the directories. |
+| `.claude/` in `.gitignore` and both `START_HERE.md` | Claude Code editor config — never was the implementation tree. |
+
+**Consequence for PARAM.** The cluster's `~/.bashrc` still exports the old `PYTHONPATH` and must
+be edited by hand before the next job; `RUN_ORDER.md` §2 carries the corrected block. A stale
+`~/dsctm` checkout will also need `git pull` before any `submit.sh` call resolves.
+
+Two pre-existing defects were preserved rather than silently fixed, since neither is caused by
+the rename: `cold/START_HERE.md:19` points into the *other* tree, and the absolute paths in both
+`START_HERE.md` files and under `*/artifacts/resubmission/` still name the retired `/media`
+mount rather than `/mnt`.

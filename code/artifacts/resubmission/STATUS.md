@@ -7,7 +7,7 @@ Last updated: 2026-07-19 21:15 IST
 - Campaign resumed after discovery of the complete datasets under
   `/mnt/adissd/phd/dsctm-resubmission/dataset`.
 - A candidate authoritative implementation was discovered at
-  `/mnt/adissd/phd/dsctm-resubmission/claude/dsctm` on branch `experimentation1`.
+  `/mnt/adissd/phd/dsctm-resubmission/cold/dsctm` on branch `experimentation1`.
 - The candidate contains Gate 0/1 evidence and completed matched-budget headline
   runs. Its latest results are negative for the manuscript's headline accuracy
   claim; those results will be preserved, audited, and never rewritten.

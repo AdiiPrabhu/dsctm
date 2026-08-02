@@ -38,8 +38,8 @@ Last updated: 2026-07-26 (Gate 0)
 
 | ID | What | Command | Result | State | Evidence |
 |---|---|---|---|---|---|
-| L-0001 | Codex foundation baseline suite | `cd codex/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | **31 passed**, 1 benign warning | `LOGIC-VERIFIED (CPU)` | `artifacts/gate0/codex_baseline_tests.{xml,log}` |
-| L-0002 | Claude archived suite (evidence only) | `cd claude/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | 11 passed | `LOGIC-VERIFIED (CPU)` | `artifacts/gate0/claude_archived_tests.{xml,log}` |
+| L-0001 | Codex foundation baseline suite | `cd code/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | **31 passed**, 1 benign warning | `LOGIC-VERIFIED (CPU)` | `artifacts/gate0/codex_baseline_tests.{xml,log}` |
+| L-0002 | Claude archived suite (evidence only) | `cd cold/dsctm && PYTHONPATH=src:. CUDA_VISIBLE_DEVICES='' python3 -m pytest -q` | 11 passed | `LOGIC-VERIFIED (CPU)` | `artifacts/gate0/claude_archived_tests.{xml,log}` |
 | L-0003 | `source/` DDP harness import | `cd source && PYTHONPATH=src:. python3 -m pytest -q` | **1 collection error** — `TypeError` on PEP-604 annotation, Python 3.9 | `BLOCKED` (B-004) | `artifacts/gate0/source_harness_tests.{xml,log}` |
 | L-0004 | Repository file inventory | Gate 0 inventory script | 212 files hashed; 119 Python files, 10,457 LOC | `LOGIC-VERIFIED (CPU)` | `artifacts/gate0/FILE_INVENTORY.csv` |
 | L-0005 | Environment capture | Gate 0 environment script | Python 3.9.6, torch 2.8.0, CUDA absent, NCCL absent, gloo present | — | `artifacts/gate0/environment.json` |

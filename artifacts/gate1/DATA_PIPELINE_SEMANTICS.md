@@ -1,6 +1,6 @@
 # Gate 1 — Data Pipeline Semantics
 
-Authoritative description of what the `codex/dsctm/` data path does, so PARAM runs can be
+Authoritative description of what the `code/dsctm/` data path does, so PARAM runs can be
 audited against a written contract rather than against reader memory.
 
 Evidence: `artifacts/gate1/gate1_tests.{xml,log}` — 59 passed.
@@ -70,7 +70,7 @@ filled[seen] = x[last[seen]]              # ... so it stays 0, it is NOT back-fi
 **Leading missing prefix → 0**, explicitly. The prior implementation assigned
 `filled[np.isnan(filled)] = filled[valid][0]`, i.e. the *first later* observation — backward-fill
 leakage in a paper whose thesis is causal temporal ordering. That defect survives only in the
-archived `claude/` tree.
+archived `cold/` tree.
 
 Available conditions (`imputation=` argument), all fitted on training data only:
 
@@ -159,7 +159,7 @@ Tests: `test_class_weights_use_training_labels_only`,
 | Official split (DAIC) | `train_select_evaluate` | Best-dev `state_dict` frozen, restored, test evaluated **exactly once** |
 | Fair tuning | `fair_tuning.run_fair_tuning` | 8 dev trials per model; `train_model` never receives test indices |
 
-The archived `claude/` tree re-evaluated test at every dev improvement. The Codex path does not.
+The archived `cold/` tree re-evaluated test at every dev improvement. The Codex path does not.
 
 ---
 

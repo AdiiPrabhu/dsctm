@@ -14,7 +14,7 @@ V100 kernels and every performance figure remain Gate 3's hardware half — see
 ## 1. Package
 
 ```
-codex/dsctm/src/dsctm/distributed/
+code/dsctm/src/dsctm/distributed/
 ├── __init__.py      public surface
 ├── runtime.py       process group, rank/device binding, seeding, precision, batch semantics
 ├── sampler.py       train sampler + UnpaddedDistributedSampler for evaluation

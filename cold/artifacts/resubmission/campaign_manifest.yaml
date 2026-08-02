@@ -10,7 +10,7 @@ campaign:
   generated: "2026-07-18"
 
 repository:
-  path: /media/adii/adissd/phd/dsctm-resubmission/claude
+  path: /media/adii/adissd/phd/dsctm-resubmission/cold
   is_git_repo: false           # no VCS; branch/tag actions from master-prompt sec5 not applicable yet
   branch: null
   commit: null

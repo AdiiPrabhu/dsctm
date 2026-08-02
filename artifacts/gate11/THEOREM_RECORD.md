@@ -1,7 +1,7 @@
 # Gate 11 — Theorem and Formal Claims
 
 Generated: 2026-07-26 · Branch `param-main`
-Verified by: `codex/dsctm/tests/test_theorem_invariant.py`
+Verified by: `code/dsctm/tests/test_theorem_invariant.py`
 
 **Decision: OUTCOME B.** The convergence theorem is withdrawn and replaced with a protocol
 invariant that the implementation actually satisfies and that is machine-checked.

@@ -7,7 +7,7 @@ results. Never invent, improve, omit, or reinterpret a metric to support the man
 
 ## Repository and branch
 
-- Repository: `/mnt/adissd/phd/dsctm-resubmission/codex/dsctm`
+- Repository: `/mnt/adissd/phd/dsctm-resubmission/code/dsctm`
 - Branch: `experimentation2`
 - Push target: `origin experimentation2`
 - Current code contains post-launch durability and documentation improvements.
