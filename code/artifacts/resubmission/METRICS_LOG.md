@@ -8,7 +8,7 @@ verification state.
 
 ## Imported candidate results (awaiting independent audit)
 
-Source checkout: `/mnt/adissd/phd/dsctm-resubmission/claude/dsctm` at local commit
+Source checkout: `/mnt/adissd/phd/dsctm-resubmission/cold/dsctm` at local commit
 `03cc9ec`. These are observations from existing JSON artifacts, not yet independently
 reproduced in the Codex checkout.
 

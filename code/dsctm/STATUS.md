@@ -6,7 +6,7 @@ Operational continuation instructions for Claude are maintained in `instruction.
 
 ## Active checkpoint
 
-- Isolated checkout: `codex/dsctm`, branch `experimentation2`, based on local commit
+- Isolated checkout: `code/dsctm`, branch `experimentation2`, based on local commit
   `03cc9ec` from the candidate `experimentation1` implementation.
 - Shared environment verified: PyTorch 2.6.0+cu124 sees the RTX 4060 Ti.
 - Gate 0 independently rerun: 11/11 tests pass and EXP-0.1–0.4 execute successfully.

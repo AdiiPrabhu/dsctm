@@ -2,7 +2,7 @@ absl-py==2.5.0
 contourpy==1.3.3
 cycler==0.12.1
 ## !! Could not determine repository location
--e /media/adii/adissd/phd/dsctm-resubmission/claude/dsctm
+-e /media/adii/adissd/phd/dsctm-resubmission/cold/dsctm
 einops==0.8.2
 et_xmlfile==2.0.0
 filelock==3.29.0

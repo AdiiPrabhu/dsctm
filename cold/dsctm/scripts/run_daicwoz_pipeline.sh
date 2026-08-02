@@ -2,7 +2,7 @@
 # DAIC-WOZ 88-dim EXP-4.2 pipeline: extract -> train -> summarize -> test.
 # Sequential, abort-on-failure, clear markers. Logs to artifacts/daicwoz_pipeline.log.
 set -o pipefail
-cd /mnt/adissd/phd/dsctm-resubmission/claude/dsctm || exit 91
+cd /mnt/adissd/phd/dsctm-resubmission/cold/dsctm || exit 91
 export PYTHONPATH="$PWD/src:$PWD"
 VP=../../venv/bin/python
 LOG=artifacts/daicwoz_pipeline.log

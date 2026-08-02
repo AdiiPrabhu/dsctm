@@ -31,7 +31,7 @@ experiments cannot run on this host** — see §5.
 
 | Item | Value |
 |------|-------|
-| Path | `/media/adii/adissd/phd/dsctm-resubmission/claude` |
+| Path | `/media/adii/adissd/phd/dsctm-resubmission/cold` |
 | Git repository | **No** (`git status` → "not a git repository"). Campaign branch/tag actions from master-prompt §5 are not applicable until a repo exists. |
 | Uncommitted changes | n/a (no VCS) |
 | Source entry points | **None found** — no `.py`, `.tex`, `.bib`, `.ipynb`, Dockerfile, `requirements.txt`, or config files. |

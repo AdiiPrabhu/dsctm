@@ -4,99 +4,16 @@ Living document. Newest update on top. Covers what is set up, what is built, dat
 provenance findings, and what is next. Companion to `README.md` (usage) and the
 master-prompt gate protocol.
 
-Claude continuation instructions are consolidated in `instruction.md`. Treat the live
-process and raw artifacts as authoritative if any timestamp or progress detail here ages.
-
----
-
-## Codex continuation (2026-07-19 21:25 IST)
-
-An isolated continuation exists in `/mnt/adissd/phd/dsctm-resubmission/codex/dsctm`
-on branch `experimentation2`, based on this checkout at commit `03cc9ec`. Gate 0 was
-rerun there (11/11 tests passing). The continuation keeps `STATUS.md`, `METRICS.md`,
-this handoff, and `docs/DMSTCN_ALGORITHM.md` as separate live records.
-
-Audit findings before any confirmatory rerun: DAIC sequences are zero-padded but temporal
-pooling is currently unmasked; mask/AMP coverage claimed by Gate 0 is incomplete; TimesNet
-is only a simplified placeholder; and true multi-GPU evidence is impossible on the one-GPU
-host. These are implementation gaps, not hidden caveats.
-
-Update 21:40 IST: masking, valid-timestep normalization, live dataset roots, balanced
-grouped folds, dev-only checkpoint capture, one-time test evaluation, and PR-AUC logging
-are implemented; 14/14 tests pass. Gate 1 now yields StudentLife split hash
-`6208d08f0b8db52b` with validation sizes 422–436. The first mask-aware DAIC-WOZ rerun
-completed: D-MSTCN macro-F1 0.4818 (3/6); every paired bootstrap CI spans zero. See
-`METRICS.md`. Transformer emitted a nondeterministic attention-kernel warning.
-
-The run was repeated from committed code `07a78a1` and reproduced identically. Its
-confirmatory JSON SHA-256 is `b0f0427d4a319b36a433e3d1dd7791987dc760dca4030dd1b78c4d9a3fd9a74f`;
-reliability tables/figure are under `artifacts/resubmission/figures/`.
-
-EXP-6.1 is complete: StudentLife batch-32 median/p95/p99 latency
-1.427/1.541/1.624 ms (22,418 samples/s, 27.9 MiB peak); DAIC-WOZ batch-8
-7.545/7.795/7.800 ms (1,060 samples/s, 130.2 MiB peak), FP32, 30 synchronized
-samples after 10 warmups. Gate 0 now also passes per-branch perturbation RF and AMP
-finite loss/gradient checks. The next jobs exceed 30 minutes and require the approval
-table recorded in `STATUS.md` / the active assistant handoff.
-
-Update 22:05 IST: the user explicitly approved continuation. The approximately
-17 GPU-hour campaign is authorized; corrected StudentLife grouped-CV headline evaluation
-starts first. No multi-GPU or external submission action is authorized.
-
-Baseline-fidelity update: `models/timesnet.py` now adapts the official THUML TimesNet
-classification path pinned at upstream commit `4e938a1` (FFT period discovery, 2D
-inception blocks, spectral weighting, residual, masked classification head). The targeted
-CPU shape test passes. Do not reinterpret historical simplified-TimesNet metrics; rerun
-fairness comparisons with the faithful model.
-
-Phase-5 runner hardening: `scripts/run_phase5_ablation.py` is ready; the experiment
-module checkpoints after each variant and produces paired effect sizes plus Holm/BH
-multiplicity corrections. Targeted statistics tests pass. Launch it after EXP-4.1 frees
-the GPU.
-
-Critical preprocessing finding: `_ffill` used the first later observation for leading
-NaNs, which is backward-fill leakage. The active EXP-4.1 job was cancelled before its
-first metric at ~16 minutes. The fix leaves leading missing values at zero and only
-propagates observations forward; regression tests cover leading and fully missing cases.
-Use only `studentlife_causal_ffill_v2.npz` and never reuse `studentlife.npz` for claims.
-
-EXP-1.3 is ready in `experiments/preprocessing.py` / `run_exp13_preprocessing.py`.
-Conditions are causal forward fill, observed-only train-fold mean, zero, and zero plus
-observed-mask channels. Each condition records its data version/hash and uses the same
-subject folds. Launch after EXP-4.1/Phase-5 according to the approved campaign queue.
-
-Run-registry update: `registry.write_completed_fit` now creates the required immutable
-directory for every completed fold/seed without participant IDs. EXP-1.3 and Phase-5
-invoke it through `headline_cv` callbacks. A test asserts the required artifact set.
-
-EXP-3.3 is ready in `experiments/delay_task.py`. Delays 4/64/192, exact XOR construction,
-full/SSB/MSB/LSB controls, and success/falsification thresholds were written before any
-training result. The mathematical ledger §9.2 records the implemented task exactly.
-
-EXP-2.2/2.3 equal-budget tuning is ready in `experiments/fair_tuning.py`: 8 model-specific
-dev trials for each of 6 models, then five-seed confirmation of each frozen winner. Search
-uses `train_model` (no test index/loader); confirmation uses the test-once path. Use
-`scripts/run_exp22_fair_tuning.py` with `DSCTM_DAICWOZ_CACHE` set to the complete cache.
-
-Participant-only audio refinement is ready in
-`scripts/build_daicwoz_participant_egemaps88.py`. It extracts only transcript-labelled
-Participant intervals, concatenates them without invented silence, and builds the same
-88-dimensional/0.5-second masked contract. Its public aggregate manifest contains counts
-and length summaries but no coded participant IDs.
-
-Registry recovery/failure behavior is now explicit: an identical completed run is reused
-without overwrite or duplicate registry row, while a failed tuning trial gets an immutable
-`model_failed` directory and is not silently replaced or granted extra search budget.
-
 ---
 
 ## ⏸ PAUSED HERE (2026-07-19 ~20:45 IST) — awaiting user decision on next step
 
 State is fully committed & saved. **Nothing running.** Resume by picking one of the options below.
 
-- **Repo:** `claude/dsctm` @ `experimentation1`. Two new commits, **local, NOT pushed**:
-  - `b74d7a8` EXP-4.2c DAIC-WOZ 88-dim results + imbalance-fix/loader + pipeline + summarizer.
-  - `ef658aa` docs/DMSTCN_ALGORITHM.md (model math, expected-vs-observed, improvement levers).
+- **Repo:** `cold/dsctm` @ `experimentation1` — **pushed to GitHub** (`AdiiPrabhu/dsctm`,
+  `a019119..2fda0f4`): `b74d7a8` EXP-4.2c DAIC-WOZ results + imbalance-fix/loader + pipeline;
+  `ef658aa` docs/DMSTCN_ALGORITHM.md; `03cc9ec` this paused-state checkpoint; `2fda0f4` README update
+  (Gate1/Phase4 ran, results table, /mnt venv + PYTHONPATH fix, doc link).
 - **Headline (final, robust):** D-MSTCN 1st in **none** — StudentLife 4/6, E-DAIC-23d 2/6,
   E-DAIC-88d 3/6, DAIC-WOZ-88d 2/6; no credible significant win anywhere. See `SUMMARY.md`
   (cross-corpus table) and `docs/DMSTCN_ALGORITHM.md` §7.
@@ -133,7 +50,7 @@ the cross-script `from scripts...` import (only resolves from stdin); use **`PYT
 sessions done** (~72 GB). The job is resumable & integrity-checked; a shutdown loses nothing on
 disk. Nothing was committed to git, but all files are on disk (survive a clean shutdown; a git
 commit is NOT required to resume). Data lives under `dataset/DAIC-WOZ/` and caches under
-`claude/dsctm/artifacts/cache/` (both outside git).
+`cold/dsctm/artifacts/cache/` (both outside git).
 
 **To resume, run these in order from a normal shell:**
 ```bash
@@ -144,7 +61,7 @@ nohup bash fetch_extract_daicwoz.sh >> fetch.log 2>&1 &
 #    ls -d *_P/ | wc -l   (== 189)
 
 # 2) THE PIPELINE (venv import needs PYTHONPATH=src; roots auto-resolve /media->/mnt)
-cd /mnt/adissd/phd/dsctm-resubmission/claude/dsctm
+cd /mnt/adissd/phd/dsctm-resubmission/cold/dsctm
 export PYTHONPATH=src
 VP=../../venv/bin/python
 $VP -u scripts/build_daicwoz_egemaps88.py    # ~10 min, resumable (skips cached npz)
@@ -364,7 +281,7 @@ normalization/imputation are applied AFTER the subject split (leakage-safe).
 
 ## How to run
 ```bash
-source ../../venv/bin/activate && cd claude/dsctm   # or use venv/bin/python directly
+source ../../venv/bin/activate && cd cold/dsctm   # or use venv/bin/python directly
 python scripts/run_gate0.py                          # Gate 0 correctness (no data)
 python -c "from dsctm.data.studentlife import build_studentlife as b; \
            from dsctm.experiments.gate1 import run_gate1_studentlife as g; g(b(cache='artifacts/cache/studentlife.npz'))"
@@ -374,50 +291,6 @@ pytest -q                                            # 11 correctness/stats/leak
 Caches live under `artifacts/cache/` (gitignored). Raw data and subject IDs are never committed.
 
 ## Next / TODO
-- [x] Complete a code-to-equation audit of `docs/DMSTCN_ALGORITHM.md`. It now includes
-      model, data, loss, training, baseline, ablation, metric, uncertainty, multiplicity,
-      reproducibility, registry, and admission-audit formulations, with evidence boundaries.
-      Important interpretation: held-out participants all map to trained unknown FiLM row 0;
-      grouped evaluation has no individualized test-time subject adaptation.
-- [x] Live EXP-4.1 (launch commit `10b6c48`) **completed 03:58 IST** (PID 59422 exited
-      normally) and **passed `audit_exp41_corrected.py` 03:59 IST** (`checks_passed: true`,
-      no errors). Final JSON `studentlife_headline_corrected.json` SHA-256
-      `abf7079fe189cd7b53239aebbbd3bcd4a7608a8412010ecefd5589c3734f8a3a`; audit receipt
-      `studentlife_headline_corrected_audit.json`. Pooled macro-F1 (fold-level 95% CI):
-      transformer 0.3675 [0.3528,0.3733] · itransformer 0.3612 [0.3447,0.3704] · timesnet
-      0.3493 [0.3321,0.3546] · **D-MSTCN 0.3428 [0.3142,0.3539] (4/6)** · temporal-cnn
-      0.3243 [0.3040,0.3342] · lstm 0.2970 [0.2664,0.3188]. Paired D-MSTCN-vs-baseline
-      family: no comparison statistically resolvable (5 folds → two-sided exact Wilcoxon
-      min p 0.0625; `significance_reachable: false` for all). Conclusion: **no reproducible
-      headline advantage for D-MSTCN**; transformer-family baselines numerically beat it.
-      Preserved as-is. Limitation: launch revision predates in-file data-hash embedding
-      (`embedded_data_hash` null; tied to cache by independently audited hash
-      `a9cbaa3a22c2bf4e`). Per-seed D-MSTCN values not durably captured (stdout→pts); only
-      runner-emitted model-level aggregates recorded, none inferred.
-      This monitoring/logging pass made **documentation-only** edits (this file, `STATUS.md`,
-      `METRICS.md`, ignored live log); no source/experiment code was written or modified,
-      and no git commit/push has been run yet (awaiting user decision).
-- [x] Add `scripts/audit_exp41_corrected.py`, a fail-closed final-result validator and
-      SHA-256 receipt generator. Run it immediately after the corrected JSON appears and
-      before copying metrics into `METRICS.md`; focused accept/reject tests pass.
-- [x] Audit the corrected cache directly and repair its metadata contract. Early v2 NPZs
-      omitted the semantic version, so the known corrected filename now maps explicitly to
-      `studentlife-v2-causal_ffill`; numerical content remains hash `a9cbaa3a22c2bf4e`.
-      Future headline JSON embeds both semantic version and content hash. The live launch
-      predates that output-field patch, so associate it using the independently audited hash.
-- [x] Run the complete post-launch regression suite: 27/27 tests pass on CPU at
-      `d8a7b93`. This is code-handoff verification, not provenance for the already-live
-      EXP-4.1 process at `10b6c48`.
-- [x] Remove overclaims from the mathematical record: historical results are not described
-      as equal-budget tuned, the old StudentLife metric is visibly quarantined, and tested
-      TCP utilities are not presented as a completed distributed implementation.
-- [x] Add immutable per-fold preservation to future EXP-4.1 headline executions. The
-      live corrected run started at 22:19:20 IST from `10b6c48` and predates this patch;
-      do not attribute its eventual artifact to a later commit.
-- [x] Implement the complete Phase-5 control family: seven branch combinations,
-      dynamic/mean/static CSAG, half/double temperature, and no/global/subject/
-      parameter-matched-global FiLM. The resulting 14 variants require 210 fits rather
-      than the previously approved 105, so obtain revised approval before launching it.
 - [x] Finish E-DAIC caching + Gate 1.
 - [x] Training loop (scientific mode) + Phase-4 locked eval on StudentLife (grouped CV).
 - [x] Phase-2 baselines ran as the 6-model matched-budget comparison inside Phase 4.

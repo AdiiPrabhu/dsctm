@@ -9,7 +9,7 @@ Gate P completed for the supplied input-only package. The audit mapped all **90 
 
 ## Repository and inputs
 
-- Root: `/media/adii/adissd/phd/dsctm-resubmission/codex`
+- Root: `/media/adii/adissd/phd/dsctm-resubmission/code`
 - Version control: **not a Git repository**. A campaign branch/tag cannot safely be created without the actual source repository.
 - Tracker: `reviews/D_MSTCN_IEEE_Access_Resubmission_Tracker_Completed.xlsx` — SHA-256 `ac58d8189940d905458353e78c2612f3fb833971d6350c507ac561354c491a6a`; 9 sheets; 90 task rows.
 - Rejected manuscript: `reviews/D_MSTCN_Rejected_Manuscript.pdf` — SHA-256 `06a9d051ef9d758e28c64455a87e637cef35a3907cbf54f5adac066917f793ec`; 15 pages.
