@@ -3,7 +3,7 @@
 Open external blockers preventing gate completion. Each entry states exactly what is blocked,
 what is needed to unblock, and what can proceed meanwhile.
 
-Last updated: 2026-07-26 (Gate 0)
+Last updated: 2026-08-02
 
 ---
 
@@ -468,3 +468,41 @@ Raise a ticket with `utkarsh-support@cdac.in` asking specifically for:
 * whether `dcapswoz.ict.usc.edu` can be whitelisted for the duration of the project
 
 The answer determines whether staging takes an afternoon or a week.
+
+---
+
+## B-027 · Only 2 of 10 GPU nodes are reachable — Gate 3 cannot schedule (2026-08-02)
+
+**Blocks:** Gate 3, and therefore every gate downstream of it. `2gpu_ddp_smoke.sbatch` requires
+`--gres=gpu:2` on a **single** node, and no node has two free GPUs.
+
+**Measured** with `scripts/param/gpu_report.sh` on 2026-08-02 — 20 V100s installed, **0
+available**:
+
+| | Nodes | V100s | Detail |
+|---|---|---|---|
+| Drained | gpu004, 006, 008, 009, 010 | 10 | `maint`, `geo2`, `cdac_chn` ×2, `chuk_cyberlancer` |
+| Reserved `nitk_res` | gpu002, 003, 007 | 6 | until 2026-12-31 |
+| Held by running jobs | gpu001, 005, 007 | 5 | `sutapad`, `abhilashk`, `nitk197ma002` |
+| **Free** | — | **0** | |
+
+Earliest two-GPU window from current time limits: **gpu005 at 2026-08-04T12:02**, then gpu001
+at 2026-08-04T21:32. Time limits are ceilings, not predictions, and the slot is contended.
+
+**Why this is structural, not a queue spike.** Four of the five drain reasons are project names
+(`geo2`, `cdac_chn`, `chuk_cyberlancer`), not fault codes — those nodes are soft-allocated to
+other groups, not awaiting repair. `nitk_res` runs to end of year. The durable ceiling is
+**gpu001 and gpu005: 2 nodes, 4 V100s**, which is 20 % of the partition and 25 % of the 8-GPU
+figure the compute estimate assumed.
+
+**Consequences.** B-009 already established that the manuscript's `N = 16` is not schedulable.
+This tightens it: 4 GPUs is the planning number for step 10's extrapolation, `2node_4gpu_ddp`
+needs both usable nodes simultaneously and free, and `4node_8gpu_ddp` is unreachable while the
+drains hold.
+
+**Unblock:** nothing in this repository. Either wait out the running jobs, or ask
+`utkarsh-support@cdac.in` whether the `geo2` / `cdac_chn` / `chuk_cyberlancer` drains are
+time-boxed and whether `nsmexternal` can be added to a GPU reservation.
+
+**Proceeds meanwhile:** submit `1gpu_smoke.sbatch` and `2gpu_ddp_smoke.sbatch` now so they hold
+queue position and backfill. Everything CPU-side is already done — 316 tests pass.

@@ -111,6 +111,34 @@ Dataset warnings are expected here. **Any hard failure must be fixed before cont
 
 ---
 
+## Cluster capacity — check this before every submit
+
+```bash
+bash scripts/param/gpu_report.sh          # can I run anything right now?
+bash scripts/param/gpu_report.sh -n 2     # when can --gres=gpu:2 schedule?
+```
+
+Read one line: **ACTUALLY AVAILABLE TO YOU**. The partition total is not your total.
+
+Observed 2026-08-02 — 20 V100s installed, **0 available**:
+
+| | Nodes | V100s | |
+|---|---|---|---|
+| Drained | gpu004, 006, 008, 009, 010 | 10 | reasons `maint`, `geo2`, `cdac_chn` ×2, `chuk_cyberlancer` |
+| Reserved `nitk_res` | gpu002, 003, 007 | 6 | until **2026-12-31** |
+| Running jobs | gpu001, 005, 007 | 5 | other users |
+| **Free to you** | — | **0** | |
+
+Three of those drain reasons are project names, not hardware faults, so half the partition
+is soft-allocated to other groups indefinitely rather than awaiting repair. Between that and
+`nitk_res`, your realistic steady-state ceiling is **gpu001 and gpu005 — 2 nodes, 4 V100s.**
+Size the campaign against 4, not 20. This is the input to step 10's extrapolation.
+
+**Do not wait for a window — submit and let SLURM backfill.** A pending job holds your place
+in the queue; a job you have not submitted does not.
+
+---
+
 ## Campaign
 
 ### 5. Smoke test — `debug`, ~20 min  ← DO NOT SKIP

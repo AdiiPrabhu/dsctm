@@ -1,6 +1,6 @@
 # D-MSTCN PARAM Utkarsh Campaign — Status
 
-Last updated: 2026-07-26
+Last updated: 2026-08-02
 Branch: `param-main` · Baseline tag: `baseline-flattened` (`52ad6b1`)
 Foundation: `code/dsctm/` — see `DECISIONS.md` D-001
 
@@ -28,7 +28,14 @@ Foundation: `code/dsctm/` — see `DECISIONS.md` D-001
 **Test suite: 316 passed, 0 failures, 0 errors** (Gate 0 baseline was 31).
 
 **PARAM-ready: NO.** Every gate from 3 onward requires execution on PARAM. The gating job is
-`sbatch scripts/param/2gpu_ddp_smoke.sbatch` — see `RUNBOOK.md`.
+`bash scripts/param/submit.sh 2gpu_ddp_smoke.sbatch` — see `RUN_ORDER.md`.
+
+**Blocked on hardware, not on code (2026-08-02).** That gating job needs `--gres=gpu:2` on one
+node and no node has two free GPUs: of 20 installed V100s, 10 are drained for other projects,
+6 are held by the `nitk_res` reservation through 2026-12-31, and 5 are running other users'
+jobs — **0 available**. Earliest two-GPU window is gpu005 at 2026-08-04T12:02. The durable
+ceiling is 2 nodes / 4 V100s, which is the number step 10 should extrapolate against, not 8.
+See **B-027**; measure with `bash scripts/param/gpu_report.sh -n 2`.
 
 ## Gate 0 — PASS
 
