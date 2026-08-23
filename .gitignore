@@ -6,6 +6,9 @@ env/
 # --- Large dataset (hosted on Kaggle, not in git) ---
 dataset/
 
+# --- Kaggle upload staging (build artifact) ---
+kaggle-upload/
+
 # --- Local tooling / editor config ---
 .claude/
 .idea/
