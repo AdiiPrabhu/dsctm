@@ -1,6 +1,6 @@
 # Gate 1 — Single-Process Correctness
 
-Generated: 2026-07-26 · Branch `param-main` · Foundation `codex/dsctm/`
+Generated: 2026-07-26 · Branch `param-main` · Foundation `code/dsctm/`
 Evidence: `artifacts/gate1/gate1_tests.{xml,log}`
 
 **Result: 59 tests passed, 0 failures, 0 errors** (was 31 at Gate 0 — 28 added).

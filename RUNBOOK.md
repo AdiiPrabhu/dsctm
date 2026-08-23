@@ -38,7 +38,7 @@ next. Estimated wall-clock is queue-dependent and excludes waiting.
 ```bash
 git clone git@github.com:AdiiPrabhu/dsctm.git
 cd dsctm && git checkout param-main
-cd codex/dsctm
+cd code/dsctm
 
 module avail 2>&1 | tee ~/param_modules.txt      # SEE STEP 0a BEFORE CONTINUING
 source scripts/param/env.sh

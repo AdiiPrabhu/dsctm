@@ -9,8 +9,8 @@ Audit date: 2026-07-25 · Target venue: IEEE Access resubmission · Target hardw
 |---|---|
 | Original submitted PDF | `dsctm_original.pdf` (15 pp.) |
 | Master reviewer tracker | `D_MSTCN_IEEE_Access_Resubmission_Tracker - Master Tracker (1).csv` (90 rows) |
-| Candidate A | `claude/` — 3,352 LOC Python, 4 test files |
-| Candidate B | `codex/` — 4,861 LOC Python, 15 test files |
+| Candidate A | `cold/` — 3,352 LOC Python, 4 test files |
+| Candidate B | `code/` — 4,861 LOC Python, 15 test files |
 
 **Test suites executed on the audit machine (CPU, `CUDA_VISIBLE_DEVICES=''`):**
 Candidate A **11/11 passed** · Candidate B **31/31 passed**
