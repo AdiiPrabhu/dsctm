@@ -3,7 +3,7 @@
 from dsctm.data.studentlife import build_studentlife
 from dsctm.experiments.ablation import run_studentlife_ablation
 
-ds = build_studentlife(cache="artifacts/cache/studentlife_causal_ffill_v2.npz")
+ds = build_studentlife(cache="artifacts/cache/studentlife_v2_causal_ffill.npz")
 print(f"StudentLife N={ds.N} T={ds.T} F={ds.F}", flush=True)
 result = run_studentlife_ablation(ds, seeds=(0, 1, 2))
 print(f"split_hash={result['split_hash']}", flush=True)
