@@ -9,6 +9,7 @@ neutral embedding instead of an accidental one.
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 
 import numpy as np
 import torch
@@ -206,6 +207,7 @@ def train_model(build_model, ds, tr_idx, va_idx, cfg, device, seed=0,
 
     ``ctx`` None (default) reproduces the audited single-process path exactly.
     """
+    start_time = datetime.now(timezone.utc).isoformat()
     set_seed(seed, "scientific")
     train_subjects = sorted(set(ds.subject_id[tr_idx].tolist()))
     subj_map = {s: i + 1 for i, s in enumerate(train_subjects)}  # 0 = unknown
@@ -255,6 +257,7 @@ def train_model(build_model, ds, tr_idx, va_idx, cfg, device, seed=0,
             if patience >= cfg["early_stop_patience"]:
                 break
     return {
+        "start_time": start_time,
         "val_metrics": best,
         "val_probs": best_probs,
         "val_true": ds.y[va_idx],
@@ -291,6 +294,7 @@ def train_select_evaluate(build_model, ds, tr_idx, dev_idx, test_idx, cfg, devic
                           seed=0, personalize=False, emb_dropout=0.1):
     """Official-split protocol (EXP-4.2): train on train, SELECT (early-stop) on dev,
     and report TEST metrics at the best-dev epoch — test never touches selection."""
+    start_time = datetime.now(timezone.utc).isoformat()
     set_seed(seed, "scientific")
     train_subjects = sorted(set(ds.subject_id[tr_idx].tolist()))
     subj_map = {s: i + 1 for i, s in enumerate(train_subjects)}
@@ -333,6 +337,7 @@ def train_select_evaluate(build_model, ds, tr_idx, dev_idx, test_idx, cfg, devic
         raise RuntimeError("no development checkpoint selected")
     model.load_state_dict(best_state)
     test_at_best, test_probs_best, test_true_best = evaluate(model, te, device, personalize)
-    return {"dev_metrics": best_dev, "test_metrics": test_at_best,
+    return {"start_time": start_time,
+            "dev_metrics": best_dev, "test_metrics": test_at_best,
             "best_epoch": best_epoch, "epochs_run": epoch + 1,
             "test_probs": test_probs_best, "test_true": test_true_best}
