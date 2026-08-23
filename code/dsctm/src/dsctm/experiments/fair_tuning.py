@@ -69,7 +69,8 @@ def _indices(ds, manifest):
 
 
 def run_fair_tuning(ds, manifest, seeds=(0, 1, 2, 3, 4),
-                    out_root="artifacts/resubmission/phase2", log=print):
+                    out_root="artifacts/resubmission/phase2", log=print,
+                    condition_suffix=""):
     import torch
     device = "cuda" if torch.cuda.is_available() else "cpu"
     idx = _indices(ds, manifest)
@@ -87,14 +88,16 @@ def run_fair_tuning(ds, manifest, seeds=(0, 1, 2, 3, 4),
                                   cfg, device, seed=0, personalize=(name == "dmstcn"))
                 score = float(fit["val_metrics"]["macro_f1"])
                 artifact = write_completed_fit(
-                    experiment_id="EXP-2.2-2.3", condition=f"{name}_search_t{trial}",
+                    experiment_id="EXP-2.2-2.3",
+                    condition=f"{name}_search_t{trial}{condition_suffix}",
                     dataset=ds, protocol="official_train_dev_search", fold=None, seed=0,
                     split_hash=split_hash, config={**cfg, **params}, result=fit)
                 row = {"trial": trial, "params": params, "dev_macro_f1": score,
                        "status": "completed", "artifact": str(artifact)}
             except Exception as exc:
                 artifact = write_failed_fit(
-                    experiment_id="EXP-2.2-2.3", condition=f"{name}_search_t{trial}",
+                    experiment_id="EXP-2.2-2.3",
+                    condition=f"{name}_search_t{trial}{condition_suffix}",
                     dataset=ds, protocol="official_train_dev_search", fold=None, seed=0,
                     split_hash=split_hash, config={**cfg, **params}, error=exc)
                 row = {"trial": trial, "params": params, "dev_macro_f1": None,
@@ -120,7 +123,8 @@ def run_fair_tuning(ds, manifest, seeds=(0, 1, 2, 3, 4),
                 _build(name, ds, best["params"]), ds, idx["train"], idx["dev"], idx["test"],
                 cfg, device, seed=seed, personalize=(name == "dmstcn"))
             artifact = write_completed_fit(
-                experiment_id="EXP-2.2-2.3", condition=f"{name}_confirm",
+                experiment_id="EXP-2.2-2.3",
+                condition=f"{name}_confirm{condition_suffix}",
                 dataset=ds, protocol="official_dev_selected_test_once", fold=None, seed=seed,
                 split_hash=split_hash, config={**cfg, **best["params"]}, result=fit)
             seed_rows.append({"seed": seed, "dev_metrics": fit["dev_metrics"],
@@ -129,6 +133,7 @@ def run_fair_tuning(ds, manifest, seeds=(0, 1, 2, 3, 4),
                 f"test={fit['test_metrics']['macro_f1']:.4f}")
         confirmation[name] = seed_rows
     final = {"experiment": "EXP-2.2/2.3", "dataset": ds.dataset,
+             "condition_suffix": condition_suffix,
              "search_budget_trials_per_model": 8, "selection_metric": "dev_macro_f1",
              "test_access_during_search": False, "seeds_confirmation": list(seeds),
              "search": search_results, "selected": selected, "confirmation": confirmation}
